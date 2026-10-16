@@ -64,6 +64,12 @@ async function importSkills(only) {
     } else {
       copySkill(upstream, skill, dest);
     }
+    for (const { file, find, replace } of skill.patches ?? []) {
+      const target = path.join(dest, file);
+      const text = fs.readFileSync(target, "utf8");
+      if (!text.includes(find)) throw new Error(`Patch for ${name}/${file} no longer applies: upstream changed "${find}"`);
+      fs.writeFileSync(target, text.replace(find, replace));
+    }
     for (const file of [source.licenseFile, source.noticeFile].filter(Boolean)) {
       fs.copyFileSync(path.join(upstream, file), path.join(dest, file));
     }

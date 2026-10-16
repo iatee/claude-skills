@@ -37,8 +37,16 @@
     "research":                 { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/research" },
     "setup-matt-pocock-skills": { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/setup-matt-pocock-skills" },
 
-    "implement":                     { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/implement" },
-    "implement-spec":                { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/implement-spec" },
+    "implement": {
+      "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/implement",
+      "patches": [{ "file": "SKILL.md", "find": "Skill tool with \"code-review\"", "replace": "Skill tool with \"coding:code-review\"" }],
+      "changes": "Calls `coding:code-review` instead of `code-review`, which Claude Code's built-in review command shadows."
+    },
+    "implement-spec": {
+      "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/implement-spec",
+      "patches": [{ "file": "SKILL.md", "find": "Skill tool with `code-review`", "replace": "Skill tool with `coding:code-review`" }],
+      "changes": "Calls `coding:code-review` instead of `code-review`, which Claude Code's built-in review command shadows."
+    },
     "tdd":                           { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/tdd" },
     "diagnosing-bugs":               { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/diagnosing-bugs" },
     "code-review":                   { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/code-review" },

@@ -10,6 +10,8 @@ This file is generated from `manifest.json` by `scripts/vendor.mjs`; do not edit
 - **Commit:** [`49dd158`](https://github.com/mattpocock/skills/tree/49dd158d1076134a641b33efb035946536778336)
 - **License:** MIT
 - **Skills:** `grilling`, `grill-me`, `grill-with-docs`, `domain-modeling`, `to-spec`, `to-tickets`, `to-questionnaire`, `wayfinder`, `triage`, `research`, `setup-matt-pocock-skills`, `implement`, `implement-spec`, `tdd`, `diagnosing-bugs`, `code-review`, `codebase-design`, `improve-codebase-architecture`, `resolving-merge-conflicts` (no longer upstream; copy from an earlier release), `setup-pre-commit`, `wizard`, `writing-for-agents`, `writing-fragments`, `writing-shape`, `teach`, `wait-what`, `handoff`, `claude-handoff`, `retro`
+- **Changes to `implement`:** Calls `coding:code-review` instead of `code-review`, which Claude Code's built-in review command shadows.
+- **Changes to `implement-spec`:** Calls `coding:code-review` instead of `code-review`, which Claude Code's built-in review command shadows.
 
 ## Paul Bakaus
 
