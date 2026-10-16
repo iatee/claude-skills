@@ -23,13 +23,14 @@ export default defineConfig({
       title: "Claude Skills",
       description: "A curated set of Claude Code skills, credited to their authors, with guides for beginners and power users.",
       favicon: "/favicon.svg",
+      logo: { src: "./src/assets/logo.svg" },
       head: [
         { tag: "link", attrs: { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: true } },
         {
           tag: "link",
           attrs: {
             rel: "stylesheet",
-            href: "https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap",
+            href: "https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap",
           },
         },
       ],

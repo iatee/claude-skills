@@ -1,53 +1,248 @@
-/* Starlight, matched to the landing page: warm grays, a clay accent, Inter with Instrument Serif headings. */
+/* Docs theme. Shares the landing page's system: Schibsted Grotesk, cool neutral greys, one indigo accent,
+   hairline borders. Starlight supplies structure; this file makes it read as one site. */
+
 :root {
-  --sl-color-accent-low: #3b1a0c;
-  --sl-color-accent: #f07a45;
-  --sl-color-accent-high: #fcd9c4;
-  --sl-color-white: #f2ede6;
-  --sl-color-gray-1: #e4ddd3;
-  --sl-color-gray-2: #c3bab0;
-  --sl-color-gray-3: #a39b91;
-  --sl-color-gray-4: #5e5751;
-  --sl-color-gray-5: #2e2a26;
-  --sl-color-gray-6: #1a1816;
-  --sl-color-black: #12110f;
-  --sl-font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --sl-font: "Schibsted Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --sl-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sl-nav-height: 3.5rem;
+  --sl-sidebar-width: 17rem;
+  --sl-content-width: 46rem;
+  --sl-text-h1: 2.5rem;
+  --sl-text-h2: 1.6rem;
+  --sl-text-h3: 1.2rem;
+  --sl-text-h4: 1.05rem;
+  --sl-line-height: 1.7;
+
+  /* Dark (Starlight's default scheme) */
+  --sl-color-accent-low: #1d1d3a;
+  --sl-color-accent: #8b8cf8;
+  --sl-color-accent-high: #c7c8fd;
+  --sl-color-white: #ededf0;
+  --sl-color-gray-1: #d4d4d8;
+  --sl-color-gray-2: #a1a1aa;
+  --sl-color-gray-3: #8b8b94;
+  --sl-color-gray-4: #3f3f46;
+  --sl-color-gray-5: #232328;
+  --sl-color-gray-6: #121215;
+  --sl-color-black: #0b0b0d;
+  --sl-color-hairline: #232328;
+  --sl-color-hairline-light: #1b1b1f;
+  --sl-color-hairline-shade: #232328;
+  --sl-color-bg-nav: rgba(11, 11, 13, 0.88);
+  --sl-color-bg-sidebar: #0b0b0d;
 }
 
 :root[data-theme="light"] {
-  --sl-color-accent-low: #fde7da;
-  --sl-color-accent: #c2410c;
-  --sl-color-accent-high: #6b2208;
-  --sl-color-white: #1c1917;
-  --sl-color-gray-1: #2b2622;
-  --sl-color-gray-2: #3f3933;
-  --sl-color-gray-3: #6b645c;
-  --sl-color-gray-4: #9e968c;
-  --sl-color-gray-5: #e7e1d8;
-  --sl-color-gray-6: #f3efe9;
-  --sl-color-gray-7: #f7f4ef;
-  --sl-color-black: #faf8f5;
+  --sl-color-accent-low: #eef0ff;
+  --sl-color-accent: #4f46e5;
+  --sl-color-accent-high: #312e81;
+  --sl-color-white: #18181b;
+  --sl-color-gray-1: #27272a;
+  --sl-color-gray-2: #52525b;
+  --sl-color-gray-3: #71717a;
+  --sl-color-gray-4: #a1a1aa;
+  --sl-color-gray-5: #e4e4e7;
+  --sl-color-gray-6: #f4f4f6;
+  --sl-color-gray-7: #fafafb;
+  --sl-color-black: #fbfbfc;
+  --sl-color-hairline: #e4e4e7;
+  --sl-color-hairline-light: #ececef;
+  --sl-color-hairline-shade: #e4e4e7;
+  --sl-color-bg-nav: rgba(251, 251, 252, 0.88);
+  --sl-color-bg-sidebar: #fbfbfc;
 }
 
-h1#_top,
+body {
+  -webkit-font-smoothing: antialiased;
+}
+::selection {
+  background: var(--sl-color-accent-low);
+}
+
+/* Header: translucent bar, quiet title. Starlight draws the bottom hairline itself. */
+.page > .header {
+  backdrop-filter: saturate(1.4) blur(10px);
+}
+.site-title {
+  gap: 0.6rem;
+  color: var(--sl-color-white);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.site-title:hover {
+  color: var(--sl-color-white);
+}
+
+/* Sidebar: small labels, plain links, the current page marked by colour and a soft fill. */
+.sidebar-pane {
+  border-inline-end: 1px solid var(--sl-color-hairline);
+}
+.sidebar-content .group-label .large {
+  color: var(--sl-color-gray-3);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.sidebar-content summary .caret {
+  display: none;
+}
+.sidebar-content ul ul {
+  border-inline-start: 0;
+  margin-inline-start: 0;
+}
+.sidebar-content a {
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  color: var(--sl-color-gray-2);
+  font-size: 0.9rem;
+}
+.sidebar-content a:hover {
+  background: var(--sl-color-gray-6);
+  color: var(--sl-color-white);
+}
+.sidebar-content a[aria-current="page"],
+.sidebar-content a[aria-current="page"]:hover {
+  background: var(--sl-color-accent-low);
+  color: var(--sl-color-accent);
+  font-weight: 500;
+}
+
+/* Page title and headings: tight, weighted sans, no display tricks. */
+h1#_top {
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+}
+.sl-markdown-content :is(h2, h3, h4) {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
 .sl-markdown-content h2 {
-  font-family: "Instrument Serif", Georgia, serif;
-  font-weight: 400;
-  letter-spacing: -0.01em;
+  margin-top: 2.75rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--sl-color-hairline);
 }
-h1#_top { font-size: clamp(2.4rem, 5vw, 3.4rem); }
-.sl-markdown-content h2 { font-size: 2rem; }
+.sl-markdown-content h3 {
+  margin-top: 2rem;
+}
+.sl-markdown-content > h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+.sl-markdown-content :is(p, li) {
+  color: var(--sl-color-gray-1);
+}
+.sl-markdown-content a {
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.sl-markdown-content strong {
+  color: var(--sl-color-white);
+  font-weight: 600;
+}
 
-/* Wide tables, like the catalog, scroll inside their box instead of squeezing every column. */
+/* Inline code: a quiet chip. */
+.sl-markdown-content :not(pre) > code {
+  padding: 0.1em 0.35em;
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 5px;
+  background: var(--sl-color-gray-6);
+  font-size: 0.85em;
+}
+
+/* Code blocks (Expressive Code). */
+.expressive-code {
+  --ec-brdRad: 8px;
+  --ec-brdCol: var(--sl-color-hairline);
+  --ec-frm-edBg: var(--sl-color-gray-6);
+  --ec-frm-trmBg: var(--sl-color-gray-6);
+  --ec-codeFontSize: 0.85rem;
+}
+.expressive-code .frame {
+  box-shadow: none !important;
+}
+
+/* Blockquotes read as a soft note rather than a thick bar. */
+.sl-markdown-content blockquote {
+  margin-inline: 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 8px;
+  background: var(--sl-color-gray-6);
+  font-style: normal;
+}
+
+/* Tables: header row on a soft fill, hairlines between rows, wide tables scroll in place. */
 .sl-markdown-content table {
   display: block;
   overflow-x: auto;
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 8px;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.9rem;
 }
-.sl-markdown-content td,
 .sl-markdown-content th {
-  min-width: 12rem;
+  background: var(--sl-color-gray-6);
+  color: var(--sl-color-gray-2);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: start;
+}
+.sl-markdown-content :is(th, td) {
+  padding: 0.6rem 0.85rem;
+  border: 0;
+  border-bottom: 1px solid var(--sl-color-hairline);
+  vertical-align: top;
+}
+.sl-markdown-content tr:last-child td {
+  border-bottom: 0;
+}
+.sl-markdown-content td {
+  min-width: 10rem;
 }
 .sl-markdown-content td:first-child {
   min-width: 11rem;
+  color: var(--sl-color-white);
+}
+
+/* On this page: small and muted. */
+starlight-toc h2,
+mobile-starlight-toc h2 {
+  color: var(--sl-color-gray-3);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+starlight-toc a {
+  color: var(--sl-color-gray-2);
+  font-size: 0.85rem;
+}
+starlight-toc a[aria-current="true"] {
+  color: var(--sl-color-accent);
+}
+
+/* Previous / next: hairline boxes, small labels. */
+.pagination-links a {
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 8px;
+  box-shadow: none;
+}
+.pagination-links a:hover {
+  border-color: var(--sl-color-gray-4);
+}
+.pagination-links .link-title {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Search box. */
+site-search button[data-open-modal] {
+  border-radius: 8px;
+  border-color: var(--sl-color-hairline);
+  background: var(--sl-color-gray-6);
+}
+
+.site-title img {
+  width: auto;
+  height: 1.4rem;
 }

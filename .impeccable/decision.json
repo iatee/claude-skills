@@ -1,0 +1,83 @@
+{
+  "title": "Choose the visual world for skills.garciabaertsch.com",
+  "question": "The roll assigned the Library Card Catalog. Keep it, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "kind": "assigned",
+      "label": "Library Card Catalog",
+      "kicker": "THE ROLL",
+      "lineage": "Library of Congress catalog cards and the oak and steel drawers that hold them",
+      "thesis": "The collection is a catalog drawer: every skill is a typed card with an author line and a call number (planning:grill-me), and the suggester is the library's 'see also' card.",
+      "palette": ["#1F4D3F", "#FBFBF8", "#C8102E", "#B08D57", "#1A1A1A"],
+      "materials": ["library-green steel drawer front", "white card stock with a red header rule", "typewriter ink", "brass label holder"],
+      "viewport": "The drawer front owns the top: a brass label holder reads CLAUDE SKILLS. Below it the first cards stand in the drawer, read top-down: the title card (what this is, one line), the install card with three typed commands and a stamped COPY, and a 'see also' card showing a real suggester exchange.",
+      "risk": "Turns back into a card grid if the cards are laid out as tiles instead of a filed, top-down drawer.",
+      "raised": [
+        {"from": "challenger-miura", "raise": "One pull files everything: the install card is the single action, and it visibly files every plugin card at once."},
+        {"from": "challenger-segment", "raise": "Absence is designed: opt-in plugins (ponytail, observer) stand in the drawer as unfiled cards, present but set apart."},
+        {"from": "challenger-sapeur", "raise": "No card without its maker: every skill card carries a ruled author line, linked to the original repository."},
+        {"from": "challenger-zine", "raise": "It teaches in order: three numbered guide cards walk a newcomer from install to first skill."}
+      ]
+    },
+    {
+      "id": "model-pick",
+      "kind": "pick",
+      "label": "Transit Map",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Vignelli and Beck subway diagrams",
+      "thesis": "Workflows are lines and skills are stations (grill-me, to-spec, to-tickets, implement); the suggester is the 'change here for' sign.",
+      "palette": ["#FFFFFF", "#111111", "#E4002B", "#0072CE", "#00A651", "#FFB81C"],
+      "materials": ["printed diagram", "enamel signage"],
+      "viewport": "A diagram where each plugin is a coloured line and the main workflow runs straight across the first screen.",
+      "risk": "Familiar: the subway diagram is a well-worn metaphor for developer tooling."
+    },
+    {
+      "id": "challenger-zine",
+      "kind": "challenger",
+      "catalogId": "hand-drawn-zine-explainer",
+      "label": "Hand-drawn Zine Explainer",
+      "verdict": "competitive",
+      "lineage": "technical zines sketched like a friend's napkin drawing",
+      "thesis": "Claude Code explained like a friend sketching it: marker lettering, doodled arrows from prompt to skill.",
+      "palette": ["#FFFFFF", "#111111", "#FFE14D", "#FF7AB6", "#2EC4B6"],
+      "materials": ["marker ink", "highlighter swipes"],
+      "viewport": "A doodled panel showing a prompt, an arrow, and the skill that answers it.",
+      "case": "Wins on how friendly it feels to beginners, but loses on clarity and conflicts with the neutral voice you chose.",
+      "risk": "Reads playful and unserious next to install commands."
+    },
+    {
+      "id": "challenger-miura", "kind": "challenger", "catalogId": "paper-folds-pleats-deployable-miura-orbit-sheet",
+      "label": "Miura-fold Sheet", "verdict": "declined", "lineage": "deployable origami sheets",
+      "palette": ["#FFFFFF", "#C9A227"], "materials": ["scored paper"],
+      "case": "Abstract: nobody visiting recognises their task in it.", "kept": "One action deploys the whole set."
+    },
+    {
+      "id": "challenger-segment", "kind": "challenger", "catalogId": "signals-instruments-seven-segment-alarm-clock",
+      "label": "Seven-segment Display", "verdict": "declined", "lineage": "LED clocks and scoreboards",
+      "palette": ["#0B0B0B", "#FF2A1A"], "materials": ["LED segments"],
+      "case": "Gimmick: nothing here is a number that changes.", "kept": "Unlit states designed as carefully as lit ones."
+    },
+    {
+      "id": "challenger-sapeur", "kind": "challenger", "catalogId": "pop-culture-shelf-sapeur-portrait-plate",
+      "label": "Sapeur Portrait Plate", "verdict": "declined", "lineage": "Congolese dandy portraits",
+      "palette": ["#D9C3A0", "#2B2B2B"], "materials": ["painted backdrop"],
+      "case": "No link to skills or Claude Code.", "kept": "Every item named in a ruled caption."
+    },
+    {
+      "id": "challenger-zoo", "kind": "challenger", "catalogId": "aww2-zoo-gardens-guide-map",
+      "label": "Zoo Guide Map", "verdict": "declined", "lineage": "park guide maps",
+      "palette": ["#8ED462", "#F5F1E4"], "materials": ["flat colour"],
+      "case": "Charming but vague about what the product is.", "kept": "One type voice used with strict discipline."
+    },
+    {
+      "id": "challenger-disk", "kind": "challenger", "catalogId": "galaxies-nebulae-deep-time-accretion-disk-threshold",
+      "label": "Accretion Disk", "verdict": "declined", "lineage": "black-hole renders",
+      "palette": ["#000000", "#F2C14E"], "materials": ["light"],
+      "case": "Spectacle with no product meaning.", "kept": "Explicit, visible states."
+    }
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "buildPath": {"value": "code", "toggle": false},
+  "canon": true
+}

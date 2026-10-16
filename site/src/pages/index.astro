@@ -1,7 +1,7 @@
 ---
 // The landing page. Everything on it is read from the repository at build time
 // (marketplace.json, manifest.json, catalog.json, the plugin folders and the guides),
-// so it stays in step with what's actually installable.
+// so it stays in step with what is actually installable.
 import fs from "node:fs";
 import path from "node:path";
 import { getCollection } from "astro:content";
@@ -10,45 +10,67 @@ import manifest from "../../../manifest.json";
 import catalog from "../../../catalog.json";
 
 const ROOT = path.resolve(process.cwd(), "..");
-const skillCount = (plugin: string) => {
-  const dir = path.join(ROOT, "plugins", plugin, "skills");
-  return fs.existsSync(dir) ? fs.readdirSync(dir).length : 0;
-};
+const MARKETPLACE = marketplace.name;
 const referencedCounts: Record<string, number> = { "taste-skill": 14, ponytail: 6 };
 const optIn = new Set(["ponytail", "observer"]);
+
+const skillsIn = (plugin: string) => {
+  const dir = path.join(ROOT, "plugins", plugin, "skills");
+  return fs.existsSync(dir) ? fs.readdirSync(dir) : [];
+};
+
+// Short, plain descriptions: the first sentence of each plugin's own description.
+const firstSentence = (text: string) => {
+  const sentence = text.replace(/^Opt-in: /, "").split(/(?<=\.)\s/)[0];
+  return sentence.charAt(0).toUpperCase() + sentence.slice(1);
+};
+
+const authorsOf = (plugin: string) => {
+  const names = new Set<string>();
+  for (const [skill, entry] of Object.entries(manifest.skills)) {
+    if (entry.plugin === plugin) names.add(manifest.sources[entry.source as keyof typeof manifest.sources].author);
+  }
+  for (const skill of skillsIn(plugin)) if (!(skill in manifest.skills)) names.add("Iatee");
+  return [...names];
+};
 
 const plugins = marketplace.plugins
   .filter((p) => p.name !== "all")
   .map((p) => {
     const local = typeof p.source === "string";
     const json = local
-      ? JSON.parse(fs.readFileSync(path.join(ROOT, p.source, ".claude-plugin", "plugin.json"), "utf8"))
+      ? JSON.parse(fs.readFileSync(path.join(ROOT, p.source as string, ".claude-plugin", "plugin.json"), "utf8"))
       : {};
+    const ref = (catalog.referenced as Record<string, { credit: string }>)[p.name];
     return {
       name: p.name,
-      description: (p.description ?? json.description ?? "").replace(/^Opt-in: /, ""),
-      skills: local ? skillCount(p.name) : referencedCounts[p.name] ?? 0,
+      description: firstSentence(p.description ?? json.description ?? ""),
+      skills: local ? skillsIn(p.name).length : referencedCounts[p.name] ?? 0,
+      authors: local ? authorsOf(p.name) : [ref?.credit.replace(/^\[([^\]]+)\].*$/, "$1") ?? ""],
       optIn: optIn.has(p.name),
-      external: !local,
     };
-  });
+  })
+  .sort((a, b) => Number(a.optIn) - Number(b.optIn));
 
 const totalSkills = Object.keys(catalog.skills).length + Object.values(referencedCounts).reduce((a, b) => a + b, 0);
-const authors = [
+
+const credits = [
   ...new Map(Object.values(manifest.sources).map((s) => [s.author, `https://github.com/${s.repo}`])),
   ["leonxlnx", "https://github.com/Leonxlnx/taste-skill"],
   ["Dietrich Gebert", "https://github.com/DietrichGebert/ponytail"],
 ];
 
-const guideOrder = ["start-here", "using-skills", "catalog", "power-user", "customize", "own-server"];
-const guides = (await getCollection("docs"))
-  .filter((g) => guideOrder.includes(g.id))
-  .sort((a, b) => guideOrder.indexOf(a.id) - guideOrder.indexOf(b.id));
+const docs = await getCollection("docs");
+const guide = (id: string) => docs.find((d) => d.id === id)!;
+const guideGroups = [
+  { label: "Get started", ids: ["start-here", "using-skills", "catalog"] },
+  { label: "Go further", ids: ["power-user", "customize", "own-server"] },
+];
 
 const install = [
-  "/plugin marketplace add iatee/claude-skills",
-  "/plugin install all@iatee-skills",
-  "/reload-plugins",
+  `/plugin marketplace add iatee/claude-skills`,
+  `/plugin install all@${MARKETPLACE}`,
+  `/reload-plugins`,
 ];
 ---
 
@@ -58,148 +80,179 @@ const install = [
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Claude Skills</title>
-    <meta name="description" content="A curated set of Claude Code skills, credited to their authors, plus a suggester that tells you when one fits." />
+    <meta name="description" content="A curated set of Claude Code skills, each credited to its author, with a suggester that points out the right one while you work." />
+    <meta name="color-scheme" content="light dark" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <header class="nav wrap">
-      <a class="brand" href="/">
-        <img src="/favicon.svg" alt="" width="26" height="26" />
-        <span>Claude Skills</span>
-      </a>
-      <nav>
-        <a href="/start-here/">Guides</a>
-        <a href="/catalog/">Catalog</a>
-        <a href="https://github.com/iatee/claude-skills">GitHub</a>
-      </nav>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="topbar">
+      <div class="wrap topbar-inner">
+        <a class="brand" href="/" aria-label="Claude Skills, home">
+          <img src="/favicon.svg" alt="" width="22" height="22" />
+          Claude Skills
+        </a>
+        <nav aria-label="Main">
+          <a href="/start-here/">Guides</a>
+          <a href="/catalog/">Catalog</a>
+          <a class="icon-link" href="https://github.com/iatee/claude-skills" aria-label="GitHub repository">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+          </a>
+        </nav>
+      </div>
     </header>
 
-    <main>
+    <main id="main">
       <section class="hero wrap">
-        <p class="eyebrow">For Claude Code</p>
-        <h1>The right skill,<br /><em>at the right moment.</em></h1>
-        <p class="lede">
-          A hand-picked collection of Claude Code skills, credited to the people who wrote them.
-          Plus a suggester that tells you when one fits, so you never have to remember them all.
-        </p>
-        <div class="actions">
-          <a class="button primary" href="/start-here/">Start here</a>
-          <a class="button" href="/catalog/">Browse {totalSkills} skills</a>
-        </div>
-
-        <div class="install" aria-label="Install commands">
-          <div class="install-head">
-            <span>Install in Claude Code</span>
-            <button type="button" data-copy={install.join("\n")}>Copy</button>
-          </div>
-          <pre><code>{install.map((line) => <span class="line"><span class="prompt">›</span>{line}</span>)}</code></pre>
-        </div>
-      </section>
-
-      <section class="stats wrap" aria-label="At a glance">
-        <div><strong>{totalSkills}</strong><span>skills</span></div>
-        <div><strong>{plugins.length}</strong><span>plugins</span></div>
-        <div><strong>{authors.length}</strong><span>credited authors</span></div>
-        <div><strong>1</strong><span>command to install</span></div>
-      </section>
-
-      <section class="wrap block">
-        <div class="section-head">
-          <h2>What's inside</h2>
-          <p>Install everything with <code>all</code>, or only the plugins you want.</p>
-        </div>
-        <div class="grid">
-          {plugins.map((p) => (
-            <article class="card">
-              <div class="card-top">
-                <h3><code>{p.name}</code></h3>
-                {p.optIn && <span class="tag">opt-in</span>}
-                {p.external && !p.optIn && <span class="tag quiet">from its author</span>}
-              </div>
-              <p>{p.description}</p>
-              <span class="count">{p.skills} {p.skills === 1 ? "skill" : "skills"}</span>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section class="wrap block split">
-        <div>
-          <p class="eyebrow">The suggester</p>
-          <h2>You describe the job.<br />It remembers the skill.</h2>
-          <p>
-            On every message, a tiny local script checks your request against every skill you have installed.
-            When one clearly fits, Claude mentions it in a single line. When nothing fits, it stays silent and
-            costs nothing.
+        <div class="hero-copy">
+          <h1>Curated skills for Claude&nbsp;Code</h1>
+          <p class="lede">
+            {totalSkills} hand-picked skills, each credited to its author, with a suggester that points out
+            the right one while you work.
           </p>
-          <ul class="checks">
-            <li>Knows every installed skill, not just these</li>
-            <li>Mentions each skill once per conversation</li>
-            <li>Never starts anything on its own</li>
-            <li><code>/suggester off</code> whenever you want quiet</li>
-          </ul>
-        </div>
-        <div class="terminal" aria-label="Example of a suggestion">
-          <div class="terminal-bar"><span></span><span></span><span></span></div>
-          <div class="terminal-body">
-            <p class="you"><span class="prompt">›</span>this test keeps failing every few runs and I have no idea why</p>
-            <p>That pattern usually means shared state or timing. I'll reproduce it first with a loop that runs the test until it fails, then narrow it down from there.</p>
-            <p class="tip">💡 <code>/coding:diagnosing-bugs</code> could help here: it pins a flaky bug down with one failing command before fixing it.</p>
+
+          <div class="install" role="group" aria-labelledby="install-label">
+            <div class="install-head">
+              <span id="install-label">Run in Claude Code</span>
+              <button type="button" class="copy" data-copy={install.join("\n")}>
+                <svg class="i-copy" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+                <svg class="i-check" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>
+                <span class="copy-label">Copy</span>
+              </button>
+            </div>
+            <ol class="commands">
+              {install.map((line) => <li><code>{line}</code></li>)}
+            </ol>
           </div>
+
+          <p class="hero-links">
+            New to Claude Code? <a href="/start-here/">Start with the setup guide</a>
+            <span aria-hidden="true">·</span>
+            <a href="/catalog/">Browse the catalog</a>
+          </p>
         </div>
+
+        <figure class="exchange" aria-label="Example: the suggester in a Claude Code session">
+          <figcaption>Claude Code</figcaption>
+          <div class="msg user">
+            <span class="who">You</span>
+            <p>This test keeps failing every few runs and I have no idea why.</p>
+          </div>
+          <div class="msg claude">
+            <span class="who">Claude</span>
+            <p>
+              Intermittent failures usually come from shared state or timing. I'll run the test in a loop until it
+              fails, then narrow down what differs between passing and failing runs.
+            </p>
+            <p class="suggestion">
+              💡 <code>/coding:diagnosing-bugs</code> could help here: it pins a flaky bug down with one failing
+              command before fixing it.
+            </p>
+          </div>
+          <p class="exchange-note">
+            The suggester adds one line when an installed skill clearly fits, and stays silent otherwise.
+            Turn it off with <code>/suggester off</code>.
+          </p>
+        </figure>
       </section>
 
-      <section class="wrap block">
+      <section class="section wrap" aria-labelledby="plugins-title">
         <div class="section-head">
-          <h2>Guides</h2>
-          <p>From your first session to running Claude on your own server.</p>
+          <h2 id="plugins-title">Plugins</h2>
+          <p>
+            <code>all</code> installs everything except the opt-in plugins. To pick and choose, install single plugins
+            with the command beside each one.
+          </p>
         </div>
-        <ol class="guides">
-          {guides.map((g, i) => (
-            <li>
-              <a href={`/${g.id}/`}>
-                <span class="num">{String(i + 1).padStart(2, "0")}</span>
-                <span class="text">
-                  <strong>{g.data.title}</strong>
-                  <span>{g.data.description}</span>
-                </span>
-                <span class="arrow" aria-hidden="true">→</span>
-              </a>
+        <ul class="plugins">
+          {plugins.map((p) => (
+            <li class:list={["plugin", { "is-optin": p.optIn }]}>
+              <div class="plugin-main">
+                <h3>
+                  <code>{p.name}</code>
+                  {p.optIn && <span class="badge">Opt-in</span>}
+                </h3>
+                <p>{p.description}</p>
+                <p class="meta">
+                  {p.skills} {p.skills === 1 ? "skill" : "skills"} · {p.authors.join(", ")}
+                </p>
+              </div>
+              <button type="button" class="plugin-cmd" data-copy={`/plugin install ${p.name}@${MARKETPLACE}`} aria-label={`Copy install command for ${p.name}`}>
+                <code>/plugin install {p.name}@{MARKETPLACE}</code>
+                <svg class="i-copy" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+                <svg class="i-check" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>
+              </button>
             </li>
           ))}
-        </ol>
+        </ul>
       </section>
 
-      <section class="wrap block credits">
-        <h2>Made by others, collected with credit</h2>
+      <section class="section wrap" aria-labelledby="guides-title">
+        <div class="section-head">
+          <h2 id="guides-title">Guides</h2>
+          <p>From a first session to running Claude Code on a server of your own.</p>
+        </div>
+        <div class="guide-groups">
+          {guideGroups.map((group) => (
+            <div>
+              <h3 class="group-label">{group.label}</h3>
+              <ul class="guides">
+                {group.ids.map((id) => (
+                  <li>
+                    <a href={`/${id}/`}>
+                      <span class="guide-title">
+                        {guide(id).data.title}
+                        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                      </span>
+                      <span class="guide-desc">{guide(id).data.description}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="section wrap credits" aria-labelledby="credits-title">
+        <h2 id="credits-title">Credits</h2>
         <p>
-          Most skills here were written by other people and are shared under their open-source licenses.
-          Each one keeps its license, and the collection links back to the original.
+          Most skills here were written by other people and are redistributed under their open-source licenses. Each
+          keeps its license file, and changes are listed in the{" "}
+          <a href="https://github.com/iatee/claude-skills/blob/main/THIRD_PARTY_NOTICES.md">third-party notices</a>.
         </p>
         <ul>
-          {authors.map(([name, url]) => <li><a href={url}>{name}</a></li>)}
+          {credits.map(([name, url]) => <li><a href={url}>{name}</a></li>)}
         </ul>
       </section>
     </main>
 
-    <footer class="wrap footer">
-      <span>Claude Skills · MIT, with third-party skills under their own licenses</span>
-      <a href="https://github.com/iatee/claude-skills">github.com/iatee/claude-skills</a>
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <p>An unofficial, personal collection. Not affiliated with or endorsed by Anthropic.</p>
+        <p><a href="https://github.com/iatee/claude-skills">github.com/iatee/claude-skills</a></p>
+      </div>
     </footer>
 
     <script>
       for (const button of document.querySelectorAll<HTMLButtonElement>("[data-copy]")) {
+        const label = button.querySelector(".copy-label");
         button.addEventListener("click", async () => {
           try {
             await navigator.clipboard.writeText(button.dataset.copy ?? "");
-            button.textContent = "Copied";
           } catch {
-            button.textContent = "Select and copy";
+            return;
           }
-          setTimeout(() => (button.textContent = "Copy"), 1800);
+          button.dataset.copied = "";
+          if (label) label.textContent = "Copied";
+          setTimeout(() => {
+            delete button.dataset.copied;
+            if (label) label.textContent = "Copy";
+          }, 1600);
         });
       }
     </script>
@@ -208,235 +261,265 @@ const install = [
 
 <style is:global>
   :root {
-    --bg: #faf8f5;
+    --bg: #fbfbfc;
     --surface: #ffffff;
-    --surface-2: #f3efe9;
-    --text: #1c1917;
-    --muted: #6b645c;
-    --line: #e7e1d8;
-    --accent: #c2410c;
-    --accent-soft: #fde7da;
-    --code-bg: #1c1917;
-    --code-text: #f5f0e8;
-    --radius: 14px;
+    --subtle: #f4f4f6;
+    --text: #18181b;
+    --text-2: #52525b;
+    --text-3: #71717a;
+    --line: #e4e4e7;
+    --line-strong: #d4d4d8;
+    --accent: #4f46e5;
+    --accent-hover: #4338ca;
+    --accent-soft: #eef0ff;
+    --code-bg: #f4f4f6;
+    --shadow: 0 1px 2px rgba(24, 24, 27, 0.04), 0 4px 16px -4px rgba(24, 24, 27, 0.08);
+    --radius: 8px;
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #12110f;
-      --surface: #1a1816;
-      --surface-2: #211e1b;
-      --text: #f2ede6;
-      --muted: #a39b91;
-      --line: #2e2a26;
-      --accent: #f07a45;
-      --accent-soft: #3b1a0c;
-      --code-bg: #0b0a09;
-      --code-text: #f2ede6;
+      --bg: #0b0b0d;
+      --surface: #121215;
+      --subtle: #18181c;
+      --text: #ededf0;
+      --text-2: #a1a1aa;
+      --text-3: #8b8b94;
+      --line: #232328;
+      --line-strong: #2e2e35;
+      --accent: #8b8cf8;
+      --accent-hover: #a5a6fb;
+      --accent-soft: #1d1d3a;
+      --code-bg: #18181c;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -8px rgba(0, 0, 0, 0.6);
       color-scheme: dark;
     }
   }
 
   * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
+  html { -webkit-text-size-adjust: 100%; scroll-padding-top: 72px; }
   body {
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font: 400 17px/1.6 "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font: 400 16px/1.6 "Schibsted Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
     -webkit-font-smoothing: antialiased;
+    font-feature-settings: "ss01";
   }
-  a { color: inherit; }
-  code { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 0.88em; }
+  ::selection { background: var(--accent-soft); color: var(--text); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--accent-hover); text-decoration: underline; text-underline-offset: 3px; }
+  code { font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.875em; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  svg path, svg rect { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-  .wrap { width: min(1120px, 100% - 32px); margin-inline: auto; }
+  .wrap { width: min(1080px, 100% - 32px); margin-inline: auto; }
+  .skip { position: absolute; left: -9999px; }
+  .skip:focus { left: 16px; top: 12px; z-index: 10; padding: 8px 12px; background: var(--surface); border-radius: var(--radius); }
 
-  .nav { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
-  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; text-decoration: none; }
-  .nav nav { display: flex; gap: 24px; font-size: 15px; }
-  .nav nav a { color: var(--muted); text-decoration: none; }
-  .nav nav a:hover { color: var(--text); }
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: saturate(1.4) blur(10px);
+  }
+  .topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); font-weight: 600; font-size: 15px; }
+  .brand:hover { color: var(--text); text-decoration: none; }
+  .topbar nav { display: flex; align-items: center; gap: 22px; font-size: 14px; }
+  .topbar nav a { color: var(--text-2); }
+  .topbar nav a:hover { color: var(--text); text-decoration: none; }
+  .icon-link { display: inline-flex; }
+  .icon-link svg path { fill: currentColor; stroke: none; }
 
-  .hero { padding: 72px 0 48px; }
-  .eyebrow {
-    margin: 0 0 14px;
-    color: var(--accent);
-    font-size: 13px;
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: 56px;
+    align-items: start;
+    padding: 88px 0 96px;
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(36px, 5.2vw, 54px);
     font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
   }
-  h1, h2 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; letter-spacing: -0.01em; }
-  h1 { margin: 0; font-size: clamp(44px, 8vw, 88px); line-height: 1; }
-  h1 em { color: var(--accent); }
-  .lede { max-width: 620px; margin: 28px 0 0; color: var(--muted); font-size: 19px; }
-
-  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
-  .button {
-    display: inline-flex;
-    align-items: center;
-    padding: 11px 20px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: var(--surface);
-    font-size: 15px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: border-color 0.15s, transform 0.15s;
-  }
-  .button:hover { border-color: var(--muted); transform: translateY(-1px); }
-  .button.primary { background: var(--text); border-color: var(--text); color: var(--bg); }
+  .lede { margin: 20px 0 0; max-width: 34em; color: var(--text-2); font-size: 18px; line-height: 1.55; }
 
   .install {
-    max-width: 620px;
-    margin-top: 44px;
-    overflow: hidden;
-    border-radius: var(--radius);
-    background: var(--code-bg);
-    color: var(--code-text);
-    box-shadow: 0 20px 50px -30px rgba(28, 25, 23, 0.6);
+    margin-top: 32px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
   }
   .install-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 8px 8px 8px 16px;
+    border-bottom: 1px solid var(--line);
+    color: var(--text-3);
     font-size: 13px;
-    color: rgba(245, 240, 232, 0.6);
   }
-  .install-head button {
-    padding: 4px 12px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 999px;
-    background: transparent;
-    color: inherit;
-    font: inherit;
+  .copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 30px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 6px;
+    background: var(--accent);
+    color: #fff;
+    font: 500 13px/1 inherit;
+    font-family: inherit;
     cursor: pointer;
+    transition: background-color 0.15s;
   }
-  .install-head button:hover { color: var(--code-text); border-color: rgba(255, 255, 255, 0.35); }
-  .install pre { margin: 0; padding: 18px 20px; overflow-x: auto; font-size: 15px; line-height: 1.9; }
-  .install .line { display: block; white-space: pre; }
-  .prompt { color: var(--accent); margin-right: 12px; user-select: none; }
+  .copy:hover { background: var(--accent-hover); }
+  @media (prefers-color-scheme: dark) { .copy { color: #0b0b0d; } }
+  .i-check { display: none; }
+  [data-copied] .i-copy { display: none; }
+  [data-copied] .i-check { display: inline; }
+  .commands { margin: 0; padding: 14px 16px; list-style: none; overflow-x: auto; }
+  .commands li { white-space: nowrap; line-height: 1.95; }
+  .commands li::before { content: "›"; margin-right: 10px; color: var(--text-3); font-family: "JetBrains Mono", monospace; }
+  .commands code { font-size: 14px; }
 
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    border-block: 1px solid var(--line);
+  .hero-links { margin: 20px 0 0; color: var(--text-3); font-size: 14px; }
+  .hero-links span { margin: 0 6px; }
+
+  .exchange {
+    margin: 0;
+    padding: 0 0 4px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    font-size: 15px;
   }
-  .stats div { display: flex; flex-direction: column; padding: 24px 0; }
-  .stats strong { font-family: "Instrument Serif", Georgia, serif; font-size: 44px; font-weight: 400; line-height: 1; }
-  .stats span { color: var(--muted); font-size: 14px; margin-top: 6px; }
-
-  .block { padding: 88px 0 0; }
-  .section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin-bottom: 28px; }
-  .section-head h2, .split h2, .credits h2 { margin: 0; font-size: clamp(34px, 5vw, 48px); line-height: 1.05; }
-  .section-head p { margin: 0; color: var(--muted); }
-
-  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-  .card {
-    display: flex;
-    flex-direction: column;
-    padding: 22px;
+  .exchange figcaption {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--line);
+    color: var(--text-3);
+    font-size: 13px;
+  }
+  .msg { padding: 16px 16px 4px; }
+  .msg + .msg { border-top: 1px solid var(--line); }
+  .who { display: block; margin-bottom: 4px; color: var(--text-3); font-size: 12px; font-weight: 500; }
+  .msg p { margin: 0 0 12px; color: var(--text-2); }
+  .msg.user p { color: var(--text); }
+  .suggestion {
+    padding: 10px 12px;
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    background: var(--surface);
+    background: var(--subtle);
+    color: var(--text) !important;
   }
-  .card-top { display: flex; align-items: center; gap: 10px; }
-  .card h3 { margin: 0; font-size: 17px; font-weight: 600; }
-  .card h3 code { font-size: 16px; }
-  .card p { flex: 1; margin: 10px 0 18px; color: var(--muted); font-size: 15px; line-height: 1.55; }
-  .count { color: var(--muted); font-size: 13px; }
-  .tag {
-    padding: 2px 9px;
-    border-radius: 999px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 500;
-  }
-  .tag.quiet { background: var(--surface-2); color: var(--muted); }
+  .suggestion code { color: var(--accent); }
+  .exchange-note { margin: 4px 16px 12px; color: var(--text-3); font-size: 13px; }
+  .exchange code, .section-head code, .credits code { padding: 1px 5px; border-radius: 4px; background: var(--code-bg); }
 
-  .split { display: grid; grid-template-columns: 1fr 1.1fr; gap: 56px; align-items: center; }
-  .split > div > p { color: var(--muted); }
-  .checks { margin: 24px 0 0; padding: 0; list-style: none; }
-  .checks li { position: relative; padding: 6px 0 6px 28px; }
-  .checks li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 600; }
+  .section { padding: 72px 0 0; border-top: 1px solid var(--line); margin-top: 0; }
+  .section + .section { margin-top: 72px; }
+  .hero + .section { margin-top: 0; }
+  .section-head { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 24px; margin-bottom: 32px; }
+  h2 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+  .section-head p { margin: 2px 0 0; max-width: 46em; color: var(--text-2); }
 
-  .terminal { overflow: hidden; border-radius: var(--radius); background: var(--code-bg); color: var(--code-text); }
-  .terminal-bar { display: flex; gap: 7px; padding: 14px 16px; }
-  .terminal-bar span { width: 11px; height: 11px; border-radius: 50%; background: rgba(255, 255, 255, 0.14); }
-  .terminal-body { padding: 4px 22px 22px; font-size: 15px; }
-  .terminal-body p { margin: 0 0 14px; color: rgba(245, 240, 232, 0.78); }
-  .terminal-body .you { color: var(--code-text); font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 14px; }
-  .terminal-body .tip {
-    margin: 0;
-    padding: 12px 14px;
-    border-left: 2px solid var(--accent);
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--code-text);
-  }
-
-  .guides { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
-  .guides a {
+  .plugins { margin: 0 0 0 244px; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+  .plugin {
     display: grid;
-    grid-template-columns: 48px 1fr auto;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 24px;
     align-items: center;
-    gap: 16px;
-    padding: 22px 4px;
+    padding: 18px 0;
     border-bottom: 1px solid var(--line);
-    text-decoration: none;
-    transition: background 0.15s;
   }
-  .guides a:hover { background: var(--surface-2); }
-  .guides .num { color: var(--muted); font-family: "JetBrains Mono", monospace; font-size: 14px; }
-  .guides .text { display: flex; flex-direction: column; gap: 2px; }
-  .guides .text span { color: var(--muted); font-size: 15px; }
-  .guides .arrow { color: var(--muted); transition: transform 0.15s; }
-  .guides a:hover .arrow { color: var(--accent); transform: translateX(3px); }
-
-  .credits > p { max-width: 620px; color: var(--muted); }
-  .credits ul { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 0; padding: 0; list-style: none; }
-  .credits li a {
-    display: inline-block;
-    padding: 8px 16px;
+  .plugin h3 { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 15px; font-weight: 500; }
+  .plugin h3 code { font-size: 15px; color: var(--text); }
+  .plugin p { margin: 4px 0 0; color: var(--text-2); font-size: 15px; }
+  .plugin .meta { margin-top: 6px; color: var(--text-3); font-size: 13px; }
+  .badge {
+    padding: 1px 7px;
+    border: 1px solid var(--line-strong);
+    border-radius: 5px;
+    color: var(--text-3);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  .plugin-cmd {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
     border: 1px solid var(--line);
-    border-radius: 999px;
-    font-size: 15px;
-    text-decoration: none;
+    border-radius: 6px;
+    background: var(--subtle);
+    color: var(--text-2);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
   }
-  .credits li a:hover { border-color: var(--accent); color: var(--accent); }
+  .plugin-cmd:hover { border-color: var(--line-strong); color: var(--text); }
+  .plugin-cmd code { font-size: 12.5px; white-space: nowrap; }
+  .plugin-cmd[data-copied] { color: var(--accent); }
 
-  .footer {
+  .guide-groups { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-left: 244px; }
+  .group-label { margin: 0 0 8px; color: var(--text-3); font-size: 13px; font-weight: 500; }
+  .guides { margin: 0; padding: 0; list-style: none; }
+  .guides a {
+    display: block;
+    margin: 0 -12px;
+    padding: 12px;
+    border-radius: var(--radius);
+    color: inherit;
+    transition: background-color 0.15s;
+  }
+  .guides a:hover { background: var(--subtle); text-decoration: none; }
+  .guide-title { display: inline-flex; align-items: center; gap: 6px; color: var(--text); font-weight: 500; }
+  .guide-title svg { color: var(--text-3); transition: transform 0.15s, color 0.15s; }
+  .guides a:hover .guide-title svg { color: var(--accent); transform: translateX(2px); }
+  .guide-desc { display: block; margin-top: 2px; color: var(--text-2); font-size: 14px; }
+
+  .credits { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 0 24px; }
+  .credits h2 { grid-row: span 2; }
+  .credits p { margin: 2px 0 0; max-width: 46em; color: var(--text-2); }
+  .credits ul { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 20px 0 0; padding: 0; list-style: none; font-size: 15px; }
+
+  .footer { margin-top: 96px; border-top: 1px solid var(--line); }
+  .footer-inner {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 8px 24px;
-    margin-top: 96px;
-    padding: 28px 0 40px;
-    border-top: 1px solid var(--line);
-    color: var(--muted);
-    font-size: 14px;
+    padding: 24px 0 40px;
+    color: var(--text-3);
+    font-size: 13px;
   }
+  .footer p { margin: 0; }
+  .footer a { color: var(--text-2); }
 
-  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-
-  @media (max-width: 820px) {
-    .hero { padding-top: 40px; }
-    .stats { grid-template-columns: repeat(2, 1fr); }
-    .split { grid-template-columns: 1fr; gap: 36px; }
-    .grid { grid-template-columns: repeat(2, 1fr); }
-    .nav nav { gap: 16px; }
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: minmax(0, 1fr); gap: 40px; padding: 56px 0 64px; }
+    .section-head, .credits { grid-template-columns: 1fr; gap: 8px; }
+    .credits h2 { grid-row: auto; }
+    .plugins, .guide-groups { margin-left: 0; }
   }
-  @media (max-width: 560px) {
-    .grid { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 480px) {
-    body { font-size: 16px; }
-    .install pre { font-size: 13px; }
-    .guides a { grid-template-columns: 36px 1fr; }
-    .guides .arrow { display: none; }
+  @media (max-width: 640px) {
+    .plugin { grid-template-columns: 1fr; gap: 12px; }
+    .plugin-cmd { justify-self: start; max-width: 100%; }
+    .plugin-cmd code { overflow: hidden; text-overflow: ellipsis; }
+    .guide-groups { grid-template-columns: 1fr; gap: 24px; }
+    .topbar nav { gap: 16px; }
+    .lede { font-size: 17px; }
+    .commands code { font-size: 13px; }
   }
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
