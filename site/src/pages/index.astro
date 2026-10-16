@@ -274,12 +274,18 @@ const install = [
     --subtle: #f4f4f6;
     --text: #18181b;
     --text-2: #52525b;
-    --text-3: #71717a;
+    --text-3: #6b6b74;
     --line: #e4e4e7;
     --line-strong: #d4d4d8;
     --accent: #4f46e5;
     --accent-hover: #4338ca;
     --accent-soft: #eef0ff;
+    /* Hint: the suggester's own colour, warm against the indigo of action. */
+    --hint-ink: #8a4b08;
+    --hint-soft: #fdf7e8;
+    --hint-line: #e6c983;
+    --success: #15803d;
+    --on-success: #ffffff;
     --code-bg: #f4f4f6;
     --shadow: 0 1px 2px rgba(24, 24, 27, 0.04), 0 4px 16px -4px rgba(24, 24, 27, 0.08);
     --radius: 8px;
@@ -298,6 +304,11 @@ const install = [
       --accent: #8b8cf8;
       --accent-hover: #a5a6fb;
       --accent-soft: #1d1d3a;
+      --hint-ink: #f0bf63;
+      --hint-soft: #1e1910;
+      --hint-line: #4a3a1a;
+      --success: #4ade80;
+      --on-success: #0b0b0d;
       --code-bg: #18181c;
       --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -8px rgba(0, 0, 0, 0.6);
       color-scheme: dark;
@@ -392,6 +403,7 @@ const install = [
   }
   .copy:hover { background: var(--accent-hover); }
   @media (prefers-color-scheme: dark) { .copy { color: #0b0b0d; } }
+  .copy[data-copied], .copy[data-copied]:hover { background: var(--success); color: var(--on-success); }
   .i-check { display: none; }
   [data-copied] .i-copy { display: none; }
   [data-copied] .i-check { display: inline; }
@@ -433,12 +445,12 @@ const install = [
   .msg.user p { color: var(--text); }
   .suggestion {
     padding: 10px 12px;
-    border: 1px solid var(--line);
+    border: 1px solid var(--hint-line);
     border-radius: var(--radius);
-    background: var(--subtle);
+    background: var(--hint-soft);
     color: var(--text) !important;
   }
-  .suggestion code { color: var(--accent); }
+  .exchange .suggestion code { background: none; padding: 0; color: var(--hint-ink); font-weight: 500; }
   .exchange-note { margin: 4px 16px 12px; color: var(--text-3); font-size: 13px; }
   .exchange code, .section-head code, .credits code { padding: 1px 5px; border-radius: 4px; background: var(--code-bg); }
 
@@ -485,7 +497,7 @@ const install = [
   }
   .plugin-cmd:hover { border-color: var(--line-strong); color: var(--text); }
   .plugin-cmd code { font-size: 12.5px; white-space: nowrap; }
-  .plugin-cmd[data-copied] { color: var(--accent); }
+  .plugin-cmd[data-copied], .plugin-cmd[data-copied]:hover { border-color: var(--success); color: var(--success); }
 
   .guide-groups { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-left: 244px; }
   .group-label { margin: 0 0 8px; color: var(--text-3); font-size: 13px; font-weight: 500; }

@@ -1,5 +1,5 @@
-/* Docs theme. Shares the landing page's system: Schibsted Grotesk, cool neutral greys, one indigo accent,
-   hairline borders. Starlight supplies structure; this file makes it read as one site. */
+/* Docs theme. Shares the landing page's system: Schibsted Grotesk, cool neutral greys, indigo for action,
+   amber for the suggester's hints, hairline borders. Starlight supplies structure; this file makes it read as one site. */
 
 :root {
   --sl-font: "Schibsted Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -30,6 +30,25 @@
   --sl-color-hairline-shade: #232328;
   --sl-color-bg-nav: rgba(11, 11, 13, 0.88);
   --sl-color-bg-sidebar: #0b0b0d;
+
+  /* Semantic roles. Starlight names them by hue: blue is note (indigo, like the accent), purple is tip
+     (amber, the suggester's hint colour), orange is caution, red is danger, green is success.
+     -low is the fill, the base is the hairline, -high is the text. */
+  --sl-color-blue-low: #1d1d3a;
+  --sl-color-blue: #2d2d55;
+  --sl-color-blue-high: #a5a6fb;
+  --sl-color-purple-low: #1e1910;
+  --sl-color-purple: #4a3a1a;
+  --sl-color-purple-high: #f0bf63;
+  --sl-color-orange-low: #24150d;
+  --sl-color-orange: #44261a;
+  --sl-color-orange-high: #fb8f5a;
+  --sl-color-red-low: #241112;
+  --sl-color-red: #452023;
+  --sl-color-red-high: #f87171;
+  --sl-color-green-low: #0f1f16;
+  --sl-color-green: #1f3a2a;
+  --sl-color-green-high: #4ade80;
 }
 
 :root[data-theme="light"] {
@@ -39,7 +58,7 @@
   --sl-color-white: #18181b;
   --sl-color-gray-1: #27272a;
   --sl-color-gray-2: #52525b;
-  --sl-color-gray-3: #71717a;
+  --sl-color-gray-3: #6b6b74;
   --sl-color-gray-4: #a1a1aa;
   --sl-color-gray-5: #e4e4e7;
   --sl-color-gray-6: #f4f4f6;
@@ -50,6 +69,22 @@
   --sl-color-hairline-shade: #e4e4e7;
   --sl-color-bg-nav: rgba(251, 251, 252, 0.88);
   --sl-color-bg-sidebar: #fbfbfc;
+
+  --sl-color-blue-low: #eef0ff;
+  --sl-color-blue: #d9dcfb;
+  --sl-color-blue-high: #4338ca;
+  --sl-color-purple-low: #fdf7e8;
+  --sl-color-purple: #e6c983;
+  --sl-color-purple-high: #8a4b08;
+  --sl-color-orange-low: #fff3ec;
+  --sl-color-orange: #fbd5c0;
+  --sl-color-orange-high: #c2410c;
+  --sl-color-red-low: #fef2f2;
+  --sl-color-red: #f6cfcf;
+  --sl-color-red-high: #b91c1c;
+  --sl-color-green-low: #ecfdf3;
+  --sl-color-green: #bfe8cf;
+  --sl-color-green-high: #15803d;
 }
 
 body {
@@ -162,14 +197,28 @@ h1#_top {
   box-shadow: none !important;
 }
 
-/* Blockquotes read as a soft note rather than a thick bar. */
+/* Blockquotes are where the guides quote the suggester, so they take its amber hint colour,
+   as on the landing page. */
 .sl-markdown-content blockquote {
   margin-inline: 0;
   padding: 0.75rem 1rem;
-  border: 1px solid var(--sl-color-hairline);
+  border: 1px solid var(--sl-color-purple);
   border-radius: 8px;
-  background: var(--sl-color-gray-6);
+  background: var(--sl-color-purple-low);
   font-style: normal;
+}
+.sl-markdown-content blockquote :not(pre) > code {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--sl-color-purple-high);
+  font-weight: 500;
+}
+
+/* Asides: a hairline box on a soft fill of their role's colour, no thick side bar. */
+.starlight-aside {
+  border: 1px solid var(--sl-color-asides-border);
+  border-radius: 8px;
 }
 
 /* Tables: header row on a soft fill, hairlines between rows, wide tables scroll in place. */

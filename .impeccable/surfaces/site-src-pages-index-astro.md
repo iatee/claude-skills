@@ -15,7 +15,7 @@ Audience and job: newcomers and experienced Claude Code users decide to install,
 
 THESIS: The category standard for developer docs, done at Linear and Stripe Docs craft. Refuses the AI landing template: no eyebrow labels, stat strip, equal card grid, fake terminal chrome, pill buttons or serif-italic hero.
 
-OWN-WORLD: Restrained colour: cool neutral greys (near-white ground in light, near-black in dark), one indigo accent used only for links, focus and the primary action. Schibsted Grotesk for everything, JetBrains Mono only for commands and skill names. 1px hairline borders, 8px radii, soft offset shadows only on raised panels.
+OWN-WORLD: Restrained colour: cool neutral greys (near-white ground in light, near-black in dark), indigo used only for links, focus and the primary action, and amber used only for the suggester's hint line. Schibsted Grotesk for everything, JetBrains Mono only for commands and skill names. 1px hairline borders, 8px radii, soft offset shadows only on raised panels.
 
 STORY: The visitor learns what this is in one line, sees the install commands and copies them, sees what the suggester does, scans the plugins with their own install commands, then reaches a guide.
 
