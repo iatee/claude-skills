@@ -9,6 +9,7 @@
     { "name": "frontend", "source": "./plugins/frontend", "category": "design" },
     { "name": "writing",  "source": "./plugins/writing",  "category": "writing" },
     { "name": "sessions", "source": "./plugins/sessions", "category": "productivity" },
+    { "name": "suggester", "source": "./plugins/suggester", "category": "productivity" },
     { "name": "observer", "source": "./plugins/observer", "category": "productivity" }
   ]
 }

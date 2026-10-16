@@ -22,6 +22,7 @@ In Claude Code, run:
 | `frontend` | `impeccable`, for designing and polishing interfaces |
 | `writing` | Writing for people and for agents, teaching, re-pitching |
 | `sessions` | Handoffs to a fresh agent, retrospectives |
+| `suggester` | Suggests the right skill when it clearly fits, so you don't have to remember them all. Needs [Node.js](https://nodejs.org). `/suggester off` mutes it. |
 | `observer` | Opt-in: `task-observer`, which suggests skill improvements as you work. Not in `all`, because it runs every session. |
 
 ## Credits
