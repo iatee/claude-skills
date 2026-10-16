@@ -21,6 +21,21 @@ This file is generated from `manifest.json` by `scripts/vendor.mjs`; do not edit
 - **Skills:** `impeccable`
 - Includes upstream `NOTICE.md`, which credits further authors.
 
+## Microsoft
+
+- **Upstream:** https://github.com/microsoft/playwright-cli
+- **Commit:** [`b85c7a7`](https://github.com/microsoft/playwright-cli/tree/b85c7a736bb473bf55b584e54a09ffa698d6d871)
+- **License:** Apache-2.0
+- **Skills:** `playwright-cli`
+
+## Claude Council Contributors
+
+- **Upstream:** https://github.com/itshussainsprojects/Claude-Council-Skill
+- **Commit:** [`f41cbcb`](https://github.com/itshussainsprojects/Claude-Council-Skill/tree/f41cbcbec0a55bff474861d6234463b00cc49a6d)
+- **License:** MIT
+- **Skills:** `council`
+- **Changes to `council`:** Added `disable-model-invocation: true`, so the seven-persona debate runs only when asked for (or suggested), not on every "should I".
+
 ## Eoghan Henn / rebelytics.com
 
 - **Upstream:** https://github.com/rebelytics/one-skill-to-rule-them-all

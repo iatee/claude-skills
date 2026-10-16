@@ -16,6 +16,20 @@
       "licenseFile": "LICENSE",
       "noticeFile": "NOTICE.md"
     },
+    "playwright": {
+      "repo": "microsoft/playwright-cli",
+      "commit": "b85c7a736bb473bf55b584e54a09ffa698d6d871",
+      "author": "Microsoft",
+      "license": "Apache-2.0",
+      "licenseFile": "LICENSE"
+    },
+    "council": {
+      "repo": "itshussainsprojects/Claude-Council-Skill",
+      "commit": "f41cbcbec0a55bff474861d6234463b00cc49a6d",
+      "author": "Claude Council Contributors",
+      "license": "MIT",
+      "licenseFile": "claude-council-skill/LICENSE"
+    },
     "rebelytics": {
       "repo": "rebelytics/one-skill-to-rule-them-all",
       "commit": "3463c7c9cd2a2c2745af09c742100ad0b1465a68",
@@ -35,6 +49,11 @@
     "wayfinder":                { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/wayfinder" },
     "triage":                   { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/triage" },
     "research":                 { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/research" },
+    "council": {
+      "plugin": "planning", "source": "council", "path": "claude-council-skill/council",
+      "patches": [{ "file": "SKILL.md", "find": "\n---\n\n# The Council", "replace": "\ndisable-model-invocation: true\n---\n\n# The Council" }],
+      "changes": "Added `disable-model-invocation: true`, so the seven-persona debate runs only when asked for (or suggested), not on every \"should I\"."
+    },
     "setup-matt-pocock-skills": { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/setup-matt-pocock-skills" },
 
     "implement": {
@@ -54,6 +73,7 @@
     "improve-codebase-architecture": { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/improve-codebase-architecture" },
     "resolving-merge-conflicts":     { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/resolving-merge-conflicts", "removedUpstream": true },
     "setup-pre-commit":              { "plugin": "coding", "source": "mattpocock", "path": "skills/misc/setup-pre-commit" },
+    "playwright-cli":                { "plugin": "coding", "source": "playwright", "path": "skills/playwright-cli" },
     "wizard":                        { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/wizard" },
 
     "impeccable": { "plugin": "frontend", "source": "impeccable", "path": ".claude/skills/impeccable" },

@@ -10,6 +10,18 @@
     { "name": "writing",  "source": "./plugins/writing",  "category": "writing" },
     { "name": "sessions", "source": "./plugins/sessions", "category": "productivity" },
     { "name": "suggester", "source": "./plugins/suggester", "category": "productivity" },
+    {
+      "name": "taste-skill",
+      "source": { "source": "github", "repo": "Leonxlnx/taste-skill", "sha": "f624f37a8c650b9cc550253104925efe4c8de246" },
+      "description": "Art direction for coding agents: researched design directions, real reference images and a browser inspector. By Leon (leonxlnx), MIT. Installed with frontend.",
+      "category": "design"
+    },
+    {
+      "name": "ponytail",
+      "source": { "source": "github", "repo": "DietrichGebert/ponytail", "sha": "6f1c2bfff0c837d268929a7c4e490918eb4fab29" },
+      "description": "Opt-in: lazy senior dev mode. Pushes Claude to the smallest solution that works. Changes every session, so it is not in all. By Dietrich Gebert, MIT.",
+      "category": "productivity"
+    },
     { "name": "observer", "source": "./plugins/observer", "category": "productivity" }
   ]
 }

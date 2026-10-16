@@ -17,12 +17,13 @@ In Claude Code, run:
 
 | Plugin | What's inside |
 |---|---|
-| `planning` | Grilling interviews, specs, tickets, triage, research |
-| `coding` | Implement, TDD, bug diagnosis, code review, architecture (installs `planning` too) |
-| `frontend` | `impeccable`, for designing and polishing interfaces |
+| `planning` | Grilling interviews, specs, tickets, triage, research, a seven-persona council |
+| `coding` | Implement, TDD, bug diagnosis, code review, architecture, browser automation (installs `planning` too) |
+| `frontend` | `impeccable` for designing and polishing interfaces, plus `taste-skill` for art direction |
 | `writing` | Writing for people and for agents, teaching, re-pitching |
 | `sessions` | Handoffs to a fresh agent, retrospectives |
 | `suggester` | Suggests the right skill when it clearly fits, so you don't have to remember them all. Needs [Node.js](https://nodejs.org). `/suggester off` mutes it. |
+| `ponytail` | Opt-in: lazy senior dev mode, which pushes Claude to the smallest solution that works. Not in `all`, because it changes every session. |
 | `observer` | Opt-in: `task-observer`, which suggests skill improvements as you work. Not in `all`, because it runs every session. |
 
 ## Credits
@@ -31,7 +32,11 @@ Most skills here were written by others and are redistributed under their licens
 
 - **Matt Pocock**: [mattpocock/skills](https://github.com/mattpocock/skills) (MIT)
 - **Paul Bakaus**: [impeccable](https://github.com/pbakaus/impeccable) (Apache-2.0)
+- **Microsoft**: [playwright-cli](https://github.com/microsoft/playwright-cli) (Apache-2.0)
+- **Claude Council Contributors**: [Claude-Council-Skill](https://github.com/itshussainsprojects/Claude-Council-Skill) (MIT)
 - **Eoghan Henn / [rebelytics.com](https://rebelytics.com)**: [One Skill to Rule Them All](https://github.com/rebelytics/one-skill-to-rule-them-all) (CC-BY-4.0)
+
+Two plugins are installed straight from their authors' repositories rather than copied: [taste-skill](https://github.com/Leonxlnx/taste-skill) by leonxlnx and [ponytail](https://github.com/DietrichGebert/ponytail) by Dietrich Gebert (both MIT).
 
 See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for exact versions and changes.
 

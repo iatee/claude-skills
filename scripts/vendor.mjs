@@ -71,7 +71,7 @@ async function importSkills(only) {
       fs.writeFileSync(target, text.replace(find, replace));
     }
     for (const file of [source.licenseFile, source.noticeFile].filter(Boolean)) {
-      fs.copyFileSync(path.join(upstream, file), path.join(dest, file));
+      fs.copyFileSync(path.join(upstream, file), path.join(dest, path.basename(file)));
     }
     console.log(`imported ${name} -> ${path.relative(ROOT, dest)}`);
   }

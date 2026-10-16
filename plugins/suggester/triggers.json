@@ -26,5 +26,7 @@
   "wait-what": ["confused", "don't understand", "what do you mean", "lost me"],
   "handoff": ["handoff", "hand off", "continue later", "another agent", "new session", "pick up tomorrow"],
   "claude-handoff": ["background agent", "hand off", "spin off"],
+  "council": ["should i", "help me decide", "pros and cons", "debate this", "different perspectives", "is this a good idea"],
+  "playwright-cli": ["browser", "screenshot", "click", "web page", "scrape", "e2e", "end-to-end", "playwright"],
   "retro": ["retro", "retrospective", "lessons learned", "what went well"]
 }
