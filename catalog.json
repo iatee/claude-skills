@@ -1,0 +1,49 @@
+{
+  "$comment": "One short line each for the catalog. `node scripts/catalog.mjs` turns this into the tables in README.md and docs/guides/catalog.md. Every skill in plugins/ needs an entry; CI checks it.",
+  "skills": {
+    "grilling": { "what": "The interview engine behind grill-me: relentless questions, in rounds, until the plan has no gaps.", "when": "You have a plan or idea and want its holes found before you build." },
+    "grill-me": { "what": "Starts a grilling interview about whatever you describe.", "when": "You want to stress-test an idea, anywhere, with no files involved." },
+    "grill-with-docs": { "what": "Grilling that also writes down the decisions as a glossary and ADRs in your repo.", "when": "You're planning inside a project and want the reasoning kept." },
+    "domain-modeling": { "what": "Builds a shared vocabulary for a project in CONTEXT.md and records decisions as ADRs.", "when": "Words in your project mean different things to different people." },
+    "to-spec": { "what": "Turns the conversation so far into a written spec on your issue tracker.", "when": "A grilling session is done and the result should become a spec." },
+    "to-tickets": { "what": "Splits a plan or spec into small tickets, each saying what it waits on.", "when": "Work is too big for one session and needs to be done piece by piece." },
+    "to-questionnaire": { "what": "Turns open questions into a questionnaire someone else can fill in.", "when": "You can't answer a decision yourself and need input from a client or colleague." },
+    "wayfinder": { "what": "Maps a huge, unclear project as decision tickets and resolves them one by one.", "when": "The project is so big or foggy you don't know where to start." },
+    "triage": { "what": "Sorts incoming issues and pull requests, checks them, and writes agent-ready briefs.", "when": "Bug reports and requests from others are piling up." },
+    "research": { "what": "Sends a background agent to read primary sources and write the findings to a file.", "when": "You need facts from docs or APIs and don't want to wait while they're gathered." },
+    "council": { "what": "Seven expert personas debate a question, then give a verdict with risks and next steps.", "when": "You face a decision and want it argued from very different angles." },
+    "setup-matt-pocock-skills": { "what": "One-time setup for a repo: issue tracker, triage labels, where docs live.", "when": "Before the first use of to-spec, to-tickets, triage, wayfinder or code-review in a repo." },
+
+    "implement": { "what": "Builds a spec or ticket test-first, then reviews and commits it.", "when": "A ticket or small spec is ready to be built." },
+    "implement-spec": { "what": "Builds a whole spec with parallel sub-agents and opens one pull request.", "when": "A spec with many tickets is ready and you want it built in one go." },
+    "tdd": { "what": "Test-driven development, one red-green step at a time.", "when": "You want a feature or fix built test-first." },
+    "diagnosing-bugs": { "what": "Reproduces a hard bug with one failing command before fixing it, then adds a regression test.", "when": "Something is broken, flaky or slow and the cause isn't obvious." },
+    "code-review": { "what": "Reviews changes on two axes: your repo's coding standards and what the spec asked for.", "when": "A branch or pull request is ready for review.", "trigger": "Automatic, or `/coding:code-review` (plain `/code-review` is Claude Code's own, different review)" },
+    "codebase-design": { "what": "Shared vocabulary for designing deep modules with small interfaces.", "when": "You're deciding how to shape a module, interface or seam." },
+    "improve-codebase-architecture": { "what": "Scans a codebase for places to simplify and shows them as a visual report.", "when": "The code feels tangled and you want to know where to start cleaning up." },
+    "resolving-merge-conflicts": { "what": "Resolves a merge or rebase conflict by finding out why each side changed.", "when": "Git stopped a merge or rebase with conflicts." },
+    "setup-pre-commit": { "what": "Adds Husky pre-commit hooks for formatting, type checks and tests.", "when": "You want checks to run automatically before every commit." },
+    "playwright-cli": { "what": "Drives a real browser from the terminal: open pages, click, fill forms, take screenshots.", "when": "Claude should test, inspect or automate a website. Needs `npm install -g @playwright/cli`." },
+    "wizard": { "what": "Writes an interactive script that walks you through steps only a human can do.", "when": "A setup needs you to click through dashboards or paste secrets." },
+
+    "impeccable": { "what": "Designs, critiques and polishes frontend interfaces, with 20+ sub-commands like audit, polish and typeset.", "when": "A page or app works but doesn't look or feel right." },
+
+    "writing-for-agents": { "what": "How to write skills, CLAUDE.md and AGENTS.md files that agents follow well.", "when": "You're writing or editing a skill or agent instructions." },
+    "writing-fragments": { "what": "Collects raw thoughts and fragments for a piece of writing, with no structure yet.", "when": "You're at the start of an article and have ideas but no outline." },
+    "writing-shape": { "what": "Shapes raw material into an article, paragraph by paragraph.", "when": "You have the material and want it turned into a finished text." },
+    "teach": { "what": "Teaches you a concept step by step, using your own workspace as the example.", "when": "You want to understand something, not just have it done." },
+    "wait-what": { "what": "Makes Claude re-explain its last message in plain, simple English.", "when": "Claude's last answer lost you." },
+
+    "handoff": { "what": "Writes a handoff document so a fresh session can continue the work.", "when": "The conversation is getting long or you'll continue another day." },
+    "claude-handoff": { "what": "Hands the work to a new background agent that continues straight away.", "when": "You want the work to go on in the background while you do something else." },
+    "retro": { "what": "Runs a short retrospective on the session: what worked, what didn't, what to change.", "when": "A piece of work is finished and you want to learn from it." },
+
+    "suggester": { "what": "Turns skill suggestions on or off.", "when": "Suggestions get in your way, or you want them back." },
+
+    "task-observer": { "what": "Watches your sessions and proposes new skills or improvements to existing ones.", "when": "You build your own skills and want ideas for them collected as you work." }
+  },
+  "referenced": {
+    "taste-skill": { "what": "14 skills for art direction: design directions, reference images, brand kits and style presets.", "when": "Generated frontends look generic and you want a distinct visual style.", "credit": "[leonxlnx](https://github.com/Leonxlnx/taste-skill)", "trigger": "Automatic, or `/taste-skill`" },
+    "ponytail": { "what": "Lazy senior dev mode: pushes Claude to the smallest solution that works, plus audit and review commands.", "when": "Claude tends to over-engineer and you want leaner code.", "credit": "[Dietrich Gebert](https://github.com/DietrichGebert/ponytail)", "trigger": "Always on once installed; `/ponytail-help` for commands" }
+  }
+}
