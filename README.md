@@ -34,6 +34,8 @@ In Claude Code, run:
 1. **[Start here](docs/guides/start-here.md)**: install Claude Code and get through your first session.
 2. **[Using skills](docs/guides/using-skills.md)**: what skills are, how to install and start them, and how the suggester helps.
 3. **[Power user](docs/guides/power-user.md)**: chaining skills into workflows, choosing between similar skills, and writing your own.
+4. **[Customize Claude Code](docs/guides/customize.md)**: a status bar, mods that change Claude Code itself, and memory between sessions (including claude-mem).
+5. **[Your own Claude server](docs/guides/own-server.md)**: run Claude Code on an always-on machine and drive it from your phone.
 
 ## Catalog
 

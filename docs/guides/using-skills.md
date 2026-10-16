@@ -111,3 +111,4 @@ claude plugin marketplace remove iatee-skills
 
 - **[Skill catalog](catalog.md):** every skill, what it does, and when to use it.
 - **[Power user guide](power-user.md):** chain skills into workflows and write your own.
+- **[Customize Claude Code](customize.md):** a status bar, mods and memory between sessions.

@@ -91,6 +91,8 @@ The same file takes `"heavy": [...]`, a list of skill names the suggester should
 
 To build your own, run `claude plugin init my-plugin` in your terminal, or read Anthropic's [plugin docs](https://code.claude.com/docs/en/plugins).
 
+**Mods** go one step further: plugins whose code runs inside Claude Code and can draw panes, restyle the interface and step into tool calls. [Customize Claude Code](customize.md) covers mods, status bars and memory, and [Your own Claude server](own-server.md) shows how to run Claude Code on an always-on machine.
+
 ## Further resources
 
 - **[awesome-design-md](https://github.com/VoltAgent/awesome-design-md):** `DESIGN.md` files describing the design systems of well-known brands. Drop one into a project and `impeccable`, which reads `DESIGN.md`, will design in that style.
