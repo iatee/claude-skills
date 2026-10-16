@@ -1,0 +1,14 @@
+{
+  "name": "iatee-skills",
+  "description": "A curated set of Claude Code skills, with credit to their authors, plus a few of our own.",
+  "owner": { "name": "Iatee", "url": "https://github.com/iatee" },
+  "plugins": [
+    { "name": "all",      "source": "./plugins/all",      "category": "bundle" },
+    { "name": "planning", "source": "./plugins/planning", "category": "planning" },
+    { "name": "coding",   "source": "./plugins/coding",   "category": "development" },
+    { "name": "frontend", "source": "./plugins/frontend", "category": "design" },
+    { "name": "writing",  "source": "./plugins/writing",  "category": "writing" },
+    { "name": "sessions", "source": "./plugins/sessions", "category": "productivity" },
+    { "name": "observer", "source": "./plugins/observer", "category": "productivity" }
+  ]
+}

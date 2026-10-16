@@ -1,0 +1,9 @@
+{
+  "name": "sessions",
+  "version": "1.0.0",
+  "description": "Carry work between sessions: handoffs to a fresh agent and session retrospectives. Skills by Matt Pocock.",
+  "author": { "name": "Iatee", "url": "https://github.com/iatee" },
+  "homepage": "https://skills.garciabaertsch.com",
+  "repository": "https://github.com/iatee/claude-skills",
+  "license": "MIT"
+}

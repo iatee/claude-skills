@@ -1,0 +1,9 @@
+{
+  "name": "writing",
+  "version": "1.0.0",
+  "description": "Write for people and for agents: drafting, shaping, teaching and re-pitching. Skills by Matt Pocock.",
+  "author": { "name": "Iatee", "url": "https://github.com/iatee" },
+  "homepage": "https://skills.garciabaertsch.com",
+  "repository": "https://github.com/iatee/claude-skills",
+  "license": "MIT"
+}

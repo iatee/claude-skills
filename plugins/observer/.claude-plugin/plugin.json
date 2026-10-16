@@ -1,0 +1,9 @@
+{
+  "name": "observer",
+  "version": "1.0.0",
+  "description": "Opt-in: task-observer watches your sessions and proposes skill improvements. Runs every session, so it costs tokens. By Eoghan Henn (rebelytics.com).",
+  "author": { "name": "Iatee", "url": "https://github.com/iatee" },
+  "homepage": "https://skills.garciabaertsch.com",
+  "repository": "https://github.com/iatee/claude-skills",
+  "license": "CC-BY-4.0"
+}

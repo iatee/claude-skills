@@ -1,0 +1,71 @@
+{
+  "$comment": "Source of truth for vendored skills. `node scripts/vendor.mjs` imports them; `node scripts/vendor.mjs sync` shows upstream changes.",
+  "sources": {
+    "mattpocock": {
+      "repo": "mattpocock/skills",
+      "commit": "49dd158d1076134a641b33efb035946536778336",
+      "author": "Matt Pocock",
+      "license": "MIT",
+      "licenseFile": "LICENSE"
+    },
+    "impeccable": {
+      "repo": "pbakaus/impeccable",
+      "commit": "6af45ac9a5eb8792f033d3242f52e99812fd91fa",
+      "author": "Paul Bakaus",
+      "license": "Apache-2.0",
+      "licenseFile": "LICENSE",
+      "noticeFile": "NOTICE.md"
+    },
+    "rebelytics": {
+      "repo": "rebelytics/one-skill-to-rule-them-all",
+      "commit": "3463c7c9cd2a2c2745af09c742100ad0b1465a68",
+      "author": "Eoghan Henn / rebelytics.com",
+      "license": "CC-BY-4.0",
+      "licenseFile": "LICENSE.txt"
+    }
+  },
+  "skills": {
+    "grilling":                 { "plugin": "planning", "source": "mattpocock", "path": "skills/productivity/grilling" },
+    "grill-me":                 { "plugin": "planning", "source": "mattpocock", "path": "skills/productivity/grill-me" },
+    "grill-with-docs":          { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/grill-with-docs" },
+    "domain-modeling":          { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/domain-modeling" },
+    "to-spec":                  { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/to-spec" },
+    "to-tickets":               { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/to-tickets" },
+    "to-questionnaire":         { "plugin": "planning", "source": "mattpocock", "path": "skills/productivity/to-questionnaire" },
+    "wayfinder":                { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/wayfinder" },
+    "triage":                   { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/triage" },
+    "research":                 { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/research" },
+    "setup-matt-pocock-skills": { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/setup-matt-pocock-skills" },
+
+    "implement":                     { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/implement" },
+    "implement-spec":                { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/implement-spec" },
+    "tdd":                           { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/tdd" },
+    "diagnosing-bugs":               { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/diagnosing-bugs" },
+    "code-review":                   { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/code-review" },
+    "codebase-design":               { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/codebase-design" },
+    "improve-codebase-architecture": { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/improve-codebase-architecture" },
+    "resolving-merge-conflicts":     { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/resolving-merge-conflicts", "removedUpstream": true },
+    "setup-pre-commit":              { "plugin": "coding", "source": "mattpocock", "path": "skills/misc/setup-pre-commit" },
+    "wizard":                        { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/wizard" },
+
+    "impeccable": { "plugin": "frontend", "source": "impeccable", "path": ".claude/skills/impeccable" },
+
+    "writing-for-agents": { "plugin": "writing", "source": "mattpocock", "path": "skills/productivity/writing-for-agents" },
+    "writing-fragments":  { "plugin": "writing", "source": "mattpocock", "path": "skills/in-progress/writing-fragments" },
+    "writing-shape":      { "plugin": "writing", "source": "mattpocock", "path": "skills/in-progress/writing-shape" },
+    "teach":              { "plugin": "writing", "source": "mattpocock", "path": "skills/productivity/teach" },
+    "wait-what":          { "plugin": "writing", "source": "mattpocock", "path": "skills/productivity/wait-what" },
+
+    "handoff":        { "plugin": "sessions", "source": "mattpocock", "path": "skills/productivity/handoff" },
+    "claude-handoff": { "plugin": "sessions", "source": "mattpocock", "path": "skills/in-progress/claude-handoff" },
+    "retro":          { "plugin": "sessions", "source": "mattpocock", "path": "skills/engineering/retro" },
+
+    "task-observer": {
+      "plugin": "observer",
+      "source": "rebelytics",
+      "path": ".",
+      "include": ["SKILL.md", "references", "scripts", "README.md", "USER-GUIDE.md", "LICENSE.txt"],
+      "changes": "Copied a subset of the upstream repository: the two PNG logos and repository housekeeping files were left out. Skill content is unchanged."
+    }
+  }
+}

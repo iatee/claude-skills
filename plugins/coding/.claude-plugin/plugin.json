@@ -1,0 +1,10 @@
+{
+  "name": "coding",
+  "version": "1.0.0",
+  "description": "Build and fix code: implement, TDD, bug diagnosis, two-axis code review and architecture. Skills by Matt Pocock.",
+  "author": { "name": "Iatee", "url": "https://github.com/iatee" },
+  "homepage": "https://skills.garciabaertsch.com",
+  "repository": "https://github.com/iatee/claude-skills",
+  "license": "MIT",
+  "dependencies": ["planning"]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "planning",
+  "version": "1.0.0",
+  "description": "Sharpen ideas into plans: grilling interviews, specs, tickets, triage and research. Skills by Matt Pocock.",
+  "author": { "name": "Iatee", "url": "https://github.com/iatee" },
+  "homepage": "https://skills.garciabaertsch.com",
+  "repository": "https://github.com/iatee/claude-skills",
+  "license": "MIT"
+}
