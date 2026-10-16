@@ -8,6 +8,7 @@ import { getCollection } from "astro:content";
 import marketplace from "../../../.claude-plugin/marketplace.json";
 import manifest from "../../../manifest.json";
 import catalog from "../../../catalog.json";
+import AskAI from "../components/AskAI.astro";
 
 const ROOT = path.resolve(process.cwd(), "..");
 const MARKETPLACE = marketplace.name;
@@ -134,6 +135,13 @@ const install = [
             <span aria-hidden="true">·</span>
             <a href="/catalog/">Browse the catalog</a>
           </p>
+
+          <div class="hero-ask">
+            <AskAI
+              url="https://skills.garciabaertsch.com/"
+              prompt="Summarize what this Claude Code skill collection offers and whether it is useful for me:"
+            />
+          </div>
         </div>
 
         <figure class="exchange" aria-label="Example: the suggester in a Claude Code session">
@@ -394,6 +402,14 @@ const install = [
 
   .hero-links { margin: 20px 0 0; color: var(--text-3); font-size: 14px; }
   .hero-links span { margin: 0 6px; }
+  .hero-ask {
+    margin-top: 16px;
+    --ask-muted: var(--text-3);
+    --ask-text: var(--text-2);
+    --ask-strong: var(--text);
+    --ask-line: var(--line);
+    --ask-line-strong: var(--line-strong);
+  }
 
   .exchange {
     margin: 0;

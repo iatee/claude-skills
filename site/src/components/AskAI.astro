@@ -1,0 +1,76 @@
+---
+// "Summarize with" links: each opens an AI assistant with a ready-made prompt about this page.
+// Nothing runs on this site; the visitor's own account answers.
+interface Props {
+  url: string;
+  prompt: string;
+  label?: string;
+}
+const { url, prompt, label = "Summarize with" } = Astro.props;
+const q = encodeURIComponent(`${prompt} ${url}`);
+const targets = [
+  { name: "ChatGPT", href: `https://chatgpt.com/?q=${q}` },
+  { name: "Claude", href: `https://claude.ai/new?q=${q}` },
+  { name: "Perplexity", href: `https://www.perplexity.ai/search?q=${q}` },
+  { name: "Google AI", href: `https://www.google.com/search?udm=50&q=${q}` },
+];
+---
+
+<div class="ask-ai" role="group" aria-label={`${label} an AI assistant`}>
+  <span class="ask-ai-label">{label}</span>
+  {targets.map((t) => (
+    <a href={t.href} target="_blank" rel="noopener noreferrer">
+      {t.name}
+      <svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8" /></svg>
+      <span class="sr-only">(opens in a new tab)</span>
+    </a>
+  ))}
+</div>
+
+<style>
+  .ask-ai {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+  }
+  .ask-ai-label {
+    margin-right: 2px;
+    color: var(--ask-muted, var(--sl-color-gray-3, #71717a));
+  }
+  .ask-ai a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 28px;
+    padding: 0 10px;
+    border: 1px solid var(--ask-line, var(--sl-color-hairline, #e4e4e7));
+    border-radius: 6px;
+    color: var(--ask-text, var(--sl-color-gray-2, #52525b));
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .ask-ai a:hover {
+    border-color: var(--ask-line-strong, var(--sl-color-gray-4, #a1a1aa));
+    color: var(--ask-strong, var(--sl-color-white, #18181b));
+    text-decoration: none;
+  }
+  svg path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+</style>

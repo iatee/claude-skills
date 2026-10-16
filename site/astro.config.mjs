@@ -24,6 +24,7 @@ export default defineConfig({
       description: "A curated set of Claude Code skills, credited to their authors, with guides for beginners and power users.",
       favicon: "/favicon.svg",
       logo: { src: "./src/assets/logo.svg" },
+      components: { PageTitle: "./src/components/PageTitle.astro" },
       head: [
         { tag: "link", attrs: { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: true } },
         {

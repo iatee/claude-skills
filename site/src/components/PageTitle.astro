@@ -1,0 +1,18 @@
+---
+// Starlight's page title, followed by the "Summarize with" links for this guide.
+import Default from "@astrojs/starlight/components/PageTitle.astro";
+import AskAI from "./AskAI.astro";
+
+const url = new URL(Astro.url.pathname, Astro.site).href;
+---
+
+<Default />
+<div class="page-ask-ai">
+  <AskAI url={url} prompt="Summarize this Claude Code guide and tell me the key steps:" />
+</div>
+
+<style>
+  .page-ask-ai {
+    margin-top: 1rem;
+  }
+</style>
