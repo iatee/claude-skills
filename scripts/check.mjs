@@ -70,6 +70,21 @@ for (const [name, skill] of Object.entries(manifest.skills)) {
   if (!fs.existsSync(path.join(ROOT, "plugins", skill.plugin, "skills", name))) fail(`manifest.json lists ${name}, but it is not vendored`);
 }
 
+// Plugins referenced from other repositories need a catalog entry, which the site reads their skill count from.
+const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, "catalog.json"), "utf8"));
+for (const p of marketplace.plugins.filter((p) => typeof p.source !== "string")) {
+  if (!Number.isInteger(catalog.referenced[p.name]?.skills)) fail(`catalog.json needs a "referenced" entry with a "skills" count for ${p.name}`);
+}
+
+// The suggester reads these on every prompt and silently ignores a file that doesn't parse.
+for (const file of ["triggers.json", "milestones.json", "builtins.json"]) {
+  try {
+    JSON.parse(fs.readFileSync(path.join(ROOT, "plugins/suggester", file), "utf8"));
+  } catch (error) {
+    fail(`plugins/suggester/${file} is not valid JSON: ${error.message}`);
+  }
+}
+
 if (errors.length) {
   console.error(errors.map((e) => `✗ ${e}`).join("\n"));
   process.exit(1);

@@ -4,7 +4,10 @@ Each plugin is versioned on its own. Update a plugin with `/plugin marketplace u
 
 ## 2026-10-17
 
-- **suggester 1.3.0:** suggests checks at milestones: design, SEO and accessibility before you publish a website, a review before you merge or release, and a handoff when you wrap up, in English, Spanish, German, French and Portuguese. Can suggest Claude Code's built-in `/security-review` and `/simplify` too. Add your own moments, with any skill you have, under `"milestones"` in your settings.
+- **planning 1.2.0:** adds `prototype` (by Matt Pocock), which `wayfinder` calls for its prototype tickets but which wasn't included, so those tickets failed unless another plugin happened to have a skill by that name.
+- **coding 1.1.1:** `playwright-cli` says when to use it, so Claude reaches for it on its own; `tdd` points to `coding:code-review` rather than the built-in review.
+- **all 1.1.1:** the description names both opt-in plugins it leaves out, and the manifest states its license. No change in what it installs.
+- **suggester 1.3.0:** suggests checks at milestones: design, SEO and accessibility before you publish a website, a review before you merge or release, and a handoff when you wrap up, in English, Spanish, German, French and Portuguese. Now also finds plugin commands, skills in custom plugin folders and Claude Code's built-in skills, so it knows every skill Claude Code offers. Add your own moments, with any skill you have, under `"milestones"` in your settings. Knows when to suggest searchfit-seo's blog-writing, SEO-check and AI-visibility skills.
 - **frontend 1.2.0:** now also installs `searchfit-seo` by SearchFit.ai, for SEO audits, keyword clustering, schema markup and visibility in AI answers. Run `/reload-plugins` after updating.
 - **suggester 1.2.1:** links to the new [privacy policy](https://skills.garciabaertsch.com/privacy/).
 - **suggester 1.2.0:** say "run the plan" (or `/suggester plan`) and Claude runs every remaining step of the remembered plan, committing after each, without pausing.

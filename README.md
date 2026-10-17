@@ -20,7 +20,7 @@ In Claude Code, run:
 
 | Plugin | What's inside |
 |---|---|
-| `planning` | Grilling interviews, specs, tickets, triage, research, a seven-persona council |
+| `planning` | Grilling interviews, specs, tickets, triage, research, prototypes, a seven-persona council |
 | `coding` | Implement, TDD, bug diagnosis, code review, architecture, browser automation (installs `planning` too) |
 | `frontend` | `impeccable` for designing and polishing interfaces, `taste-skill` for art direction, and `searchfit-seo` for SEO and AI-search visibility |
 | `writing` | Writing for people and for agents, teaching, re-pitching |
@@ -47,6 +47,7 @@ In Claude Code, run:
 | **grill-me** | `planning` | Starts a grilling interview about whatever you describe. | You want to stress-test an idea, anywhere, with no files involved. | `/grill-me` | [Matt Pocock](https://github.com/mattpocock/skills) |
 | **grill-with-docs** | `planning` | Grilling that also writes down the decisions as a glossary and ADRs in your repo. | You're planning inside a project and want the reasoning kept. | `/grill-with-docs` | [Matt Pocock](https://github.com/mattpocock/skills) |
 | **grilling** | `planning` | The interview engine behind grill-me: relentless questions, in rounds, until the plan has no gaps. | You have a plan or idea and want its holes found before you build. | Automatic, or `/grilling` | [Matt Pocock](https://github.com/mattpocock/skills) |
+| **prototype** | `planning` | Builds a throwaway prototype, of the logic or of a UI, to answer one design question. | You can't decide how something should behave or look until you see it. Wayfinder uses it too. | Automatic, or `/prototype` | [Matt Pocock](https://github.com/mattpocock/skills) |
 | **research** | `planning` | Sends a background agent to read primary sources and write the findings to a file. | You need facts from docs or APIs and don't want to wait while they're gathered. | Automatic, or `/research` | [Matt Pocock](https://github.com/mattpocock/skills) |
 | **setup-matt-pocock-skills** | `planning` | One-time setup for a repo: issue tracker, triage labels, where docs live. | Before the first use of to-spec, to-tickets, triage, wayfinder or code-review in a repo. | `/setup-matt-pocock-skills` | [Matt Pocock](https://github.com/mattpocock/skills) |
 | **to-questionnaire** | `planning` | Turns open questions into a questionnaire someone else can fill in. | You can't answer a decision yourself and need input from a client or colleague. | `/to-questionnaire` | [Matt Pocock](https://github.com/mattpocock/skills) |
@@ -105,7 +106,7 @@ See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for exact versions and chan
 
 ## Maintaining
 
-- `node scripts/vendor.mjs sync` shows what changed upstream; `node scripts/vendor.mjs sync <source>` accepts it.
+- `node scripts/vendor.mjs sync` shows what changed upstream; `node scripts/vendor.mjs sync <source>` accepts it. After editing `patches` or `changes` in `manifest.json`, `node scripts/vendor.mjs notices` regenerates THIRD_PARTY_NOTICES.md.
 - `node scripts/catalog.mjs` regenerates the catalog from `catalog.json`.
-- `node scripts/check.mjs` validates every skill and plugin. CI runs it, plus the catalog check, on every push.
+- `node scripts/check.mjs` validates every skill and plugin, and `node scripts/test-suggester.mjs` tests the suggester against fake plugins. CI runs both, plus the catalog check, on every push.
 - After changing a plugin, bump its `version` and add a line to [CHANGELOG.md](CHANGELOG.md).

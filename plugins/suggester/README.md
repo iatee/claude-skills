@@ -77,20 +77,20 @@ Node.js 18 or later. Without it, Claude Code shows a reminder when a session sta
 
 The plugin has two hooks, both shell scripts in `scripts/`:
 
-- **SessionStart** (`session-start.sh`) checks whether `node` is available and, if not, shows the reminder above.
+- **SessionStart** (`session-start.sh`) deletes session files older than 30 days, then checks whether `node` is available and, if not, shows the reminder above.
 - **UserPromptSubmit** (`suggest.sh`) runs `scripts/suggest.mjs` with Node.js on each prompt. Prompts that start with `/` or have fewer than four words are skipped, except for milestones.
 
 `suggest.mjs` and `index.mjs` only read and write local files. They make no network requests and send nothing anywhere. They read:
 
 - the prompt and session ID that Claude Code passes to the hook;
-- the current session's transcript, to skip skills you have already used, to find numbered plans in Claude's replies, and to see which built-in skills the session has;
+- the current session's transcript, to skip skills you have already used, to find numbered plans in Claude's replies, and to read the list of skills Claude Code offers in that session, which gives every skill its exact name and adds the ones with no file on disk, such as Claude Code's built-in skills;
 - `~/.claude/plugins/installed_plugins.json` and `~/.claude/settings.json`, to find enabled plugins;
-- the name and description in each installed skill's `SKILL.md`, in your user, project and plugin skill folders;
+- the name and description in each installed skill's `SKILL.md` and each plugin command's `.md` file, in your user, project and plugin folders, including any extra skill or command folders a plugin's `plugin.json` lists;
 - `triggers.json` in this plugin, extra words that point to particular skills;
 - `milestones.json` in this plugin, moments like publishing a site and the skills to suggest then;
 - `builtins.json` in this plugin, a fallback list of Claude Code's built-in skills, which have no `SKILL.md`.
 
-They write only inside `~/.claude/skill-suggester/` (or `$CLAUDE_CONFIG_DIR/skill-suggester/`): `settings.json` for your on/off setting and options, `index.json` as a cache of skill descriptions, one small file per session listing the skills already suggested, and one file per project in `plans/` holding that project's latest plan and which of its steps have run (named by a hash of the project folder's path).
+They write only inside `~/.claude/skill-suggester/` (or `$CLAUDE_CONFIG_DIR/skill-suggester/`): `settings.json` for your on/off setting and options, `index.json` as a cache of skill descriptions, one small file per session listing the skills already suggested (deleted after 30 days), and one file per project in `plans/` holding that project's latest plan and which of its steps have run (named by a hash of the project folder's path).
 
 When you run a step of a remembered plan, the hook adds a one-line note telling Claude which step comes next. When you ask to run the plan, it adds the remaining steps and asks Claude to run them in order, committing after each. When a skill fits, it adds a short note to Claude's context naming up to three candidate skills, with their descriptions. Skills that only you can start are marked "suggest to the user"; other skills are ones Claude may use on its own if it helps.
 

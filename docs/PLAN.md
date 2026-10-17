@@ -29,7 +29,7 @@ Done means: the skills are pushed to GitHub, installable as a plugin marketplace
 
   Each copied skill keeps its license file. Modified Apache/CC-BY files are marked as changed.
 - **Updates.** Copies are frozen. `manifest.json` records each skill's upstream repo, path and commit; it generates `THIRD_PARTY_NOTICES.md`. A `sync` script, run by hand now and then, shows upstream diffs to accept or reject.
-- **Additions (2026-10-16):** `council` and `playwright-cli` are vendored. Projects that are already plugins (`taste-skill`, `ponytail`) are referenced from their own repos in `marketplace.json`, pinned to a commit, as long as that adds no effort for users. `awesome-design-md` and `graphify` get a link in the Power user guide. `web-design-guidelines` (no license) and `apple-design-skills` (covered by impeccable) are skipped.
+- **Additions (2026-10-16):** `council` and `playwright-cli` are vendored. Projects that are already plugins (`taste-skill`, `ponytail`, and since 2026-10-17 `searchfit-seo`) are referenced from their own repos in `marketplace.json`, pinned to a commit, as long as that adds no effort for users. `awesome-design-md` and `graphify` get a link in the Power user guide. `web-design-guidelines` (no license) and `apple-design-skills` (covered by impeccable) are skipped.
 - **Own skills** live in this repo; the owner installs them from this marketplace like everyone else.
 
 ## Packaging

@@ -17,6 +17,8 @@ jobs:
         run: node scripts/check.mjs
       - name: Check the catalog is up to date
         run: node scripts/catalog.mjs --check
+      - name: Test the skill suggester
+        run: node scripts/test-suggester.mjs
       - name: Validate marketplace and plugins
         run: |
           npm install -g @anthropic-ai/claude-code

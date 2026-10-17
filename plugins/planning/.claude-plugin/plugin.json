@@ -1,7 +1,7 @@
 {
   "name": "planning",
-  "version": "1.1.0",
-  "description": "Sharpen ideas into plans: grilling interviews, specs, tickets, triage, research and a seven-persona council. Skills by Matt Pocock and others.",
+  "version": "1.2.0",
+  "description": "Sharpen ideas into plans: grilling interviews, specs, tickets, triage, research, throwaway prototypes and a seven-persona council. Skills by Matt Pocock and others.",
   "author": { "name": "Iatee", "url": "https://github.com/iatee" },
   "homepage": "https://skills.garciabaertsch.com",
   "repository": "https://github.com/iatee/claude-skills",

@@ -9,9 +9,11 @@ This file is generated from `manifest.json` by `scripts/vendor.mjs`; do not edit
 - **Upstream:** https://github.com/mattpocock/skills
 - **Commit:** [`49dd158`](https://github.com/mattpocock/skills/tree/49dd158d1076134a641b33efb035946536778336)
 - **License:** MIT
-- **Skills:** `grilling`, `grill-me`, `grill-with-docs`, `domain-modeling`, `to-spec`, `to-tickets`, `to-questionnaire`, `wayfinder`, `triage`, `research`, `setup-matt-pocock-skills`, `implement`, `implement-spec`, `tdd`, `diagnosing-bugs`, `code-review`, `codebase-design`, `improve-codebase-architecture`, `resolving-merge-conflicts` (no longer upstream; copy from an earlier release), `setup-pre-commit`, `wizard`, `writing-for-agents`, `writing-fragments`, `writing-shape`, `teach`, `wait-what`, `handoff`, `claude-handoff`, `retro`
+- **Skills:** `grilling`, `grill-me`, `grill-with-docs`, `domain-modeling`, `to-spec`, `to-tickets`, `to-questionnaire`, `wayfinder`, `prototype`, `triage`, `research`, `setup-matt-pocock-skills`, `implement`, `implement-spec`, `tdd`, `diagnosing-bugs`, `code-review`, `codebase-design`, `improve-codebase-architecture`, `resolving-merge-conflicts` (no longer upstream; copy from an earlier release), `setup-pre-commit`, `wizard`, `writing-for-agents`, `writing-fragments`, `writing-shape`, `teach`, `wait-what`, `handoff`, `claude-handoff`, `retro`
+- **Changes to `wayfinder`:** Calls `planning:prototype`, vendored alongside it, so another plugin's `prototype` skill can't answer instead.
 - **Changes to `implement`:** Calls `coding:code-review` instead of `code-review`, which Claude Code's built-in review command shadows.
 - **Changes to `implement-spec`:** Calls `coding:code-review` instead of `code-review`, which Claude Code's built-in review command shadows.
+- **Changes to `tdd`:** Points to `coding:code-review` instead of `code-review`, which Claude Code's built-in review command shadows.
 
 ## Paul Bakaus
 
@@ -27,6 +29,7 @@ This file is generated from `manifest.json` by `scripts/vendor.mjs`; do not edit
 - **Commit:** [`b85c7a7`](https://github.com/microsoft/playwright-cli/tree/b85c7a736bb473bf55b584e54a09ffa698d6d871)
 - **License:** Apache-2.0
 - **Skills:** `playwright-cli`
+- **Changes to `playwright-cli`:** Added a "Use when" sentence to the description, so Claude knows when to reach for it.
 
 ## Claude Council Contributors
 

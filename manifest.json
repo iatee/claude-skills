@@ -46,7 +46,12 @@
     "to-spec":                  { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/to-spec" },
     "to-tickets":               { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/to-tickets" },
     "to-questionnaire":         { "plugin": "planning", "source": "mattpocock", "path": "skills/productivity/to-questionnaire" },
-    "wayfinder":                { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/wayfinder" },
+    "wayfinder": {
+      "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/wayfinder",
+      "patches": [{ "file": "SKILL.md", "find": "by calling the Skill tool with \"prototype\"", "replace": "by calling the Skill tool with \"planning:prototype\"" }],
+      "changes": "Calls `planning:prototype`, vendored alongside it, so another plugin's `prototype` skill can't answer instead."
+    },
+    "prototype":                { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/prototype" },
     "triage":                   { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/triage" },
     "research":                 { "plugin": "planning", "source": "mattpocock", "path": "skills/engineering/research" },
     "council": {
@@ -66,14 +71,22 @@
       "patches": [{ "file": "SKILL.md", "find": "Skill tool with `code-review`", "replace": "Skill tool with `coding:code-review`" }],
       "changes": "Calls `coding:code-review` instead of `code-review`, which Claude Code's built-in review command shadows."
     },
-    "tdd":                           { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/tdd" },
+    "tdd": {
+      "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/tdd",
+      "patches": [{ "file": "SKILL.md", "find": "(see the `code-review` skill)", "replace": "(see the `coding:code-review` skill)" }],
+      "changes": "Points to `coding:code-review` instead of `code-review`, which Claude Code's built-in review command shadows."
+    },
     "diagnosing-bugs":               { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/diagnosing-bugs" },
     "code-review":                   { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/code-review" },
     "codebase-design":               { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/codebase-design" },
     "improve-codebase-architecture": { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/improve-codebase-architecture" },
     "resolving-merge-conflicts":     { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/resolving-merge-conflicts", "removedUpstream": true },
     "setup-pre-commit":              { "plugin": "coding", "source": "mattpocock", "path": "skills/misc/setup-pre-commit" },
-    "playwright-cli":                { "plugin": "coding", "source": "playwright", "path": "skills/playwright-cli" },
+    "playwright-cli": {
+      "plugin": "coding", "source": "playwright", "path": "skills/playwright-cli",
+      "patches": [{ "file": "SKILL.md", "find": "description: Automate browser interactions, test web pages and work with Playwright tests.\n", "replace": "description: Automate browser interactions, test web pages and work with Playwright tests. Use when Claude should open a website, click through it, fill forms, take screenshots or check a page in a real browser, or write and run Playwright tests.\n" }],
+      "changes": "Added a \"Use when\" sentence to the description, so Claude knows when to reach for it."
+    },
     "wizard":                        { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/wizard" },
 
     "impeccable": { "plugin": "frontend", "source": "impeccable", "path": ".claude/skills/impeccable" },

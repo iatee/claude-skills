@@ -4,7 +4,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { STATE_DIR, loadIndex, score } from "./index.mjs";
+import { STATE_DIR, findSkill, loadIndex, score } from "./index.mjs";
 import { planRun, planStep } from "./plan.mjs";
 
 const THRESHOLD = 7;
@@ -46,16 +46,17 @@ const say = (context) => {
   process.exit(0);
 };
 const cwd = input.cwd ?? process.cwd();
+let index;
+const skills = () => (index ??= loadIndex(cwd, transcript));
 
 // "Run the plan": Claude runs every step that hasn't run yet, committing after each, without pausing.
 const run = planRun(prompt, transcript, cwd);
 if (run) {
   if (run.total === 0) say("Skill suggester: the user asked to run the plan, but no plan is remembered for this project. Say so in one line.");
   if (run.remaining.length === 0) say("Skill suggester: every step of the remembered plan has already run. Say so in one line.");
-  const skills = loadIndex(cwd, transcript);
   const steps = run.remaining.map((step, i) => {
     const [name, ...args] = step.command.replace(/^\//, "").split(/\s+/);
-    const skill = skills.find((s) => s.id === name || s.name === name.split(":").pop());
+    const skill = findSkill(skills(), name) ?? findSkill(skills(), name.split(":").pop());
     const how = skill ? ` Skill tool: skill "${skill.id}", args "${args.join(" ")}".` : "";
     return `${i + 1}. \`${step.command}\`${step.note ? `: ${step.note}` : ""}.${how}`;
   });
@@ -82,7 +83,9 @@ if (step) {
 // Skills already suggested this session, or already used, stay quiet.
 const sessionFile = path.join(STATE_DIR, "sessions", `${input.session_id ?? "unknown"}.json`);
 const shown = new Set(readJson(sessionFile, []));
-const used = (id) => transcript.includes(`"skill":"${id}"`) || transcript.includes(`<command-name>/${id}<`);
+// One pass over the transcript, rather than a search per skill.
+const usedIds = new Set([...transcript.matchAll(/"skill":"([^"]+)"|<command-name>\/([^<\s]+)</g)].map((m) => m[1] ?? m[2]));
+const used = (s) => usedIds.has(s.id) || usedIds.has(s.name);
 
 // Milestones, like publishing a site: point to the checks people forget, once per session.
 const milestones = { ...readJson(path.join(import.meta.dirname, "..", "milestones.json"), {}), ...settings.milestones };
@@ -91,19 +94,18 @@ for (const [key, m] of Object.entries(milestones)) {
   // Letter-aware boundaries, so phrases like "mise en ligne" or "veröffentlichen" match in any language.
   const phrases = m.when.map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/'/g, "['’]"));
   const when = new RegExp(`(?<![\\p{L}\\p{N}])(${phrases.join("|")})(?![\\p{L}\\p{N}])`, "iu");
-  if (!when.test(prompt) || (m.context && !new RegExp(m.context, "i").test(transcript + prompt))) continue;
+  const context = m.context && new RegExp(m.context, "i");
+  if (!when.test(prompt) || (context && !context.test(prompt) && !context.test(transcript))) continue;
   // An entry is an id, a plain name, or a list of alternatives where the first installed one wins.
-  const index = loadIndex(cwd, transcript);
-  const find = (name) => index.find((s) => s.id === name) ?? index.find((s) => s.name === name);
-  const pick = (entry) => [entry].flat().map(find).find(Boolean);
-  const skills = [...new Set(m.skills.map(pick))].filter((s) => s && !used(s.id) && !used(s.name)).slice(0, 4);
-  if (skills.length === 0) continue;
+  const pick = (entry) => [entry].flat().map((name) => findSkill(skills(), name)).find(Boolean);
+  const picked = [...new Set(m.skills.map(pick))].filter((s) => s && !used(s)).slice(0, 4);
+  if (picked.length === 0) continue;
   shown.add(`milestone:${key}`);
   writeJson(sessionFile, [...shown]);
   say(
     [
       `Skill suggester: ${m.message}. These installed skills cover it:`,
-      ...skills.map((s) => `- /${s.id}: ${s.description.slice(0, 160)}`),
+      ...picked.map((s) => `- /${s.id}: ${s.description.slice(0, 160)}`),
       `Before doing what was asked, add one short line to your reply, such as "💡 Before you ${m.before ?? "continue"}: /<skill> for <what>, /<skill> for <what>." Never run them unasked.`,
     ].join("\n"),
   );
@@ -117,8 +119,8 @@ const isHeavy = (s) => s.userOnly || heavy.some((h) => s.name === h || s.name.st
 const triggers = readJson(path.join(import.meta.dirname, "..", "triggers.json"), {});
 for (const [name, words] of Object.entries(settings.triggers ?? {})) triggers[name] = [...(triggers[name] ?? []), ...words];
 
-const candidates = score(prompt, loadIndex(cwd, transcript), triggers)
-  .filter((r) => r.score >= THRESHOLD && !shown.has(r.skill.id) && !used(r.skill.id) && !used(r.skill.name))
+const candidates = score(prompt, skills(), triggers)
+  .filter((r) => r.score >= THRESHOLD && !shown.has(r.skill.id) && !used(r.skill))
   .slice(0, MAX_CANDIDATES);
 if (candidates.length === 0) process.exit(0);
 
@@ -129,13 +131,13 @@ const lines = candidates.map(({ skill }) => {
   const how = isHeavy(skill) ? "suggest to the user" : "you may use it yourself";
   return `- /${skill.id} (${how}): ${skill.description.slice(0, 240)}`;
 });
-const context = [
-  "Skill suggester: these installed skills might fit this request.",
-  ...lines,
-  "Only act if one is a clear, strong fit; otherwise ignore this note entirely and do not mention it.",
-  'For "suggest to the user": add one short line to your reply, such as "💡 /<name> could help here: <why>". Never run it unasked.',
-  'For "you may use it yourself": use the skill if it helps, without announcing it.',
-  "Mention at most one skill.",
-].join("\n");
-
-process.stdout.write(JSON.stringify({ hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: context } }));
+say(
+  [
+    "Skill suggester: these installed skills might fit this request.",
+    ...lines,
+    "Only act if one is a clear, strong fit; otherwise ignore this note entirely and do not mention it.",
+    'For "suggest to the user": add one short line to your reply, such as "💡 /<name> could help here: <why>". Never run it unasked.',
+    'For "you may use it yourself": use the skill if it helps, without announcing it.',
+    "Mention at most one skill.",
+  ].join("\n"),
+);

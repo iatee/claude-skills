@@ -9,6 +9,7 @@
     "to-tickets": { "what": "Splits a plan or spec into small tickets, each saying what it waits on.", "when": "Work is too big for one session and needs to be done piece by piece." },
     "to-questionnaire": { "what": "Turns open questions into a questionnaire someone else can fill in.", "when": "You can't answer a decision yourself and need input from a client or colleague." },
     "wayfinder": { "what": "Maps a huge, unclear project as decision tickets and resolves them one by one.", "when": "The project is so big or foggy you don't know where to start." },
+    "prototype": { "what": "Builds a throwaway prototype, of the logic or of a UI, to answer one design question.", "when": "You can't decide how something should behave or look until you see it. Wayfinder uses it too." },
     "triage": { "what": "Sorts incoming issues and pull requests, checks them, and writes agent-ready briefs.", "when": "Bug reports and requests from others are piling up." },
     "research": { "what": "Sends a background agent to read primary sources and write the findings to a file.", "when": "You need facts from docs or APIs and don't want to wait while they're gathered." },
     "council": { "what": "Seven expert personas debate a question, then give a verdict with risks and next steps.", "when": "You face a decision and want it argued from very different angles." },
@@ -43,8 +44,8 @@
     "task-observer": { "what": "Watches your sessions and proposes new skills or improvements to existing ones.", "when": "You build your own skills and want ideas for them collected as you work." }
   },
   "referenced": {
-    "taste-skill": { "what": "14 skills for art direction: design directions, reference images, brand kits and style presets.", "when": "Generated frontends look generic and you want a distinct visual style.", "credit": "[leonxlnx](https://github.com/Leonxlnx/taste-skill)", "trigger": "Automatic, or `/taste-skill`" },
-    "searchfit-seo": { "what": "11 skills, 6 commands and 3 agents for SEO: site audits, technical SEO, keyword clustering, schema markup, content plans and visibility in AI answers.", "when": "You're building a site and want it found on Google and cited by ChatGPT or Perplexity.", "credit": "[SearchFit.ai](https://github.com/searchfit/searchfit-seo)", "trigger": "Automatic, or `/searchfit-seo:seo-check`" },
-    "ponytail": { "what": "Lazy senior dev mode: pushes Claude to the smallest solution that works, plus audit and review commands.", "when": "Claude tends to over-engineer and you want leaner code.", "credit": "[Dietrich Gebert](https://github.com/DietrichGebert/ponytail)", "trigger": "Always on once installed; `/ponytail-help` for commands" }
+    "taste-skill": { "skills": 14, "what": "14 skills for art direction: design directions, reference images, brand kits and style presets.", "when": "Generated frontends look generic and you want a distinct visual style.", "credit": "[leonxlnx](https://github.com/Leonxlnx/taste-skill)", "trigger": "Automatic, or `/taste-skill`" },
+    "searchfit-seo": { "skills": 11, "what": "11 skills, 6 commands and 3 agents for SEO: site audits, technical SEO, keyword clustering, schema markup, content plans and visibility in AI answers.", "when": "You're building a site and want it found on Google and cited by ChatGPT or Perplexity.", "credit": "[SearchFit.ai](https://github.com/searchfit/searchfit-seo)", "trigger": "Automatic, or `/searchfit-seo:seo-check`" },
+    "ponytail": { "skills": 6, "what": "Lazy senior dev mode: pushes Claude to the smallest solution that works, plus audit and review commands.", "when": "Claude tends to over-engineer and you want leaner code.", "credit": "[Dietrich Gebert](https://github.com/DietrichGebert/ponytail)", "trigger": "Always on once installed; `/ponytail-help` for commands" }
   }
 }

@@ -50,7 +50,17 @@ const subdirs = (dir) => {
   }
 };
 
-// Each root is a directory of <skill>/SKILL.md folders, with an optional plugin prefix.
+// A plugin's skill and command folders: the defaults plus any extra paths its plugin.json lists.
+function pluginRoots(pluginDir, plugin) {
+  let manifest = {};
+  try {
+    manifest = JSON.parse(fs.readFileSync(path.join(pluginDir, ".claude-plugin", "plugin.json"), "utf8"));
+  } catch {}
+  const dirs = (field) => [...new Set([field, ...[manifest[field] ?? []].flat()].map((p) => path.resolve(pluginDir, p)))];
+  return [...dirs("skills").map((dir) => ({ dir, plugin })), ...dirs("commands").map((dir) => ({ dir, plugin, commands: true }))];
+}
+
+// Each root is a directory of <skill>/SKILL.md folders, or of <command>.md files, with an optional plugin prefix.
 function skillRoots(cwd) {
   const roots = [
     { dir: path.join(CONFIG_DIR, "skills"), plugin: null },
@@ -69,7 +79,7 @@ function skillRoots(cwd) {
   for (const [id, installs] of Object.entries(installed)) {
     if (enabled[id] === false) continue;
     const plugin = id.split("@")[0];
-    for (const install of installs) roots.push({ dir: path.join(install.installPath, "skills"), plugin });
+    for (const install of installs) roots.push(...pluginRoots(install.installPath, plugin));
   }
 
   // Skills and plugins synced from a claude.ai account sit one bucket folder deeper.
@@ -80,37 +90,62 @@ function skillRoots(cwd) {
       try {
         plugin = JSON.parse(fs.readFileSync(path.join(pluginDir, ".claude-plugin", "plugin.json"), "utf8")).name || plugin;
       } catch {}
-      roots.push({ dir: path.join(pluginDir, "skills"), plugin });
+      roots.push(...pluginRoots(pluginDir, plugin));
     }
   }
   return roots;
 }
 
-// Claude Code's own skills have no SKILL.md. The session's skill listing in the transcript names the ones
-// this Claude Code version has; before that listing is written, builtins.json stands in.
-const builtins = (transcript, onDisk) => {
+const entry = (id, name, description, userOnly = false) => ({
+  id,
+  name,
+  description,
+  userOnly,
+  nameTokens: [...new Set(tokenize(id.replace(":", " ")))],
+  descTokens: tokenize(description),
+  // Quoted trigger phrases, e.g. Use when the user says "debug this". Single quotes are skipped: they are mostly apostrophes.
+  phrases: [...description.matchAll(/["“]([^"”]{4,40})["”]/g)].map((m) => m[1].toLowerCase()).filter((p) => tokenize(p).length > 0),
+});
+
+// The session's skill listing in the transcript is what Claude Code actually offers: it gives skills found
+// on disk their exact ids (synced skills get a plugin prefix there) and adds the rest, such as Claude Code's
+// built-in skills, which have no SKILL.md. Before that listing is written, builtins.json stands in.
+// A skill by exact id first, then by plain name, so "code-review" finds the built-in before coding:code-review.
+export const findSkill = (skills, name) => skills.find((s) => s.id === name) ?? skills.find((s) => s.name === name);
+
+export const loadIndex = (cwd, transcript = "") => {
+  const skills = loadSkillFiles(cwd);
   let fallback = {};
   try {
     fallback = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "..", "builtins.json"), "utf8"));
   } catch {}
-  let list = Object.entries(fallback).filter(([name]) => !name.startsWith("$"));
-  const line = transcript.split("\n").findLast((l) => l.includes('"type":"skill_listing"'));
+  delete fallback.$comment;
+  // Find the latest listing line without splitting the whole transcript.
+  const at = transcript.lastIndexOf('"type":"skill_listing"');
+  const end = transcript.indexOf("\n", at);
+  const line = at < 0 ? "" : transcript.slice(transcript.lastIndexOf("\n", at) + 1, end < 0 ? undefined : end);
+  let names = Object.keys(fallback);
+  let described = new Map();
+  let fromListing = skills;
   if (line) {
     try {
-      const { names, content } = JSON.parse(line).attachment;
-      const described = new Map([...content.matchAll(/^- ([^\s:]+): (.+)$/gm)].map((m) => [m[1], m[2]]));
-      list = names
-        .filter((name) => !name.includes(":") && !onDisk.has(name))
-        .map((name) => [name, described.get(name) ?? fallback[name]])
-        .filter(([, description]) => description);
+      const listing = JSON.parse(line).attachment;
+      names = listing.names;
+      described = new Map([...listing.content.matchAll(/^- ([^\s(]+?)(?: \([^)]*\))?: (.+)$/gm)].map((m) => [m[1], m[2]]));
+      const listed = new Set(names);
+      const onDisk = new Set(skills.map((s) => s.id));
+      fromListing = skills.map((s) => {
+        if (listed.has(s.id) || s.id.includes(":")) return s;
+        const full = names.find((n) => n.endsWith(`:${s.id}`) && !onDisk.has(n));
+        return full ? { ...s, id: full } : s;
+      });
     } catch {}
   }
-  return list.map(([name, description]) => ({ id: name, name, description, userOnly: false, nameTokens: tokenize(name), descTokens: tokenize(description), phrases: [] }));
-};
-
-export const loadIndex = (cwd, transcript = "") => {
-  const skills = loadSkillFiles(cwd);
-  return [...skills, ...builtins(transcript, new Set(skills.map((s) => s.id)))];
+  const have = new Set(fromListing.map((s) => s.id));
+  const extra = names
+    .filter((n) => !have.has(n) && (described.get(n) ?? fallback[n]))
+    .map((n) => entry(n, n.split(":").pop(), described.get(n) ?? fallback[n]));
+  return [...fromListing, ...extra];
 };
 
 // The cache key is every root's mtime, so adding, removing or updating a skill rebuilds the index.
@@ -125,26 +160,21 @@ function loadSkillFiles(cwd) {
 
   const skills = [];
   const seen = new Set();
-  for (const { dir, plugin } of roots) {
-    for (const folder of fs.readdirSync(dir)) {
-      const fm = readFrontmatter(path.join(dir, folder, "SKILL.md"));
+  for (const { dir, plugin, commands } of roots) {
+    let items = [];
+    try {
+      items = fs.readdirSync(dir);
+    } catch {}
+    for (const item of items) {
+      if (commands && !item.endsWith(".md")) continue;
+      const fm = readFrontmatter(commands ? path.join(dir, item) : path.join(dir, item, "SKILL.md"));
       if (!fm?.description) continue;
-      const name = fm.name || folder;
+      // Claude Code names a skill after its folder (or command file), not its frontmatter name.
+      const name = commands ? item.slice(0, -3) : item;
       const id = plugin ? `${plugin}:${name}` : name;
       if (seen.has(id) || plugin === "suggester") continue;
       seen.add(id);
-      skills.push({
-        id,
-        name,
-        description: fm.description,
-        userOnly: fm["disable-model-invocation"] === "true",
-        nameTokens: [...new Set(tokenize(`${name} ${plugin ?? ""}`))],
-        descTokens: tokenize(fm.description),
-        // Quoted trigger phrases, e.g. Use when the user says "debug this". Single quotes are skipped: they are mostly apostrophes.
-        phrases: [...fm.description.matchAll(/["“]([^"”]{4,40})["”]/g)]
-          .map((m) => m[1].toLowerCase())
-          .filter((p) => tokenize(p).length > 0),
-      });
+      skills.push(entry(id, name, fm.description, fm["disable-model-invocation"] === "true"));
     }
   }
   try {

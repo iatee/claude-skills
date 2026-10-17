@@ -141,4 +141,5 @@ async function sync(bump) {
 
 const [command, arg] = process.argv.slice(2);
 if (command === "sync") await sync(arg);
+else if (command === "notices") writeNotices();
 else await importSkills();
