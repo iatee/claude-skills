@@ -46,7 +46,7 @@ Light or dark follows the system setting; the docs also offer a manual switch.
 - **Plugin rows:** hairline-separated list, name in mono, one-sentence description, skill count and authors, and a copyable install command per row.
 - **Badges:** outlined, small, for states like Opt-in.
 - **Asides:** a 1px hairline box on the soft fill of their role, 8px radius, never a thick side bar.
-- **Docs:** Starlight, restyled in `site/src/styles/theme.css` to the same tokens: small muted sidebar labels, the current page shown by accent text on a soft accent fill, hairline-ruled h2 sections, tables with a filled header row.
+- **Docs:** Starlight, restyled in `site/src/styles/theme.css` to the same tokens: small muted sidebar labels, the current page shown by accent text on a soft accent fill, hairline-ruled h2 sections, tables with a filled header row that hug their content up to the column width. The catalog page (the one page without "On this page") widens to fit its six-column table while its prose keeps the 46rem measure; in a narrow column the catalog's rows stack, each cell under a small label.
 
 ## Avoid
 

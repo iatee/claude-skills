@@ -420,9 +420,11 @@ const install = [
   [data-copied] .i-copy { display: none; }
   [data-copied] .i-check { display: inline; animation: check-in 0.22s cubic-bezier(0.16, 1, 0.3, 1); }
   @keyframes check-in { from { opacity: 0; transform: scale(0.5); } }
-  .commands { margin: 0; padding: 14px 16px; list-style: none; overflow-x: auto; }
-  .commands li { white-space: nowrap; line-height: 1.95; }
-  .commands li::before { content: "›"; margin-right: 10px; color: var(--text-3); font-family: "JetBrains Mono", monospace; }
+  .commands { margin: 0; padding: 14px 16px; list-style: none; }
+  /* The prompt hangs, so a command that wraps on a phone stays readable in full. */
+  .commands li { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; column-gap: 10px; padding: 3px 0; line-height: 1.6; }
+  .commands li::before { content: "›"; color: var(--text-3); font-family: "JetBrains Mono", monospace; }
+  .commands code { overflow-wrap: anywhere; }
   .commands code { font-size: 14px; }
 
   .hero-links { margin: 20px 0 0; color: var(--text-3); font-size: 14px; }
@@ -484,10 +486,19 @@ const install = [
   h2 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
   .section-head p { margin: 2px 0 0; max-width: 46em; color: var(--text-2); }
 
-  .plugins { margin: 0 0 0 244px; padding: 0; list-style: none; border-top: 1px solid var(--line); }
-  .plugin {
+  /* Rows share one grid, so every install command is the same width and lines up. */
+  .plugins {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
+    margin: 0 0 0 244px;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+  .plugin {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
     gap: 24px;
     align-items: center;
     padding: 18px 0;
@@ -509,6 +520,7 @@ const install = [
   .plugin-cmd {
     display: inline-flex;
     align-items: center;
+    justify-content: space-between;
     gap: 10px;
     padding: 7px 10px;
     border: 1px solid var(--line);
@@ -564,7 +576,8 @@ const install = [
     .plugins, .guide-groups { margin-left: 0; }
   }
   @media (max-width: 640px) {
-    .plugin { grid-template-columns: 1fr; gap: 12px; }
+    .plugins { grid-template-columns: minmax(0, 1fr); }
+    .plugin { grid-template-columns: minmax(0, 1fr); gap: 12px; }
     .plugin-cmd { justify-self: start; max-width: 100%; }
     .plugin-cmd code { overflow: hidden; text-overflow: ellipsis; }
     .guide-groups { grid-template-columns: 1fr; gap: 24px; }

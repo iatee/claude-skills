@@ -221,9 +221,15 @@ h1#_top {
   border-radius: 8px;
 }
 
-/* Tables: header row on a soft fill, hairlines between rows, wide tables scroll in place. */
+/* Tables: header row on a soft fill, hairlines between rows, wide tables scroll in place.
+   The box hugs the table up to the column width, so the header fill always spans it. */
+.sl-markdown-content {
+  container-type: inline-size;
+}
 .sl-markdown-content table {
   display: block;
+  width: max-content;
+  max-width: 100%;
   overflow-x: auto;
   border: 1px solid var(--sl-color-hairline);
   border-radius: 8px;
@@ -248,11 +254,76 @@ h1#_top {
   border-bottom: 0;
 }
 .sl-markdown-content td {
-  min-width: 10rem;
+  min-width: 8rem;
 }
 .sl-markdown-content td:first-child {
-  min-width: 11rem;
+  min-width: 9rem;
   color: var(--sl-color-white);
+}
+
+/* The catalog is the one page without "On this page", and its six-column table needs the room:
+   the page widens while its prose keeps the reading measure. */
+:root:not([data-has-toc]) {
+  --sl-content-width: 76rem;
+}
+:root:not([data-has-toc]) .sl-markdown-content > :not(table) {
+  max-width: 46rem;
+}
+
+/* In a narrow column the catalog's rows stack, each cell under a small label. The labels follow
+   the column order that scripts/catalog.mjs writes. */
+@container (max-width: 44rem) {
+  .sl-markdown-content table:has(th:nth-child(6)) {
+    width: auto;
+    font-size: 0.95rem;
+  }
+  .sl-markdown-content table:has(th:nth-child(6)) :is(tbody, tr, td) {
+    display: block;
+  }
+  .sl-markdown-content table:has(th:nth-child(6)) thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .sl-markdown-content table:has(th:nth-child(6)) tr {
+    padding: 1rem;
+    border-bottom: 1px solid var(--sl-color-hairline);
+  }
+  .sl-markdown-content table:has(th:nth-child(6)) tr:last-child {
+    border-bottom: 0;
+  }
+  .sl-markdown-content table:has(th:nth-child(6)) :is(tbody, tr, td) {
+    margin-top: 0;
+  }
+  .sl-markdown-content table:has(th:nth-child(6)) td {
+    min-width: 0;
+    padding: 0;
+    border: 0;
+  }
+  .sl-markdown-content table:has(th:nth-child(6)) td:is(:nth-child(1), :nth-child(2)) {
+    display: inline-block;
+    margin-inline-end: 0.5rem;
+  }
+  .sl-markdown-content table:has(th:nth-child(6)) td:nth-child(n + 3) {
+    margin-top: 0.6rem;
+  }
+  .sl-markdown-content table:has(th:nth-child(6)) td:nth-child(n + 4)::before {
+    display: block;
+    color: var(--sl-color-gray-3);
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  .sl-markdown-content table:has(th:nth-child(6)) td:nth-child(4)::before {
+    content: "Use it when";
+  }
+  .sl-markdown-content table:has(th:nth-child(6)) td:nth-child(5)::before {
+    content: "How to start it";
+  }
+  .sl-markdown-content table:has(th:nth-child(6)) td:nth-child(6)::before {
+    content: "Credit";
+  }
 }
 
 /* On this page: small and muted. */
