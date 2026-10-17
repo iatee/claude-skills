@@ -37,7 +37,7 @@ export default defineConfig({
       // Shell snippets render as plain code blocks, not as a fake terminal window with three dots.
       expressiveCode: { defaultProps: { frame: "code" } },
       logo: { light: "./src/assets/logo-light.svg", dark: "./src/assets/logo-dark.svg" },
-      components: { PageTitle: "./src/components/PageTitle.astro", Footer: "./src/components/Footer.astro" },
+      components: { Head: "./src/components/Head.astro", PageTitle: "./src/components/PageTitle.astro", Footer: "./src/components/Footer.astro" },
       // Fonts are served from this site (Latin subset only), so pages make no third-party requests.
       // The share image for every guide; Starlight already sets the large-image card type.
       head: [

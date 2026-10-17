@@ -1,0 +1,19 @@
+---
+// Starlight's head, plus structured data so agents and search engines can name and cite each guide.
+import Default from "@astrojs/starlight/components/Head.astro";
+
+const { id, entry } = Astro.locals.starlightRoute;
+const url = new URL(Astro.url.pathname, Astro.site).href;
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": id === "privacy" ? "WebPage" : "TechArticle",
+  headline: entry.data.title,
+  description: entry.data.description,
+  url,
+  inLanguage: "en",
+  isPartOf: { "@type": "WebSite", name: "Claude Skills", url: Astro.site?.href },
+};
+---
+
+<Default />
+{id !== "404" && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
