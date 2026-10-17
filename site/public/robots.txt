@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
 
+# The page list itself, for readers that don't follow the index to it.
+Sitemap: https://skills.garciabaertsch.com/sitemap-0.xml
 Sitemap: https://skills.garciabaertsch.com/sitemap-index.xml
