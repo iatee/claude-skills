@@ -1,0 +1,34 @@
+---
+// Starlight's footer, followed by the same notice and privacy link as the landing page's footer.
+import Default from "@astrojs/starlight/components/Footer.astro";
+---
+
+<Default />
+<p class="site-notice">
+  An unofficial, personal collection. Not affiliated with or endorsed by Anthropic.
+  <span aria-hidden="true">·</span>
+  <a href="/privacy/">Privacy</a>
+</p>
+
+<style>
+  .site-notice {
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--sl-color-hairline);
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+  }
+  .site-notice span {
+    margin: 0 0.4rem;
+  }
+  .site-notice a {
+    color: var(--sl-color-gray-2);
+  }
+  @media (pointer: coarse) {
+    .site-notice a {
+      display: inline-block;
+      padding-block: 12px;
+      margin-block: -12px;
+    }
+  }
+</style>

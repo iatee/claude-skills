@@ -35,7 +35,7 @@ export default defineConfig({
       description: "A curated set of Claude Code skills, credited to their authors, with guides for beginners and power users.",
       favicon: "/favicon.svg",
       logo: { src: "./src/assets/logo.svg" },
-      components: { PageTitle: "./src/components/PageTitle.astro" },
+      components: { PageTitle: "./src/components/PageTitle.astro", Footer: "./src/components/Footer.astro" },
       // Fonts are served from this site (Latin subset only), so pages make no third-party requests.
       customCss: [
         "@fontsource/schibsted-grotesk/latin-400.css",
