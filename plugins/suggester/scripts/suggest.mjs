@@ -5,6 +5,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { STATE_DIR, loadIndex, score } from "./index.mjs";
+import { planStep } from "./plan.mjs";
 
 const THRESHOLD = 7;
 const MAX_CANDIDATES = 3;
@@ -33,15 +34,29 @@ if (toggle) {
   writeJson(settingsFile, { ...settings, enabled: toggle[1].toLowerCase() === "on" });
   process.exit(0);
 }
-if (settings.enabled === false || prompt.startsWith("/") || prompt.split(/\s+/).length < 4) process.exit(0);
+if (settings.enabled === false) process.exit(0);
 
-// Skills already suggested this session, or already used, stay quiet.
-const sessionFile = path.join(STATE_DIR, "sessions", `${input.session_id ?? "unknown"}.json`);
-const shown = new Set(readJson(sessionFile, []));
 let transcript = "";
 try {
   transcript = fs.readFileSync(input.transcript_path, "utf8");
 } catch {}
+
+// Running a step of a numbered plan Claude wrote earlier: have Claude name the next step when it's done.
+const step = planStep(prompt, transcript, input.cwd ?? process.cwd());
+if (step) {
+  const next = step.next
+    ? `When this step is done, end your reply with one line: "Next step: \`${step.next.command}\`${step.next.note ? ` (${step.next.note})` : ""}."`
+    : "This is the last step of that plan. When it is done, say so in one short line.";
+  const context = `Skill suggester: this prompt runs step ${step.number} of ${step.total} of a plan from earlier (\`${step.step.command}\`). ${next}`;
+  process.stdout.write(JSON.stringify({ hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: context } }));
+  process.exit(0);
+}
+
+if (prompt.startsWith("/") || prompt.split(/\s+/).length < 4) process.exit(0);
+
+// Skills already suggested this session, or already used, stay quiet.
+const sessionFile = path.join(STATE_DIR, "sessions", `${input.session_id ?? "unknown"}.json`);
+const shown = new Set(readJson(sessionFile, []));
 const used = (id) => transcript.includes(`"skill":"${id}"`) || transcript.includes(`<command-name>/${id}<`);
 
 const heavy = settings.heavy ?? DEFAULT_HEAVY;

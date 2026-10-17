@@ -18,12 +18,29 @@ In Claude Code:
 
 Then run `/reload-plugins`.
 
+## Plans
+
+Some skills end with a numbered plan of commands to run next, such as impeccable's audit:
+
+```
+1. /impeccable harden: copy feedback and table roles
+2. /impeccable clarify: make the landing page's example accurate
+3. /impeccable adapt: bigger buttons for phones
+```
+
+The suggester remembers the latest such plan for each project. When you run one of its steps, even in a later session, Claude finishes that step and ends its reply with the next one:
+
+> Next step: `/impeccable clarify` (make the landing page's example accurate).
+
+After the last step, Claude says the plan is done. Any numbered list of two or more slash commands in Claude's replies counts as a plan.
+
 ## Examples
 
 - You write "I want to plan a newsletter about home gardening, help me think it through". With `grill-me` installed, Claude adds a 💡 line suggesting it.
 - You write "this test keeps failing every few runs and I have no idea why". With a debugging skill such as `diagnosing-bugs` installed, Claude is pointed to it and can use it.
 - You write "the landing page looks bland, can you make it look better". With a design skill such as `impeccable` installed, Claude is pointed to it and can use it.
 - You write "what's the capital of Peru". No skill fits, so nothing is added.
+- After an `/impeccable audit` that recommends `harden`, then `clarify`, you run `/impeccable harden`. When it's done, Claude names `/impeccable clarify` as the next step.
 
 ## Commands
 
@@ -44,14 +61,14 @@ The plugin has two hooks, both shell scripts in `scripts/`:
 `suggest.mjs` and `index.mjs` only read and write local files. They make no network requests and send nothing anywhere. They read:
 
 - the prompt and session ID that Claude Code passes to the hook;
-- the current session's transcript, to skip skills you have already used;
+- the current session's transcript, to skip skills you have already used and to find numbered plans in Claude's replies;
 - `~/.claude/plugins/installed_plugins.json` and `~/.claude/settings.json`, to find enabled plugins;
 - the name and description in each installed skill's `SKILL.md`, in your user, project and plugin skill folders;
 - `triggers.json` in this plugin, extra words that point to particular skills.
 
-They write only inside `~/.claude/skill-suggester/` (or `$CLAUDE_CONFIG_DIR/skill-suggester/`): `settings.json` for your on/off setting and options, `index.json` as a cache of skill descriptions, and one small file per session listing the skills already suggested.
+They write only inside `~/.claude/skill-suggester/` (or `$CLAUDE_CONFIG_DIR/skill-suggester/`): `settings.json` for your on/off setting and options, `index.json` as a cache of skill descriptions, one small file per session listing the skills already suggested, and one file per project in `plans/` holding that project's latest plan (named by a hash of the project folder's path).
 
-When a skill fits, the hook adds a short note to Claude's context naming up to three candidate skills, with their descriptions. Skills that only you can start are marked "suggest to the user"; other skills are ones Claude may use on its own if it helps.
+When you run a step of a remembered plan, the hook adds a one-line note telling Claude which step comes next. When a skill fits, it adds a short note to Claude's context naming up to three candidate skills, with their descriptions. Skills that only you can start are marked "suggest to the user"; other skills are ones Claude may use on its own if it helps.
 
 ## Settings
 

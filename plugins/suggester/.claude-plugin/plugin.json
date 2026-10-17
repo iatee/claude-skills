@@ -1,6 +1,6 @@
 {
   "name": "suggester",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Suggests the right installed skill when it clearly fits what you're doing, so you don't have to remember them all. Needs Node.js.",
   "author": { "name": "Iatee", "url": "https://github.com/iatee" },
   "homepage": "https://skills.garciabaertsch.com",

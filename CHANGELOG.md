@@ -4,6 +4,7 @@ Each plugin is versioned on its own. Update a plugin with `/plugin marketplace u
 
 ## 2026-10-17
 
+- **suggester 1.1.0:** remembers numbered plans of commands, like the one an `/impeccable audit` ends with. Run one step and Claude names the next step when it's done, even in a later session.
 - **suggester 1.0.2:** hooks now run small shell scripts instead of inline commands, and the plugin has its own README describing everything it reads and writes. No change in behavior.
 
 ## 2026-10-16 (new skills)
