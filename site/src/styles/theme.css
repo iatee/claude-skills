@@ -366,3 +366,34 @@ site-search button[data-open-modal] {
   width: auto;
   height: 1.4rem;
 }
+
+/* On touch screens the header controls and the "On this page" menu get 44px targets, as on the
+   landing page. Mouse layouts are unchanged. */
+@media (pointer: coarse) {
+  :root {
+    --sl-menu-button-size: 44px;
+  }
+  .site-title {
+    min-height: 44px;
+  }
+  site-search button[data-open-modal] {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .expressive-code .copy button {
+    width: 44px;
+    height: 44px;
+  }
+  a[href*="/edit/"] {
+    min-height: 44px;
+    align-items: center;
+  }
+  mobile-starlight-toc summary {
+    min-height: 44px;
+  }
+  mobile-starlight-toc .isMobile a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
