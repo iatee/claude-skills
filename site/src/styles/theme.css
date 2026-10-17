@@ -1,4 +1,4 @@
-/* Docs theme. Shares the landing page's system: Schibsted Grotesk, cool neutral greys, indigo for action,
+/* Docs theme. Shares the landing page's system: Schibsted Grotesk, neutral greys, ink for action,
    amber for the suggester's hints, hairline borders. Starlight supplies structure; this file makes it read as one site. */
 
 :root {
@@ -13,30 +13,30 @@
   --sl-text-h4: 1.05rem;
   --sl-line-height: 1.7;
 
-  /* Dark (Starlight's default scheme) */
-  --sl-color-accent-low: #1d1d3a;
-  --sl-color-accent: #8b8cf8;
-  --sl-color-accent-high: #c7c8fd;
-  --sl-color-white: #ededf0;
-  --sl-color-gray-1: #d4d4d8;
-  --sl-color-gray-2: #a1a1aa;
-  --sl-color-gray-3: #8b8b94;
-  --sl-color-gray-4: #3f3f46;
-  --sl-color-gray-5: #232328;
-  --sl-color-gray-6: #121215;
-  --sl-color-black: #0b0b0d;
-  --sl-color-hairline: #232328;
-  --sl-color-hairline-light: #1b1b1f;
-  --sl-color-hairline-shade: #232328;
-  --sl-color-bg-nav: rgba(11, 11, 13, 0.88);
-  --sl-color-bg-sidebar: #0b0b0d;
+  /* Dark (Starlight's default scheme). Action is ink, not a hue: the accent is the text colour itself. */
+  --sl-color-accent-low: #222222;
+  --sl-color-accent: #ededed;
+  --sl-color-accent-high: #ffffff;
+  --sl-color-white: #ededed;
+  --sl-color-gray-1: #d6d6d6;
+  --sl-color-gray-2: #a3a3a3;
+  --sl-color-gray-3: #8a8a8a;
+  --sl-color-gray-4: #3d3d3d;
+  --sl-color-gray-5: #242424;
+  --sl-color-gray-6: #141414;
+  --sl-color-black: #0a0a0a;
+  --sl-color-hairline: #242424;
+  --sl-color-hairline-light: #1c1c1c;
+  --sl-color-hairline-shade: #242424;
+  --sl-color-bg-nav: rgba(10, 10, 10, 0.88);
+  --sl-color-bg-sidebar: #0a0a0a;
 
-  /* Semantic roles. Starlight names them by hue: blue is note (indigo, like the accent), purple is tip
+  /* Semantic roles. Starlight names them by hue: blue is note (neutral, like the accent), purple is tip
      (amber, the suggester's hint colour), orange is caution, red is danger, green is success.
      -low is the fill, the base is the hairline, -high is the text. */
-  --sl-color-blue-low: #1d1d3a;
-  --sl-color-blue: #2d2d55;
-  --sl-color-blue-high: #a5a6fb;
+  --sl-color-blue-low: #161616;
+  --sl-color-blue: #2b2b2b;
+  --sl-color-blue-high: #ededed;
   --sl-color-purple-low: #1e1910;
   --sl-color-purple: #4a3a1a;
   --sl-color-purple-high: #f0bf63;
@@ -52,27 +52,27 @@
 }
 
 :root[data-theme="light"] {
-  --sl-color-accent-low: #eef0ff;
-  --sl-color-accent: #4f46e5;
-  --sl-color-accent-high: #312e81;
-  --sl-color-white: #18181b;
-  --sl-color-gray-1: #27272a;
-  --sl-color-gray-2: #52525b;
-  --sl-color-gray-3: #6b6b74;
-  --sl-color-gray-4: #a1a1aa;
-  --sl-color-gray-5: #e4e4e7;
-  --sl-color-gray-6: #f4f4f6;
-  --sl-color-gray-7: #fafafb;
-  --sl-color-black: #fbfbfc;
-  --sl-color-hairline: #e4e4e7;
-  --sl-color-hairline-light: #ececef;
-  --sl-color-hairline-shade: #e4e4e7;
-  --sl-color-bg-nav: rgba(251, 251, 252, 0.88);
-  --sl-color-bg-sidebar: #fbfbfc;
+  --sl-color-accent-low: #ececec;
+  --sl-color-accent: #161616;
+  --sl-color-accent-high: #000000;
+  --sl-color-white: #161616;
+  --sl-color-gray-1: #262626;
+  --sl-color-gray-2: #4f4f4f;
+  --sl-color-gray-3: #6a6a6a;
+  --sl-color-gray-4: #a3a3a3;
+  --sl-color-gray-5: #e3e3e3;
+  --sl-color-gray-6: #f2f2f2;
+  --sl-color-gray-7: #f7f7f7;
+  --sl-color-black: #fafafa;
+  --sl-color-hairline: #e3e3e3;
+  --sl-color-hairline-light: #ebebeb;
+  --sl-color-hairline-shade: #e3e3e3;
+  --sl-color-bg-nav: rgba(250, 250, 250, 0.88);
+  --sl-color-bg-sidebar: #fafafa;
 
-  --sl-color-blue-low: #eef0ff;
-  --sl-color-blue: #d9dcfb;
-  --sl-color-blue-high: #4338ca;
+  --sl-color-blue-low: #f4f4f4;
+  --sl-color-blue: #e0e0e0;
+  --sl-color-blue-high: #262626;
   --sl-color-purple-low: #fdf7e8;
   --sl-color-purple: #e6c983;
   --sl-color-purple-high: #8a4b08;
@@ -137,7 +137,7 @@ body {
 .sidebar-content a[aria-current="page"],
 .sidebar-content a[aria-current="page"]:hover {
   background: var(--sl-color-accent-low);
-  color: var(--sl-color-accent);
+  color: var(--sl-color-white);
   font-weight: 500;
 }
 
@@ -167,9 +167,17 @@ h1#_top {
 .sl-markdown-content :is(p, li) {
   color: var(--sl-color-gray-1);
 }
-.sl-markdown-content a {
+/* Links are ink, told apart by their underline, which darkens on hover. */
+.sl-markdown-content a:not(:where(.not-content *)) {
+  color: var(--sl-color-white);
+  font-weight: 500;
+  text-decoration-color: var(--sl-color-gray-4);
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
+  transition: text-decoration-color 0.15s;
+}
+.sl-markdown-content a:not(:where(.not-content *)):hover {
+  text-decoration-color: currentColor;
 }
 .sl-markdown-content strong {
   color: var(--sl-color-white);
@@ -195,6 +203,14 @@ h1#_top {
 }
 .expressive-code .frame {
   box-shadow: none !important;
+}
+/* The whole block copies on click (see Footer.astro); its hairline darkens to say so. */
+.expressive-code pre {
+  cursor: copy;
+  transition: border-color 0.15s;
+}
+.expressive-code .frame:hover pre {
+  border-color: var(--sl-color-gray-4);
 }
 
 /* Blockquotes are where the guides quote the suggester, so they take its amber hint colour,
@@ -338,7 +354,8 @@ starlight-toc a {
   font-size: 0.85rem;
 }
 starlight-toc a[aria-current="true"] {
-  color: var(--sl-color-accent);
+  color: var(--sl-color-white);
+  font-weight: 500;
 }
 
 /* Previous / next: hairline boxes, small labels. */

@@ -10,6 +10,17 @@ import Default from "@astrojs/starlight/components/Footer.astro";
   <a href="/privacy/">Privacy</a>
 </p>
 
+<script>
+  // A click anywhere on a code block copies it, through the block's own copy button, so the
+  // confirmation looks the same. Selecting part of the code still works: a click that ends a
+  // selection copies nothing.
+  document.addEventListener("click", (event) => {
+    const pre = (event.target as Element).closest?.(".expressive-code pre");
+    if (!pre || getSelection()?.toString()) return;
+    pre.closest(".frame")?.querySelector<HTMLButtonElement>(".copy button")?.click();
+  });
+</script>
+
 <style>
   .site-notice {
     margin-top: 2.5rem;
