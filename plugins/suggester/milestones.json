@@ -39,7 +39,7 @@
   },
   "end-session": {
     "when": [
-      "done for today", "that's it for today", "call it a day", "wrap up", "wrapping up", "pick this up tomorrow", "continue tomorrow", "continue later",
+      "done for today", "that's it for today", "call it a day", "wrap up", "wrap it up", "wrapping up", "wraping up", "pick this up tomorrow", "continue tomorrow", "continue later",
       "por hoy es todo", "lo dejamos por hoy", "seguimos mañana", "continuamos mañana",
       "für heute fertig", "schluss für heute", "morgen weiter", "machen morgen weiter",
       "c'est tout pour aujourd'hui", "on continue demain", "on reprend demain",

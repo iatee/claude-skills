@@ -4,6 +4,7 @@ Each plugin is versioned on its own. Update a plugin with `/plugin marketplace u
 
 ## 2026-10-17
 
+- **suggester 1.4.0:** milestones now work in any wording, language or spelling ("wraping up", "I'm heading out"): at session start Claude is told what each moment means and which installed skills fit, about 300 tokens once per session. The phrase lists stay as the guaranteed trigger, now with "wrap it up".
 - **planning 1.2.0:** adds `prototype` (by Matt Pocock), which `wayfinder` calls for its prototype tickets but which wasn't included, so those tickets failed unless another plugin happened to have a skill by that name.
 - **coding 1.1.1:** `playwright-cli` says when to use it, so Claude reaches for it on its own; `tdd` points to `coding:code-review` rather than the built-in review.
 - **all 1.1.1:** the description names both opt-in plugins it leaves out, and the manifest states its license. No change in what it installs.

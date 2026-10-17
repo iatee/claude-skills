@@ -51,7 +51,7 @@ The same works for other moments:
 | "cut a release", "publish to npm" | a deploy checklist, a code review, `/security-review`, docs |
 | "done for today", "wrapping up" | `handoff` and `retro` |
 
-The phrases work in English, Spanish, German, French and Portuguese ("despliega la web", "live schalten", "mise en ligne", "o site está pronto"). It names only skills you have installed and haven't used in that session, from any plugin, your own skill folders or Claude Code's built-in skills, and says it once per moment per session.
+The phrases work in English, Spanish, German, French and Portuguese ("despliega la web", "live schalten", "mise en ligne", "o site está pronto"). It names only skills you have installed and haven't used in that session, from any plugin, your own skill folders or Claude Code's built-in skills, and says it once per moment per session. The phrases are the guaranteed trigger; at session start Claude is also told what each moment means, so it catches other wordings and typos ("wraping up", "I'm heading out") itself.
 
 Claude Code's built-in skills (such as `/code-review`, `/security-review`, `/simplify` and `/loop`) have no `SKILL.md` on disk. Claude Code lists every skill a session has in that session's transcript, so the suggester reads the built-ins your version actually has from there. Until that list is written, a few prompts into a session, `builtins.json` stands in: a skill name mapped to a one-line description, which also fills in any description the list lacks. The moments are listed in `milestones.json`; add your own in your settings (below).
 
@@ -77,7 +77,7 @@ Node.js 18 or later. Without it, Claude Code shows a reminder when a session sta
 
 The plugin has two hooks, both shell scripts in `scripts/`:
 
-- **SessionStart** (`session-start.sh`) deletes session files older than 30 days, then checks whether `node` is available and, if not, shows the reminder above.
+- **SessionStart** (`session-start.sh`) deletes session files older than 30 days, then checks whether `node` is available and, if not, shows the reminder above. Otherwise it runs `session-start.mjs`, which tells Claude the milestones and the installed skills for each, about 300 tokens once per session.
 - **UserPromptSubmit** (`suggest.sh`) runs `scripts/suggest.mjs` with Node.js on each prompt. Prompts that start with `/` or have fewer than four words are skipped, except for milestones.
 
 `suggest.mjs` and `index.mjs` only read and write local files. They make no network requests and send nothing anywhere. They read:
