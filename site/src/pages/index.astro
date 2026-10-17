@@ -263,6 +263,18 @@ const install = [
           }, 1600);
         });
       }
+
+      // The example plays once when it comes into view: the suggester's line arrives after Claude's reply.
+      // Without this script the line is simply there.
+      const suggestion = document.querySelector<HTMLElement>(".suggestion");
+      if (suggestion && "IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries) => {
+          if (!entries[0].isIntersecting) return;
+          suggestion.dataset.play = "";
+          observer.disconnect();
+        });
+        observer.observe(suggestion);
+      }
     </script>
   </body>
 </html>
@@ -399,14 +411,15 @@ const install = [
     font: 500 13px/1 inherit;
     font-family: inherit;
     cursor: pointer;
-    transition: background-color 0.15s;
+    transition: background-color 0.2s, color 0.2s;
   }
   .copy:hover { background: var(--accent-hover); }
   @media (prefers-color-scheme: dark) { .copy { color: #0b0b0d; } }
   .copy[data-copied], .copy[data-copied]:hover { background: var(--success); color: var(--on-success); }
   .i-check { display: none; }
   [data-copied] .i-copy { display: none; }
-  [data-copied] .i-check { display: inline; }
+  [data-copied] .i-check { display: inline; animation: check-in 0.22s cubic-bezier(0.16, 1, 0.3, 1); }
+  @keyframes check-in { from { opacity: 0; transform: scale(0.5); } }
   .commands { margin: 0; padding: 14px 16px; list-style: none; overflow-x: auto; }
   .commands li { white-space: nowrap; line-height: 1.95; }
   .commands li::before { content: "›"; margin-right: 10px; color: var(--text-3); font-family: "JetBrains Mono", monospace; }
@@ -451,6 +464,16 @@ const install = [
     color: var(--text) !important;
   }
   .exchange .suggestion code { background: none; padding: 0; color: var(--hint-ink); font-weight: 500; }
+  /* The one authored moment: the line arrives, then warms to the suggester's amber. */
+  .suggestion[data-play] {
+    animation:
+      hint-arrive 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s backwards,
+      hint-warm 0.5s ease-out 0.85s backwards;
+  }
+  .suggestion[data-play] code { animation: hint-warm-ink 0.5s ease-out 0.85s backwards; }
+  @keyframes hint-arrive { from { opacity: 0; transform: translateY(6px); } }
+  @keyframes hint-warm { from { background-color: var(--surface); border-color: var(--line); } }
+  @keyframes hint-warm-ink { from { color: var(--text); } }
   .exchange-note { margin: 4px 16px 12px; color: var(--text-3); font-size: 13px; }
   .exchange code, .section-head code, .credits code { padding: 1px 5px; border-radius: 4px; background: var(--code-bg); }
 
@@ -549,7 +572,11 @@ const install = [
     .lede { font-size: 17px; }
     .commands code { font-size: 13px; }
   }
+  /* Reduced motion keeps the colour changes and drops the movement. */
   @media (prefers-reduced-motion: reduce) {
-    * { transition: none !important; }
+    .suggestion[data-play] { animation: hint-warm 0.5s ease-out 0.4s backwards; }
+    .suggestion[data-play] code { animation: hint-warm-ink 0.5s ease-out 0.4s backwards; }
+    [data-copied] .i-check { animation: none; }
+    .guides a:hover .guide-title svg { transform: none; }
   }
 </style>
