@@ -133,7 +133,12 @@ const install = [
     <meta property="og:description" content={description} />
     <meta property="og:url" content={pageUrl} />
     <meta property="og:locale" content="en" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content={new URL("/og.png", Astro.site).href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Claude Skills: curated skills for Claude Code, with an example suggester line." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={new URL("/og.png", Astro.site).href} />
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     <meta name="color-scheme" content="light dark" />
     <script is:inline>

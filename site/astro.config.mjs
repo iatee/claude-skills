@@ -37,6 +37,17 @@ export default defineConfig({
       logo: { src: "./src/assets/logo.svg" },
       components: { PageTitle: "./src/components/PageTitle.astro", Footer: "./src/components/Footer.astro" },
       // Fonts are served from this site (Latin subset only), so pages make no third-party requests.
+      // The share image for every guide; Starlight already sets the large-image card type.
+      head: [
+        { tag: "meta", attrs: { property: "og:image", content: "https://skills.garciabaertsch.com/og.png" } },
+        { tag: "meta", attrs: { property: "og:image:width", content: "1200" } },
+        { tag: "meta", attrs: { property: "og:image:height", content: "630" } },
+        {
+          tag: "meta",
+          attrs: { property: "og:image:alt", content: "Claude Skills: curated skills for Claude Code, with an example suggester line." },
+        },
+        { tag: "meta", attrs: { name: "twitter:image", content: "https://skills.garciabaertsch.com/og.png" } },
+      ],
       customCss: [
         "@fontsource/schibsted-grotesk/latin-400.css",
         "@fontsource/schibsted-grotesk/latin-500.css",
