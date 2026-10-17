@@ -36,6 +36,25 @@ After the last step, Claude says the plan is done. Any numbered list of two or m
 
 To run the whole plan at once, say "run the plan" (or "continue the plan", or `/suggester plan`). Claude runs every step that hasn't run yet, in order, without pausing, and commits after each step, so each one can be undone on its own. It stops early only when a step needs a decision from you or a build or check fails; saying "run the plan" again continues from there. The suggester counts a step as run when you typed its command or Claude started its skill after the plan was written.
 
+## Milestones
+
+Some moments call for skills nobody thinks to ask for. When you say "deploy", "publish", "go live" or "the site is done" in a session that has worked on web files, Claude adds one line before doing it:
+
+> 💡 Before you publish: `/frontend:impeccable audit` for the design language, `/searchfit-seo:seo-audit` for SEO.
+
+The same works for other moments:
+
+| You say | Claude points to |
+|---|---|
+| "deploy", "publish", "go live", "the site is done" (after working on web files) | `impeccable`, an SEO audit, AI-search visibility, an accessibility review |
+| "open a PR", "ready to merge" | a code review, `/security-review`, `/simplify` |
+| "cut a release", "publish to npm" | a deploy checklist, a code review, `/security-review`, docs |
+| "done for today", "wrapping up" | `handoff` and `retro` |
+
+The phrases work in English, Spanish, German, French and Portuguese ("despliega la web", "live schalten", "mise en ligne", "o site está pronto"). It names only skills you have installed and haven't used in that session, from any plugin, your own skill folders or Claude Code's built-in skills, and says it once per moment per session.
+
+Claude Code's built-in skills (such as `/code-review`, `/security-review`, `/simplify` and `/loop`) have no `SKILL.md` on disk. Claude Code lists every skill a session has in that session's transcript, so the suggester reads the built-ins your version actually has from there. Until that list is written, a few prompts into a session, `builtins.json` stands in: a skill name mapped to a one-line description, which also fills in any description the list lacks. The moments are listed in `milestones.json`; add your own in your settings (below).
+
 ## Examples
 
 - You write "I want to plan a newsletter about home gardening, help me think it through". With `grill-me` installed, Claude adds a 💡 line suggesting it.
@@ -59,15 +78,17 @@ Node.js 18 or later. Without it, Claude Code shows a reminder when a session sta
 The plugin has two hooks, both shell scripts in `scripts/`:
 
 - **SessionStart** (`session-start.sh`) checks whether `node` is available and, if not, shows the reminder above.
-- **UserPromptSubmit** (`suggest.sh`) runs `scripts/suggest.mjs` with Node.js on each prompt. Prompts that start with `/` or have fewer than four words are skipped.
+- **UserPromptSubmit** (`suggest.sh`) runs `scripts/suggest.mjs` with Node.js on each prompt. Prompts that start with `/` or have fewer than four words are skipped, except for milestones.
 
 `suggest.mjs` and `index.mjs` only read and write local files. They make no network requests and send nothing anywhere. They read:
 
 - the prompt and session ID that Claude Code passes to the hook;
-- the current session's transcript, to skip skills you have already used and to find numbered plans in Claude's replies;
+- the current session's transcript, to skip skills you have already used, to find numbered plans in Claude's replies, and to see which built-in skills the session has;
 - `~/.claude/plugins/installed_plugins.json` and `~/.claude/settings.json`, to find enabled plugins;
 - the name and description in each installed skill's `SKILL.md`, in your user, project and plugin skill folders;
-- `triggers.json` in this plugin, extra words that point to particular skills.
+- `triggers.json` in this plugin, extra words that point to particular skills;
+- `milestones.json` in this plugin, moments like publishing a site and the skills to suggest then;
+- `builtins.json` in this plugin, a fallback list of Claude Code's built-in skills, which have no `SKILL.md`.
 
 They write only inside `~/.claude/skill-suggester/` (or `$CLAUDE_CONFIG_DIR/skill-suggester/`): `settings.json` for your on/off setting and options, `index.json` as a cache of skill descriptions, one small file per session listing the skills already suggested, and one file per project in `plans/` holding that project's latest plan and which of its steps have run (named by a hash of the project folder's path).
 
@@ -80,6 +101,20 @@ When you run a step of a remembered plan, the hook adds a one-line note telling 
 - `"enabled"`: `true` or `false`, set by `/suggester on` and `/suggester off`.
 - `"heavy"`: skill names that should only ever be suggested, never used by Claude on its own.
 - `"triggers"`: extra words per skill name, for example `{"tdd": ["kata"]}`.
+- `"milestones"`: your own moments, or changes to the built-in ones under the same name. For example, to have your own `brand-check` skill suggested before a newsletter goes out:
+
+  ```json
+  "milestones": {
+    "newsletter": {
+      "when": ["send the newsletter", "schedule the newsletter"],
+      "message": "the user is about to send a newsletter",
+      "before": "send",
+      "skills": ["brand-check"]
+    }
+  }
+  ```
+
+  `when` is a list of phrases in any language, `skills` a list of skill names or `plugin:skill` ids (a nested list means "the first of these that's installed"), and an optional `context` is a regex the session must match, such as `"\\.tsx\\b"`.
 
 ## Privacy
 

@@ -1,0 +1,52 @@
+{
+  "$comment": "Moments worth a checklist, checked in this order. When a prompt contains one of the `when` phrases (any language, any case) and the session matches `context` (an optional regex over the transcript and prompt), Claude suggests up to four of the listed skills that are installed and not yet used, once per session. Each skill is a plugin:skill id or a plain name, or a list of alternatives where the first installed one wins. Claude Code's built-in skills are listed in builtins.json. Add your own moments in ~/.claude/skill-suggester/settings.json under \"milestones\".",
+  "release": {
+    "when": [
+      "cut a release", "make a release", "new release", "tag a version", "tag a release", "release it", "publish to npm", "publish the package",
+      "sacar una nueva versión", "crear un release", "publicar en npm",
+      "release erstellen", "neue version veröffentlichen", "auf npm veröffentlichen", "version taggen",
+      "faire une release", "sortir une nouvelle version", "publier sur npm",
+      "lançar uma nova versão", "criar um release", "publicar no npm"
+    ],
+    "message": "the user is about to release a new version. A checklist and a review first avoid a broken release",
+    "before": "release",
+    "skills": ["deploy-checklist", ["coding:code-review", "code-review"], "security-review", "documentation"]
+  },
+  "publish-site": {
+    "when": [
+      "publish", "deploy", "go live", "goes live", "launch", "ship it", "push it live", "site is done", "site is finished", "website is done", "website is finished",
+      "publicar", "publícalo", "desplegar", "despliega", "poner en línea", "subir a producción", "la web está lista", "el sitio está listo",
+      "veröffentlichen", "veröffentliche", "deployen", "live schalten", "online stellen", "die seite ist fertig", "die website ist fertig",
+      "publier", "publie", "déployer", "déploie", "mettre en ligne", "mise en ligne", "le site est prêt", "le site est fini",
+      "implantar", "colocar no ar", "o site está pronto"
+    ],
+    "context": "\\.(html|css|scss|astro|jsx|tsx|vue|svelte)\\b",
+    "message": "the user is about to publish a website. Before it goes live, they should check the design language, SEO and accessibility",
+    "before": "publish",
+    "skills": ["impeccable", ["searchfit-seo:seo-audit", "seo-audit"], ["searchfit-seo:ai-visibility", "seo-ai-visibility", "ai-visibility"], "accessibility-review"]
+  },
+  "merge": {
+    "when": [
+      "ready to merge", "merge it", "merge this", "open a pr", "create a pr", "open a pull request", "create a pull request", "ready for review",
+      "abrir un pr", "abre un pr", "crear un pr", "listo para merge", "haz el merge",
+      "pr erstellen", "pr öffnen", "pull request erstellen", "bereit zum mergen",
+      "ouvrir une pr", "ouvre une pr", "créer une pr", "prêt à merger",
+      "abrir um pr", "criar um pr", "pronto para merge"
+    ],
+    "message": "the user is about to merge or open a pull request. A review first catches what's easy to miss",
+    "before": "merge",
+    "skills": [["coding:code-review", "code-review"], "security-review", "simplify"]
+  },
+  "end-session": {
+    "when": [
+      "done for today", "that's it for today", "call it a day", "wrap up", "wrapping up", "pick this up tomorrow", "continue tomorrow", "continue later",
+      "por hoy es todo", "lo dejamos por hoy", "seguimos mañana", "continuamos mañana",
+      "für heute fertig", "schluss für heute", "morgen weiter", "machen morgen weiter",
+      "c'est tout pour aujourd'hui", "on continue demain", "on reprend demain",
+      "por hoje é isso", "continuamos amanhã", "amanhã a gente continua"
+    ],
+    "message": "the user is ending the session. A handoff keeps the context for next time, and a retro keeps the lessons",
+    "before": "go",
+    "skills": [["sessions:handoff", "handoff"], "retro"]
+  }
+}

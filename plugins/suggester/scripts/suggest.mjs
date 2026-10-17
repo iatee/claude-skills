@@ -52,7 +52,7 @@ const run = planRun(prompt, transcript, cwd);
 if (run) {
   if (run.total === 0) say("Skill suggester: the user asked to run the plan, but no plan is remembered for this project. Say so in one line.");
   if (run.remaining.length === 0) say("Skill suggester: every step of the remembered plan has already run. Say so in one line.");
-  const skills = loadIndex(cwd);
+  const skills = loadIndex(cwd, transcript);
   const steps = run.remaining.map((step, i) => {
     const [name, ...args] = step.command.replace(/^\//, "").split(/\s+/);
     const skill = skills.find((s) => s.id === name || s.name === name.split(":").pop());
@@ -79,12 +79,37 @@ if (step) {
   say(`Skill suggester: this prompt runs step ${step.number} of ${step.total} of a plan from earlier (\`${step.step.command}\`). ${next}`);
 }
 
-if (prompt.startsWith("/") || prompt.split(/\s+/).length < 4) process.exit(0);
-
 // Skills already suggested this session, or already used, stay quiet.
 const sessionFile = path.join(STATE_DIR, "sessions", `${input.session_id ?? "unknown"}.json`);
 const shown = new Set(readJson(sessionFile, []));
 const used = (id) => transcript.includes(`"skill":"${id}"`) || transcript.includes(`<command-name>/${id}<`);
+
+// Milestones, like publishing a site: point to the checks people forget, once per session.
+const milestones = { ...readJson(path.join(import.meta.dirname, "..", "milestones.json"), {}), ...settings.milestones };
+for (const [key, m] of Object.entries(milestones)) {
+  if (key.startsWith("$") || shown.has(`milestone:${key}`)) continue;
+  // Letter-aware boundaries, so phrases like "mise en ligne" or "veröffentlichen" match in any language.
+  const phrases = m.when.map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/'/g, "['’]"));
+  const when = new RegExp(`(?<![\\p{L}\\p{N}])(${phrases.join("|")})(?![\\p{L}\\p{N}])`, "iu");
+  if (!when.test(prompt) || (m.context && !new RegExp(m.context, "i").test(transcript + prompt))) continue;
+  // An entry is an id, a plain name, or a list of alternatives where the first installed one wins.
+  const index = loadIndex(cwd, transcript);
+  const find = (name) => index.find((s) => s.id === name) ?? index.find((s) => s.name === name);
+  const pick = (entry) => [entry].flat().map(find).find(Boolean);
+  const skills = [...new Set(m.skills.map(pick))].filter((s) => s && !used(s.id) && !used(s.name)).slice(0, 4);
+  if (skills.length === 0) continue;
+  shown.add(`milestone:${key}`);
+  writeJson(sessionFile, [...shown]);
+  say(
+    [
+      `Skill suggester: ${m.message}. These installed skills cover it:`,
+      ...skills.map((s) => `- /${s.id}: ${s.description.slice(0, 160)}`),
+      `Before doing what was asked, add one short line to your reply, such as "💡 Before you ${m.before ?? "continue"}: /<skill> for <what>, /<skill> for <what>." Never run them unasked.`,
+    ].join("\n"),
+  );
+}
+
+if (prompt.startsWith("/") || prompt.split(/\s+/).length < 4) process.exit(0);
 
 const heavy = settings.heavy ?? DEFAULT_HEAVY;
 const isHeavy = (s) => s.userOnly || heavy.some((h) => s.name === h || s.name.startsWith(`${h}-`));
@@ -92,7 +117,7 @@ const isHeavy = (s) => s.userOnly || heavy.some((h) => s.name === h || s.name.st
 const triggers = readJson(path.join(import.meta.dirname, "..", "triggers.json"), {});
 for (const [name, words] of Object.entries(settings.triggers ?? {})) triggers[name] = [...(triggers[name] ?? []), ...words];
 
-const candidates = score(prompt, loadIndex(cwd), triggers)
+const candidates = score(prompt, loadIndex(cwd, transcript), triggers)
   .filter((r) => r.score >= THRESHOLD && !shown.has(r.skill.id) && !used(r.skill.id) && !used(r.skill.name))
   .slice(0, MAX_CANDIDATES);
 if (candidates.length === 0) process.exit(0);

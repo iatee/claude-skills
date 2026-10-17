@@ -4,6 +4,7 @@ Each plugin is versioned on its own. Update a plugin with `/plugin marketplace u
 
 ## 2026-10-17
 
+- **suggester 1.3.0:** suggests checks at milestones: design, SEO and accessibility before you publish a website, a review before you merge or release, and a handoff when you wrap up, in English, Spanish, German, French and Portuguese. Can suggest Claude Code's built-in `/security-review` and `/simplify` too. Add your own moments, with any skill you have, under `"milestones"` in your settings.
 - **frontend 1.2.0:** now also installs `searchfit-seo` by SearchFit.ai, for SEO audits, keyword clustering, schema markup and visibility in AI answers. Run `/reload-plugins` after updating.
 - **suggester 1.2.1:** links to the new [privacy policy](https://skills.garciabaertsch.com/privacy/).
 - **suggester 1.2.0:** say "run the plan" (or `/suggester plan`) and Claude runs every remaining step of the remembered plan, committing after each, without pausing.

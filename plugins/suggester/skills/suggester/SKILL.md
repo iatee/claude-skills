@@ -18,5 +18,6 @@ The setting is stored in `~/.claude/skill-suggester/settings.json` (`"enabled": 
 
 - `"heavy"`: skill names that should only ever be suggested, never auto-used.
 - `"triggers"`: extra words per skill name, e.g. `{"tdd": ["kata"]}`.
+- `"milestones"`: moments with skills to suggest then, e.g. before publishing a site; the format is in the plugin README.
 
 Edit it only if the user asks to change those.

@@ -86,8 +86,35 @@ function skillRoots(cwd) {
   return roots;
 }
 
+// Claude Code's own skills have no SKILL.md. The session's skill listing in the transcript names the ones
+// this Claude Code version has; before that listing is written, builtins.json stands in.
+const builtins = (transcript, onDisk) => {
+  let fallback = {};
+  try {
+    fallback = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "..", "builtins.json"), "utf8"));
+  } catch {}
+  let list = Object.entries(fallback).filter(([name]) => !name.startsWith("$"));
+  const line = transcript.split("\n").findLast((l) => l.includes('"type":"skill_listing"'));
+  if (line) {
+    try {
+      const { names, content } = JSON.parse(line).attachment;
+      const described = new Map([...content.matchAll(/^- ([^\s:]+): (.+)$/gm)].map((m) => [m[1], m[2]]));
+      list = names
+        .filter((name) => !name.includes(":") && !onDisk.has(name))
+        .map((name) => [name, described.get(name) ?? fallback[name]])
+        .filter(([, description]) => description);
+    } catch {}
+  }
+  return list.map(([name, description]) => ({ id: name, name, description, userOnly: false, nameTokens: tokenize(name), descTokens: tokenize(description), phrases: [] }));
+};
+
+export const loadIndex = (cwd, transcript = "") => {
+  const skills = loadSkillFiles(cwd);
+  return [...skills, ...builtins(transcript, new Set(skills.map((s) => s.id)))];
+};
+
 // The cache key is every root's mtime, so adding, removing or updating a skill rebuilds the index.
-export function loadIndex(cwd) {
+function loadSkillFiles(cwd) {
   const roots = skillRoots(cwd).filter((r) => fs.existsSync(r.dir));
   const key = roots.map((r) => `${r.dir}:${fs.statSync(r.dir).mtimeMs}`).join("|");
   const cacheFile = path.join(STATE_DIR, "index.json");
