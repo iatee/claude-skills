@@ -17,6 +17,12 @@
       "category": "design"
     },
     {
+      "name": "searchfit-seo",
+      "source": { "source": "github", "repo": "searchfit/searchfit-seo", "sha": "c324a2e87c4dd84fe6bd6d55e45272acdd090afd" },
+      "description": "SEO and AI-search visibility: audits, technical SEO, keyword clustering, schema markup and content planning. By SearchFit.ai, MIT. Installed with frontend.",
+      "category": "marketing"
+    },
+    {
       "name": "ponytail",
       "source": { "source": "github", "repo": "DietrichGebert/ponytail", "sha": "6f1c2bfff0c837d268929a7c4e490918eb4fab29" },
       "description": "Opt-in: lazy senior dev mode. Pushes Claude to the smallest solution that works. Changes every session, so it is not in all. By Dietrich Gebert, MIT.",

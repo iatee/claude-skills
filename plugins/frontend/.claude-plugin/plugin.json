@@ -1,10 +1,10 @@
 {
   "name": "frontend",
-  "version": "1.1.0",
-  "description": "Design, critique and polish frontend interfaces with impeccable (Paul Bakaus), plus taste-skill (leonxlnx) for art direction.",
+  "version": "1.2.0",
+  "description": "Design, critique and polish frontend interfaces with impeccable (Paul Bakaus), plus taste-skill (leonxlnx) for art direction and searchfit-seo (SearchFit.ai) for SEO and AI-search visibility.",
   "author": { "name": "Iatee", "url": "https://github.com/iatee" },
   "homepage": "https://skills.garciabaertsch.com",
   "repository": "https://github.com/iatee/claude-skills",
   "license": "Apache-2.0",
-  "dependencies": ["taste-skill"]
+  "dependencies": ["taste-skill", "searchfit-seo"]
 }

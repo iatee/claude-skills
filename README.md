@@ -22,7 +22,7 @@ In Claude Code, run:
 |---|---|
 | `planning` | Grilling interviews, specs, tickets, triage, research, a seven-persona council |
 | `coding` | Implement, TDD, bug diagnosis, code review, architecture, browser automation (installs `planning` too) |
-| `frontend` | `impeccable` for designing and polishing interfaces, plus `taste-skill` for art direction |
+| `frontend` | `impeccable` for designing and polishing interfaces, `taste-skill` for art direction, and `searchfit-seo` for SEO and AI-search visibility |
 | `writing` | Writing for people and for agents, teaching, re-pitching |
 | `sessions` | Handoffs to a fresh agent, retrospectives |
 | `suggester` | Suggests the right skill when it clearly fits, so you don't have to remember them all. Needs [Node.js](https://nodejs.org). `/suggester off` mutes it. |
@@ -76,6 +76,7 @@ In Claude Code, run:
 | **retro** | `sessions` | Runs a short retrospective on the session: what worked, what didn't, what to change. | A piece of work is finished and you want to learn from it. | `/retro` | [Matt Pocock](https://github.com/mattpocock/skills) |
 | **suggester** | `suggester` | Turns skill suggestions on or off. | Suggestions get in your way, or you want them back. | `/suggester` | Iatee |
 | **taste-skill** | `taste-skill` | 14 skills for art direction: design directions, reference images, brand kits and style presets. | Generated frontends look generic and you want a distinct visual style. | Automatic, or `/taste-skill` | [leonxlnx](https://github.com/Leonxlnx/taste-skill) |
+| **searchfit-seo** | `searchfit-seo` | 11 skills, 6 commands and 3 agents for SEO: site audits, technical SEO, keyword clustering, schema markup, content plans and visibility in AI answers. | You're building a site and want it found on Google and cited by ChatGPT or Perplexity. | Automatic, or `/searchfit-seo:seo-check` | [SearchFit.ai](https://github.com/searchfit/searchfit-seo) |
 | **ponytail** | `ponytail` | Lazy senior dev mode: pushes Claude to the smallest solution that works, plus audit and review commands. | Claude tends to over-engineer and you want leaner code. | Always on once installed; `/ponytail-help` for commands | [Dietrich Gebert](https://github.com/DietrichGebert/ponytail) |
 | **task-observer** | `observer` | Watches your sessions and proposes new skills or improvements to existing ones. | You build your own skills and want ideas for them collected as you work. | Automatic, or `/task-observer` | [Eoghan Henn / rebelytics.com](https://github.com/rebelytics/one-skill-to-rule-them-all) |
 
@@ -98,7 +99,7 @@ Most skills here were written by others and are redistributed under their licens
 - **Claude Council Contributors**: [Claude-Council-Skill](https://github.com/itshussainsprojects/Claude-Council-Skill) (MIT)
 - **Eoghan Henn / [rebelytics.com](https://rebelytics.com)**: [One Skill to Rule Them All](https://github.com/rebelytics/one-skill-to-rule-them-all) (CC-BY-4.0)
 
-Two plugins are installed straight from their authors' repositories rather than copied: [taste-skill](https://github.com/Leonxlnx/taste-skill) by leonxlnx and [ponytail](https://github.com/DietrichGebert/ponytail) by Dietrich Gebert (both MIT).
+Three plugins are installed straight from their authors' repositories rather than copied: [taste-skill](https://github.com/Leonxlnx/taste-skill) by leonxlnx, [searchfit-seo](https://github.com/searchfit/searchfit-seo) by SearchFit.ai and [ponytail](https://github.com/DietrichGebert/ponytail) by Dietrich Gebert (all MIT).
 
 See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for exact versions and changes. Everything else in this repository is [MIT](LICENSE).
 

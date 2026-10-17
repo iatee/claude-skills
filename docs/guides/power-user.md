@@ -87,7 +87,7 @@ The same file takes `"heavy": [...]`, a list of skill names the suggester should
 
 **Hooks** run a command of your own when something happens in Claude Code: a session starts, you send a message, Claude edits a file. They're how you make things happen *every* time rather than hoping Claude remembers. The suggester is a hook: on every message it runs a small script that checks your skills. Hooks are set up in `settings.json`; ask Claude to "add a hook that…" and it'll write one, or read Anthropic's [hooks guide](https://code.claude.com/docs/en/hooks).
 
-**Plugins** bundle skills, hooks and other add-ons so they install as one unit. **Marketplaces** list plugins. This repository is both: each folder under `plugins/` is a plugin, and `.claude-plugin/marketplace.json` lists them. A marketplace can also point at plugins in other people's repositories, which is how `taste-skill` and `ponytail` are included without copying them.
+**Plugins** bundle skills, hooks and other add-ons so they install as one unit. **Marketplaces** list plugins. This repository is both: each folder under `plugins/` is a plugin, and `.claude-plugin/marketplace.json` lists them. A marketplace can also point at plugins in other people's repositories, which is how `taste-skill`, `searchfit-seo` and `ponytail` are included without copying them.
 
 To build your own, run `claude plugin init my-plugin` in your terminal, or read Anthropic's [plugin docs](https://code.claude.com/docs/en/plugins).
 

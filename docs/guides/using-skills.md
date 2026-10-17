@@ -40,7 +40,7 @@ That's it. `all` installs every recommended plugin:
 |---|---|
 | `planning` | Turning ideas into plans: interviews, specs, tickets, research, a decision council |
 | `coding` | Building and fixing code: test-first development, debugging, code review, browser automation |
-| `frontend` | Making interfaces look good: `impeccable` and `taste-skill` |
+| `frontend` | Making interfaces look good and easy to find: `impeccable`, `taste-skill` and `searchfit-seo` |
 | `writing` | Writing for people and for AI agents, and learning new things |
 | `sessions` | Handing work to a fresh session, and looking back on finished work |
 | `suggester` | Tells you when one of your skills fits what you're doing |

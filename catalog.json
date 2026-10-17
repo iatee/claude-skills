@@ -44,6 +44,7 @@
   },
   "referenced": {
     "taste-skill": { "what": "14 skills for art direction: design directions, reference images, brand kits and style presets.", "when": "Generated frontends look generic and you want a distinct visual style.", "credit": "[leonxlnx](https://github.com/Leonxlnx/taste-skill)", "trigger": "Automatic, or `/taste-skill`" },
+    "searchfit-seo": { "what": "11 skills, 6 commands and 3 agents for SEO: site audits, technical SEO, keyword clustering, schema markup, content plans and visibility in AI answers.", "when": "You're building a site and want it found on Google and cited by ChatGPT or Perplexity.", "credit": "[SearchFit.ai](https://github.com/searchfit/searchfit-seo)", "trigger": "Automatic, or `/searchfit-seo:seo-check`" },
     "ponytail": { "what": "Lazy senior dev mode: pushes Claude to the smallest solution that works, plus audit and review commands.", "when": "Claude tends to over-engineer and you want leaner code.", "credit": "[Dietrich Gebert](https://github.com/DietrichGebert/ponytail)", "trigger": "Always on once installed; `/ponytail-help` for commands" }
   }
 }

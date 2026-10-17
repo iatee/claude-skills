@@ -19,7 +19,7 @@ import bodyFont from "@fontsource/schibsted-grotesk/files/schibsted-grotesk-lati
 
 const ROOT = path.resolve(process.cwd(), "..");
 const MARKETPLACE = marketplace.name;
-const referencedCounts: Record<string, number> = { "taste-skill": 14, ponytail: 6 };
+const referencedCounts: Record<string, number> = { "taste-skill": 14, "searchfit-seo": 11, ponytail: 6 };
 const optIn = new Set(["ponytail", "observer"]);
 
 const skillsIn = (plugin: string) => {
@@ -65,6 +65,7 @@ const totalSkills = Object.keys(catalog.skills).length + Object.values(reference
 const credits = [
   ...new Map(Object.values(manifest.sources).map((s) => [s.author, `https://github.com/${s.repo}`])),
   ["leonxlnx", "https://github.com/Leonxlnx/taste-skill"],
+  ["SearchFit.ai", "https://github.com/searchfit/searchfit-seo"],
   ["Dietrich Gebert", "https://github.com/DietrichGebert/ponytail"],
 ];
 
