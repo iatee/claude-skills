@@ -190,7 +190,7 @@ const install = [
               </button>
             </div>
             <ol class="commands">
-              {install.map((line) => <li><code>{line}</code></li>)}
+              {install.map((line) => <li><code>{line.split(" ").map((word, i) => <>{i > 0 && " "}<span>{word}</span></>)}</code></li>)}
             </ol>
           </div>
 
@@ -508,7 +508,8 @@ const install = [
   /* The prompt hangs, so a command that wraps on a phone stays readable in full. */
   .commands li { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; column-gap: 10px; padding: 3px 0; line-height: 1.6; }
   .commands li::before { content: "›"; color: var(--text-3); font-family: "JetBrains Mono", monospace; }
-  .commands code { overflow-wrap: anywhere; }
+  /* A command wraps between words only, never at the hyphen in claude-skills. */
+  .commands code span { white-space: nowrap; }
   .commands code { font-size: 14px; }
 
   .hero-links { margin: 20px 0 0; color: var(--text-3); font-size: 14px; }

@@ -379,6 +379,16 @@ site-search button[data-open-modal] {
   background: var(--sl-color-gray-6);
 }
 
+/* Phone menu button: a hairline box like the search button, not Starlight's floating round button. */
+.sl-menu-button {
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 8px;
+  background-color: var(--sl-color-gray-6);
+  color: var(--sl-color-white);
+  box-shadow: none;
+  place-items: center;
+}
+
 .site-title img {
   width: auto;
   height: 1.4rem;
