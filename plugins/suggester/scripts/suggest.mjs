@@ -5,7 +5,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { STATE_DIR, loadIndex, score } from "./index.mjs";
-import { planStep } from "./plan.mjs";
+import { planRun, planStep } from "./plan.mjs";
 
 const THRESHOLD = 7;
 const MAX_CANDIDATES = 3;
@@ -41,15 +41,42 @@ try {
   transcript = fs.readFileSync(input.transcript_path, "utf8");
 } catch {}
 
+const say = (context) => {
+  process.stdout.write(JSON.stringify({ hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: context } }));
+  process.exit(0);
+};
+const cwd = input.cwd ?? process.cwd();
+
+// "Run the plan": Claude runs every step that hasn't run yet, committing after each, without pausing.
+const run = planRun(prompt, transcript, cwd);
+if (run) {
+  if (run.total === 0) say("Skill suggester: the user asked to run the plan, but no plan is remembered for this project. Say so in one line.");
+  if (run.remaining.length === 0) say("Skill suggester: every step of the remembered plan has already run. Say so in one line.");
+  const skills = loadIndex(cwd);
+  const steps = run.remaining.map((step, i) => {
+    const [name, ...args] = step.command.replace(/^\//, "").split(/\s+/);
+    const skill = skills.find((s) => s.id === name || s.name === name.split(":").pop());
+    const how = skill ? ` Skill tool: skill "${skill.id}", args "${args.join(" ")}".` : "";
+    return `${i + 1}. \`${step.command}\`${step.note ? `: ${step.note}` : ""}.${how}`;
+  });
+  say(
+    [
+      `Skill suggester: the user wants the remembered plan run to the end. ${run.remaining.length} of ${run.total} steps remain, in this order:`,
+      ...steps,
+      "Run each step in turn with the Skill tool and finish it completely. Then commit the files that step changed, with a message describing what the step did, and go straight on to the next step. Do not pause or ask whether to continue.",
+      "Stop early only if a step needs a decision only the user can make, or a build or check fails, and say which step you stopped at; running the plan again continues from there.",
+      "At the end, list each step with its commit.",
+    ].join("\n"),
+  );
+}
+
 // Running a step of a numbered plan Claude wrote earlier: have Claude name the next step when it's done.
-const step = planStep(prompt, transcript, input.cwd ?? process.cwd());
+const step = planStep(prompt, transcript, cwd);
 if (step) {
   const next = step.next
     ? `When this step is done, end your reply with one line: "Next step: \`${step.next.command}\`${step.next.note ? ` (${step.next.note})` : ""}."`
     : "This is the last step of that plan. When it is done, say so in one short line.";
-  const context = `Skill suggester: this prompt runs step ${step.number} of ${step.total} of a plan from earlier (\`${step.step.command}\`). ${next}`;
-  process.stdout.write(JSON.stringify({ hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: context } }));
-  process.exit(0);
+  say(`Skill suggester: this prompt runs step ${step.number} of ${step.total} of a plan from earlier (\`${step.step.command}\`). ${next}`);
 }
 
 if (prompt.startsWith("/") || prompt.split(/\s+/).length < 4) process.exit(0);
@@ -65,7 +92,7 @@ const isHeavy = (s) => s.userOnly || heavy.some((h) => s.name === h || s.name.st
 const triggers = readJson(path.join(import.meta.dirname, "..", "triggers.json"), {});
 for (const [name, words] of Object.entries(settings.triggers ?? {})) triggers[name] = [...(triggers[name] ?? []), ...words];
 
-const candidates = score(prompt, loadIndex(input.cwd ?? process.cwd()), triggers)
+const candidates = score(prompt, loadIndex(cwd), triggers)
   .filter((r) => r.score >= THRESHOLD && !shown.has(r.skill.id) && !used(r.skill.id) && !used(r.skill.name))
   .slice(0, MAX_CANDIDATES);
 if (candidates.length === 0) process.exit(0);

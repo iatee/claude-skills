@@ -76,12 +76,13 @@ Nobody remembers fifty skills. The suggester watches each message you send and, 
 
 It doesn't start anything; that's up to you. It stays quiet when nothing fits, mentions each skill only once per conversation, and knows every skill you have installed, not just the ones from this collection.
 
-It also remembers plans. When a skill ends with a numbered list of commands to run next, like the recommendations after `/impeccable audit`, run any step and Claude names the next one when it's done. This works in a later session too.
+It also remembers plans. When a skill ends with a numbered list of commands to run next, like the recommendations after `/impeccable audit`, run any step and Claude names the next one when it's done. Say "run the plan" and Claude runs every remaining step in order, committing after each. This works in a later session too.
 
 | Command | What it does |
 |---|---|
 | `/suggester off` | Mute suggestions. |
 | `/suggester on` | Turn them back on. |
+| `/suggester plan` | Run the remembered plan's remaining steps. |
 
 ## Keep it up to date
 

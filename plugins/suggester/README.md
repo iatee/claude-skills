@@ -34,6 +34,8 @@ The suggester remembers the latest such plan for each project. When you run one 
 
 After the last step, Claude says the plan is done. Any numbered list of two or more slash commands in Claude's replies counts as a plan.
 
+To run the whole plan at once, say "run the plan" (or "continue the plan", or `/suggester plan`). Claude runs every step that hasn't run yet, in order, without pausing, and commits after each step, so each one can be undone on its own. It stops early only when a step needs a decision from you or a build or check fails; saying "run the plan" again continues from there. The suggester counts a step as run when you typed its command or Claude started its skill after the plan was written.
+
 ## Examples
 
 - You write "I want to plan a newsletter about home gardening, help me think it through". With `grill-me` installed, Claude adds a 💡 line suggesting it.
@@ -46,6 +48,7 @@ After the last step, Claude says the plan is done. Any numbered list of two or m
 
 - `/suggester off` turns suggestions off.
 - `/suggester on` turns them back on.
+- `/suggester plan` runs the remembered plan's remaining steps, like saying "run the plan".
 
 ## Requirements
 
@@ -66,9 +69,9 @@ The plugin has two hooks, both shell scripts in `scripts/`:
 - the name and description in each installed skill's `SKILL.md`, in your user, project and plugin skill folders;
 - `triggers.json` in this plugin, extra words that point to particular skills.
 
-They write only inside `~/.claude/skill-suggester/` (or `$CLAUDE_CONFIG_DIR/skill-suggester/`): `settings.json` for your on/off setting and options, `index.json` as a cache of skill descriptions, one small file per session listing the skills already suggested, and one file per project in `plans/` holding that project's latest plan (named by a hash of the project folder's path).
+They write only inside `~/.claude/skill-suggester/` (or `$CLAUDE_CONFIG_DIR/skill-suggester/`): `settings.json` for your on/off setting and options, `index.json` as a cache of skill descriptions, one small file per session listing the skills already suggested, and one file per project in `plans/` holding that project's latest plan and which of its steps have run (named by a hash of the project folder's path).
 
-When you run a step of a remembered plan, the hook adds a one-line note telling Claude which step comes next. When a skill fits, it adds a short note to Claude's context naming up to three candidate skills, with their descriptions. Skills that only you can start are marked "suggest to the user"; other skills are ones Claude may use on its own if it helps.
+When you run a step of a remembered plan, the hook adds a one-line note telling Claude which step comes next. When you ask to run the plan, it adds the remaining steps and asks Claude to run them in order, committing after each. When a skill fits, it adds a short note to Claude's context naming up to three candidate skills, with their descriptions. Skills that only you can start are marked "suggest to the user"; other skills are ones Claude may use on its own if it helps.
 
 ## Settings
 
