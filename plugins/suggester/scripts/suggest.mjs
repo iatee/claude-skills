@@ -106,7 +106,7 @@ for (const [key, m] of Object.entries(milestones)) {
     [
       `Skill suggester: ${m.message}. These installed skills cover it:`,
       ...picked.map((s) => `- /${s.id}: ${s.description.slice(0, 160)}`),
-      `Before doing what was asked, add one short line to your reply, such as "💡 Before you ${m.before ?? "continue"}: /<skill> for <what>, /<skill> for <what>." Never run them unasked.`,
+      `Before doing what was asked, add one short line to your reply, such as "💡 Before you ${m.before ?? "continue"}: /<skill> for <what>, /<skill> for <what>." Never run them unasked. They are installed: the user starts them by typing the command, and skills only the user can start are hidden from your skill list, so a skill missing from that list is no reason to skip it.`,
     ].join("\n"),
   );
 }

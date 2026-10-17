@@ -34,7 +34,7 @@ process.stdout.write(
     hookSpecificOutput: {
       hookEventName: "SessionStart",
       additionalContext: [
-        "Skill suggester: when a user message signals one of these moments, in any wording, language or spelling, add one short line before doing what was asked, such as \"💡 Before you go: /<skill> for <what>.\" Name only skills not yet used this session. Once per moment per session, and not if a Skill suggester note already raised it. Never run them unasked.",
+        "Skill suggester: when a user message signals one of these moments, in any wording, language or spelling, add one short line before doing what was asked, such as \"💡 Before you go: /<skill> for <what>.\" Name only skills not yet used this session. Once per moment per session, and not if a Skill suggester note already raised it. Never run them unasked. They are installed: the user starts them by typing the command, and skills only the user can start are hidden from your skill list, so a skill missing from that list is no reason to skip it.",
         ...lines,
       ].join("\n"),
     },
