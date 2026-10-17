@@ -149,22 +149,22 @@ const install = [
           <figcaption>Claude Code</figcaption>
           <div class="msg user">
             <span class="who">You</span>
-            <p>This test keeps failing every few runs and I have no idea why.</p>
+            <p>I want to start a newsletter about home gardening. Can you help me plan it?</p>
           </div>
           <div class="msg claude">
             <span class="who">Claude</span>
             <p>
-              Intermittent failures usually come from shared state or timing. I'll run the test in a loop until it
-              fails, then narrow down what differs between passing and failing runs.
+              Happy to. Start with who it's for and how often it goes out: those two choices shape everything
+              else, from the topics to the length of each issue.
             </p>
             <p class="suggestion">
-              💡 <code>/coding:diagnosing-bugs</code> could help here: it pins a flaky bug down with one failing
-              command before fixing it.
+              💡 <code>/planning:grill-me</code> could help here: it interviews you about the plan until there are no
+              gaps.
             </p>
           </div>
           <p class="exchange-note">
-            The suggester adds one line when an installed skill clearly fits, and stays silent otherwise.
-            Turn it off with <code>/suggester off</code>.
+            When an installed skill clearly fits, the suggester tells Claude. For a skill only you can start,
+            Claude adds one line like this; otherwise it stays silent. Turn it off with <code>/suggester off</code>.
           </p>
         </figure>
       </section>

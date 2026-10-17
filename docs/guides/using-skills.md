@@ -70,11 +70,11 @@ For automatic skills you don't need to do anything. Ask for what you want ("this
 
 ## The suggester
 
-Nobody remembers fifty skills. The suggester watches each message you send and, when one of your installed skills clearly fits, Claude mentions it in one line:
+Nobody remembers fifty skills. The suggester watches each message you send and, when one of your installed skills clearly fits, tells Claude about it. If it's a skill that only you can start, Claude mentions it in one line:
 
 > 💡 `/coding:tdd` could help here: it builds this test-first, one step at a time.
 
-It doesn't start anything; that's up to you. It stays quiet when nothing fits, mentions each skill only once per conversation, and knows every skill you have installed, not just the ones from this collection.
+It never starts a skill that's yours to run; that's up to you. Skills Claude can use on its own, it may simply use. It stays quiet when nothing fits, mentions each skill only once per conversation, and knows every skill you have installed, not just the ones from this collection.
 
 It also remembers plans. When a skill ends with a numbered list of commands to run next, like the recommendations after `/impeccable audit`, run any step and Claude names the next one when it's done. Say "run the plan" and Claude runs every remaining step in order, committing after each. This works in a later session too.
 
