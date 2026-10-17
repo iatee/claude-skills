@@ -36,17 +36,15 @@ export default defineConfig({
       favicon: "/favicon.svg",
       logo: { src: "./src/assets/logo.svg" },
       components: { PageTitle: "./src/components/PageTitle.astro" },
-      head: [
-        { tag: "link", attrs: { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: true } },
-        {
-          tag: "link",
-          attrs: {
-            rel: "stylesheet",
-            href: "https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap",
-          },
-        },
+      // Fonts are served from this site (Latin subset only), so pages make no third-party requests.
+      customCss: [
+        "@fontsource/schibsted-grotesk/latin-400.css",
+        "@fontsource/schibsted-grotesk/latin-500.css",
+        "@fontsource/schibsted-grotesk/latin-600.css",
+        "@fontsource/jetbrains-mono/latin-400.css",
+        "@fontsource/jetbrains-mono/latin-500.css",
+        "./src/styles/theme.css",
       ],
-      customCss: ["./src/styles/theme.css"],
       social: [{ icon: "github", label: "GitHub", href: "https://github.com/iatee/claude-skills" }],
       editLink: { baseUrl: "https://github.com/iatee/claude-skills/edit/main/" },
       sidebar: [

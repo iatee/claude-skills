@@ -34,7 +34,7 @@ What Claude itself does with your prompts is covered by Anthropic's own privacy 
 skills.garciabaertsch.com is a static site hosted on GitHub Pages. It sets no cookies and runs no analytics.
 
 - GitHub serves the pages and may log requests, as described in the [GitHub privacy statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement).
-- The fonts load from Google Fonts, so your browser contacts Google when a page opens. See the [Google Fonts privacy FAQ](https://developers.google.com/fonts/faq/privacy).
+- The fonts are served from this site, so pages contact no other servers when they open.
 - The guides remember your light or dark choice in your browser's local storage. It never leaves your browser.
 - Search runs in your browser. Nothing you type in it is sent anywhere.
 - The "Summarize with" links open ChatGPT, Claude, Perplexity or Google with the page's address and a short prompt filled in. Nothing is sent until you click one, and then that service's own privacy policy applies.

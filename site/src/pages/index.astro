@@ -9,6 +9,13 @@ import marketplace from "../../../.claude-plugin/marketplace.json";
 import manifest from "../../../manifest.json";
 import catalog from "../../../catalog.json";
 import AskAI from "../components/AskAI.astro";
+// Fonts are served from this site (Latin subset only), so pages make no third-party requests.
+import "@fontsource/schibsted-grotesk/latin-400.css";
+import "@fontsource/schibsted-grotesk/latin-500.css";
+import "@fontsource/schibsted-grotesk/latin-600.css";
+import "@fontsource/jetbrains-mono/latin-400.css";
+import "@fontsource/jetbrains-mono/latin-500.css";
+import bodyFont from "@fontsource/schibsted-grotesk/files/schibsted-grotesk-latin-400-normal.woff2?url";
 
 const ROOT = path.resolve(process.cwd(), "..");
 const MARKETPLACE = marketplace.name;
@@ -84,9 +91,7 @@ const install = [
     <meta name="description" content="A curated set of Claude Code skills, each credited to its author, with a suggester that points out the right one while you work." />
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
