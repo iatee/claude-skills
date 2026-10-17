@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "command -v node >/dev/null 2>&1 || echo '{\"systemMessage\": \"Skill suggester is off: it needs Node.js 18 or later. Install it from https://nodejs.org, see https://skills.garciabaertsch.com\"}'",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/session-start.sh\"",
             "timeout": 5
           }
         ]
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "command -v node >/dev/null 2>&1 && node \"${CLAUDE_PLUGIN_ROOT}/scripts/suggest.mjs\" || true",
+            "command": "sh \"${CLAUDE_PLUGIN_ROOT}/scripts/suggest.sh\"",
             "timeout": 5
           }
         ]
