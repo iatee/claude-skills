@@ -78,6 +78,8 @@ const guideGroups = [
 const description =
   "A curated set of Claude Code skills, each credited to its author, with a suggester that points out the right one while you work.";
 const pageUrl = new URL("/", Astro.site).href;
+// The skill count comes from the catalog, so the title stays right as skills are added.
+const title = `Claude Skills - ${totalSkills} curated skills for Claude Code`;
 
 // Structured data for search engines and AI assistants: the site and its installable plugins.
 const structuredData = {
@@ -123,13 +125,13 @@ const install = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Claude Skills</title>
+    <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={pageUrl} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Claude Skills" />
-    <meta property="og:title" content="Claude Skills" />
+    <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={pageUrl} />
     <meta property="og:locale" content="en" />
@@ -138,6 +140,8 @@ const install = [
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Claude Skills: curated skills for Claude Code, with an example suggester line." />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL("/og.png", Astro.site).href} />
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     <meta name="color-scheme" content="light dark" />

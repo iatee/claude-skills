@@ -4,9 +4,12 @@ import Default from "@astrojs/starlight/components/Head.astro";
 
 const { id, entry } = Astro.locals.starlightRoute;
 const url = new URL(Astro.url.pathname, Astro.site).href;
+// The catalog is a list of skills, not an article; the privacy page is a plain page.
+const type = id === "catalog" ? "CollectionPage" : id === "privacy" ? "WebPage" : "TechArticle";
 const structuredData = {
   "@context": "https://schema.org",
-  "@type": id === "privacy" ? "WebPage" : "TechArticle",
+  "@type": type,
+  name: entry.data.title,
   headline: entry.data.title,
   description: entry.data.description,
   url,

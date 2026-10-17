@@ -1,6 +1,26 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
+import sitemap from "@astrojs/sitemap";
+import { execFileSync } from "node:child_process";
+
+// Each sitemap entry gets a lastmod: the date of the last commit that touched the files the page
+// is built from. The home page is built from the catalog and the plugin list, a guide from its file.
+// Needs the full history (fetch-depth: 0 in the workflow); without git the entry has no lastmod.
+const SOURCES = { "": ["site/src/pages/index.astro", "catalog.json", "manifest.json", ".claude-plugin"] };
+function lastCommitDate(files) {
+  try {
+    const date = execFileSync("git", ["log", "-1", "--format=%cI", "--", ...files], { cwd: "..", encoding: "utf8" }).trim();
+    return date || undefined;
+  } catch {
+    return undefined;
+  }
+}
+function withLastmod(item) {
+  const slug = new URL(item.url).pathname.replace(/^\/|\/$/g, "");
+  const lastmod = lastCommitDate(SOURCES[slug] ?? [`docs/guides/${slug}.md`]);
+  return lastmod ? { ...item, lastmod } : item;
+}
 
 // The guides live in ../docs/guides and link to each other as `catalog.md`, which works on
 // GitHub. On the site every guide is its own page, so rewrite those links to `../catalog/`.
@@ -30,6 +50,8 @@ export default defineConfig({
   site: "https://skills.garciabaertsch.com",
   markdown: { remarkPlugins: [guideLinks], rehypePlugins: [tableRoles] },
   integrations: [
+    // Listed here so Starlight uses this one (with lastmod) instead of adding its own.
+    sitemap({ serialize: withLastmod }),
     starlight({
       title: "Claude Skills",
       description: "A curated set of Claude Code skills, credited to their authors, with guides for beginners and power users.",
