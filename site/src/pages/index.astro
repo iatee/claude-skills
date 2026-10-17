@@ -75,6 +75,42 @@ const guideGroups = [
   { label: "Go further", ids: ["power-user", "customize", "own-server"] },
 ];
 
+const description =
+  "A curated set of Claude Code skills, each credited to its author, with a suggester that points out the right one while you work.";
+const pageUrl = new URL("/", Astro.site).href;
+
+// Structured data for search engines and AI assistants: the site and its installable plugins.
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      name: "Claude Skills",
+      url: pageUrl,
+      description,
+      inLanguage: "en",
+    },
+    {
+      "@type": "ItemList",
+      name: "Claude Skills plugins",
+      itemListElement: plugins.map((p, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        item: {
+          "@type": "SoftwareApplication",
+          name: p.name,
+          description: p.description,
+          applicationCategory: "DeveloperApplication",
+          operatingSystem: "Claude Code",
+          // Companies and groups are organizations; everyone else credited is a person.
+          author: p.authors.map((name) => ({ "@type": /Microsoft|Contributors|\.com/.test(name) ? "Organization" : "Person", name })),
+          installUrl: "https://github.com/iatee/claude-skills",
+        },
+      })),
+    },
+  ],
+};
+
 const install = [
   `/plugin marketplace add iatee/claude-skills`,
   `/plugin install all@${MARKETPLACE}`,
@@ -88,7 +124,17 @@ const install = [
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Claude Skills</title>
-    <meta name="description" content="A curated set of Claude Code skills, each credited to its author, with a suggester that points out the right one while you work." />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={pageUrl} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Claude Skills" />
+    <meta property="og:title" content="Claude Skills" />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:locale" content="en" />
+    <meta name="twitter:card" content="summary" />
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     <meta name="color-scheme" content="light dark" />
     <script is:inline>
       // Follow the light or dark choice made in the guides, which Starlight keeps; otherwise follow the system.
