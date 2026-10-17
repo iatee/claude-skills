@@ -90,6 +90,13 @@ const install = [
     <title>Claude Skills</title>
     <meta name="description" content="A curated set of Claude Code skills, each credited to its author, with a suggester that points out the right one while you work." />
     <meta name="color-scheme" content="light dark" />
+    <script is:inline>
+      // Follow the light or dark choice made in the guides, which Starlight keeps; otherwise follow the system.
+      try {
+        const theme = localStorage.getItem("starlight-theme");
+        if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
+      } catch {}
+    </script>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
   </head>
@@ -305,52 +312,34 @@ const install = [
 </html>
 
 <style is:global>
+  /* Each token holds its light and dark value. The page follows the system, or the light or dark
+     choice made in the guides (see the script in <head>). */
   :root {
-    --bg: #fbfbfc;
-    --surface: #ffffff;
-    --subtle: #f4f4f6;
-    --text: #18181b;
-    --text-2: #52525b;
-    --text-3: #6b6b74;
-    --line: #e4e4e7;
-    --line-strong: #d4d4d8;
-    --accent: #4f46e5;
-    --accent-hover: #4338ca;
-    --accent-soft: #eef0ff;
+    --bg: light-dark(#fbfbfc, #0b0b0d);
+    --surface: light-dark(#ffffff, #121215);
+    --subtle: light-dark(#f4f4f6, #18181c);
+    --text: light-dark(#18181b, #ededf0);
+    --text-2: light-dark(#52525b, #a1a1aa);
+    --text-3: light-dark(#6b6b74, #8b8b94);
+    --line: light-dark(#e4e4e7, #232328);
+    --line-strong: light-dark(#d4d4d8, #2e2e35);
+    --accent: light-dark(#4f46e5, #8b8cf8);
+    --accent-hover: light-dark(#4338ca, #a5a6fb);
+    --on-accent: light-dark(#ffffff, #0b0b0d);
+    --accent-soft: light-dark(#eef0ff, #1d1d3a);
     /* Hint: the suggester's own colour, warm against the indigo of action. */
-    --hint-ink: #8a4b08;
-    --hint-soft: #fdf7e8;
-    --hint-line: #e6c983;
-    --success: #15803d;
-    --on-success: #ffffff;
-    --code-bg: #f4f4f6;
-    --shadow: 0 1px 2px rgba(24, 24, 27, 0.04), 0 4px 16px -4px rgba(24, 24, 27, 0.08);
+    --hint-ink: light-dark(#8a4b08, #f0bf63);
+    --hint-soft: light-dark(#fdf7e8, #1e1910);
+    --hint-line: light-dark(#e6c983, #4a3a1a);
+    --success: light-dark(#15803d, #4ade80);
+    --on-success: light-dark(#ffffff, #0b0b0d);
+    --code-bg: light-dark(#f4f4f6, #18181c);
+    --shadow: 0 1px 2px light-dark(rgba(24, 24, 27, 0.04), rgba(0, 0, 0, 0.4)), 0 6px 20px -6px light-dark(rgba(24, 24, 27, 0.1), rgba(0, 0, 0, 0.6));
     --radius: 8px;
-    color-scheme: light;
+    color-scheme: light dark;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0b0b0d;
-      --surface: #121215;
-      --subtle: #18181c;
-      --text: #ededf0;
-      --text-2: #a1a1aa;
-      --text-3: #8b8b94;
-      --line: #232328;
-      --line-strong: #2e2e35;
-      --accent: #8b8cf8;
-      --accent-hover: #a5a6fb;
-      --accent-soft: #1d1d3a;
-      --hint-ink: #f0bf63;
-      --hint-soft: #1e1910;
-      --hint-line: #4a3a1a;
-      --success: #4ade80;
-      --on-success: #0b0b0d;
-      --code-bg: #18181c;
-      --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -8px rgba(0, 0, 0, 0.6);
-      color-scheme: dark;
-    }
-  }
+  :root[data-theme="light"] { color-scheme: light; }
+  :root[data-theme="dark"] { color-scheme: dark; }
 
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; scroll-padding-top: 72px; }
@@ -433,14 +422,13 @@ const install = [
     border: 0;
     border-radius: 6px;
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     font: 500 13px/1 inherit;
     font-family: inherit;
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
   }
   .copy:hover { background: var(--accent-hover); }
-  @media (prefers-color-scheme: dark) { .copy { color: #0b0b0d; } }
   .copy[data-copied], .copy[data-copied]:hover { background: var(--success); color: var(--on-success); }
   .i-check { display: none; }
   [data-copied] .i-copy { display: none; }

@@ -27,12 +27,13 @@ Semantic roles, each a text colour on a soft fill with a hairline of the same hu
 
 Success confirms a copy: the install button turns green with "Copied", and a plugin's command turns green with a check. Every text pair above passes WCAG AA (4.5:1) on its own fill.
 
-Light or dark follows the system setting; the docs also offer a manual switch.
+Light or dark follows the system setting. The docs offer a manual switch, and the landing page follows the choice made there. Landing tokens hold both values with `light-dark()`.
 
 ## Type
 
 - **Schibsted Grotesk** (400, 500, 600) for everything. Headlines are 600 with tight tracking (−0.035em for page titles, −0.02em for section headings).
 - **JetBrains Mono** only for commands, skill and plugin names, and code. Never as decoration.
+- Both are served from the site (Fontsource, Latin subset), never from a third-party font host.
 
 ## Shape and depth
 
