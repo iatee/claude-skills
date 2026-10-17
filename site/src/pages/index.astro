@@ -606,6 +606,19 @@ const install = [
     .lede { font-size: 17px; }
     .commands code { font-size: 13px; }
   }
+  /* On touch screens every control gets at least a 44px target; the layout for a mouse stays compact. */
+  @media (pointer: coarse) {
+    .brand { min-height: 44px; }
+    .topbar nav { gap: 4px; }
+    .topbar nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 8px; }
+    .icon-link { justify-content: center; min-width: 44px; }
+    .install-head { padding-block: 4px; }
+    .copy { height: 44px; padding: 0 16px; }
+    .plugin-cmd { min-height: 44px; }
+    .hero-links a, .credits li a, .footer a { display: inline-block; padding-block: 12px; margin-block: -12px; }
+    .credits ul { row-gap: 20px; }
+  }
+
   /* Reduced motion keeps the colour changes and drops the movement. */
   @media (prefers-reduced-motion: reduce) {
     .suggestion[data-play] { animation: hint-warm 0.5s ease-out 0.4s backwards; }

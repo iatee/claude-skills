@@ -53,6 +53,12 @@ const targets = [
     text-decoration: none;
     transition: border-color 0.15s, color 0.15s;
   }
+  @media (pointer: coarse) {
+    .ask-ai a {
+      height: 44px;
+      padding: 0 14px;
+    }
+  }
   .ask-ai a:hover {
     border-color: var(--ask-line-strong, var(--sl-color-gray-4, #a1a1aa));
     color: var(--ask-strong, var(--sl-color-white, #18181b));
