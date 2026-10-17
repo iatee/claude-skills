@@ -81,6 +81,10 @@ When you run a step of a remembered plan, the hook adds a one-line note telling 
 - `"heavy"`: skill names that should only ever be suggested, never used by Claude on its own.
 - `"triggers"`: extra words per skill name, for example `{"tdd": ["kata"]}`.
 
+## Privacy
+
+Everything runs on your computer and nothing is sent anywhere. The [privacy policy](https://skills.garciabaertsch.com/privacy/) covers it in full.
+
 ## License
 
 MIT. Source: [github.com/iatee/claude-skills](https://github.com/iatee/claude-skills/tree/main/plugins/suggester).

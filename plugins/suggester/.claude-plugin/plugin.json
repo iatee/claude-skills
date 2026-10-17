@@ -1,9 +1,10 @@
 {
   "name": "suggester",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Suggests the right installed skill when it clearly fits what you're doing, so you don't have to remember them all. Needs Node.js.",
   "author": { "name": "Iatee", "url": "https://github.com/iatee" },
   "homepage": "https://skills.garciabaertsch.com",
+  "privacyPolicyUrl": "https://skills.garciabaertsch.com/privacy/",
   "repository": "https://github.com/iatee/claude-skills",
   "license": "MIT"
 }

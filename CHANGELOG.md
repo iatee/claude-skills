@@ -4,6 +4,7 @@ Each plugin is versioned on its own. Update a plugin with `/plugin marketplace u
 
 ## 2026-10-17
 
+- **suggester 1.2.1:** links to the new [privacy policy](https://skills.garciabaertsch.com/privacy/).
 - **suggester 1.2.0:** say "run the plan" (or `/suggester plan`) and Claude runs every remaining step of the remembered plan, committing after each, without pausing.
 - **suggester 1.1.0:** remembers numbered plans of commands, like the one an `/impeccable audit` ends with. Run one step and Claude names the next step when it's done, even in a later session.
 - **suggester 1.0.2:** hooks now run small shell scripts instead of inline commands, and the plugin has its own README describing everything it reads and writes. No change in behavior.
