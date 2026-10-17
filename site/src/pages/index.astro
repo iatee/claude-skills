@@ -90,6 +90,7 @@ const install = [
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
+    <p class="sr-only" role="status" id="copy-status"></p>
 
     <header class="topbar">
       <div class="wrap topbar-inner">
@@ -189,7 +190,7 @@ const install = [
                   {p.skills} {p.skills === 1 ? "skill" : "skills"} · {p.authors.join(", ")}
                 </p>
               </div>
-              <button type="button" class="plugin-cmd" data-copy={`/plugin install ${p.name}@${MARKETPLACE}`} aria-label={`Copy install command for ${p.name}`}>
+              <button type="button" class="plugin-cmd" data-copy={`/plugin install ${p.name}@${MARKETPLACE}`} data-copy-name={p.name} aria-label={`Copy install command for ${p.name}`}>
                 <code>/plugin install {p.name}@{MARKETPLACE}</code>
                 <svg class="i-copy" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
                 <svg class="i-check" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>
@@ -247,20 +248,39 @@ const install = [
     </footer>
 
     <script>
+      // Copy buttons confirm in place and to screen readers. Where the browser won't allow copying,
+      // the commands are selected instead, with the key to press.
+      const status = document.getElementById("copy-status")!;
+      const copyKey = /Mac|iPhone|iPad/.test(navigator.userAgent) ? "⌘C" : "Ctrl+C";
+      const announce = (text: string) => {
+        status.textContent = "";
+        setTimeout(() => (status.textContent = text), 50);
+      };
       for (const button of document.querySelectorAll<HTMLButtonElement>("[data-copy]")) {
         const label = button.querySelector(".copy-label");
+        const what = button.dataset.copyName ? `The install command for ${button.dataset.copyName}` : "The install commands";
+        let reset = 0;
+        const show = (text: string, copied: boolean) => {
+          clearTimeout(reset);
+          if (copied) button.dataset.copied = "";
+          if (label) label.textContent = text;
+          reset = window.setTimeout(() => {
+            delete button.dataset.copied;
+            if (label) label.textContent = "Copy";
+          }, copied ? 1600 : 4000);
+        };
         button.addEventListener("click", async () => {
           try {
             await navigator.clipboard.writeText(button.dataset.copy ?? "");
           } catch {
+            const target = button.closest(".install")?.querySelector(".commands") ?? button.querySelector("code");
+            if (target) getSelection()?.selectAllChildren(target);
+            show(`Press ${copyKey}`, false);
+            announce(`Copying isn't available here. ${what} ${button.dataset.copyName ? "is" : "are"} selected; press ${copyKey} to copy.`);
             return;
           }
-          button.dataset.copied = "";
-          if (label) label.textContent = "Copied";
-          setTimeout(() => {
-            delete button.dataset.copied;
-            if (label) label.textContent = "Copy";
-          }, 1600);
+          show("Copied", true);
+          announce(`${what} ${button.dataset.copyName ? "was" : "were"} copied.`);
         });
       }
 
@@ -346,6 +366,7 @@ const install = [
 
   .wrap { width: min(1080px, 100% - 32px); margin-inline: auto; }
   .skip { position: absolute; left: -9999px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; margin: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .skip:focus { left: 16px; top: 12px; z-index: 10; padding: 8px 12px; background: var(--surface); border-radius: var(--radius); }
 
   .topbar {

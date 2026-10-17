@@ -15,9 +15,20 @@ function guideLinks() {
   return walk;
 }
 
+// Tables get explicit ARIA roles, so they stay tables for screen readers when CSS changes their
+// display, as the catalog's stacked rows do in a narrow column.
+const TABLE_ROLES = { table: "table", thead: "rowgroup", tbody: "rowgroup", tr: "row", th: "columnheader", td: "cell" };
+function tableRoles() {
+  const walk = (node) => {
+    if (node.type === "element" && node.tagName in TABLE_ROLES) node.properties.role = TABLE_ROLES[node.tagName];
+    node.children?.forEach(walk);
+  };
+  return walk;
+}
+
 export default defineConfig({
   site: "https://skills.garciabaertsch.com",
-  markdown: { remarkPlugins: [guideLinks] },
+  markdown: { remarkPlugins: [guideLinks], rehypePlugins: [tableRoles] },
   integrations: [
     starlight({
       title: "Claude Skills",
