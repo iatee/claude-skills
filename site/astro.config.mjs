@@ -18,7 +18,10 @@ function lastCommitDate(files) {
 }
 function withLastmod(item) {
   const slug = new URL(item.url).pathname.replace(/^\/|\/$/g, "");
-  const lastmod = lastCommitDate(SOURCES[slug] ?? [`docs/guides/${slug}.md`]);
+  // A skill page is built from the catalog entries and the skill's own folder.
+  const skill = slug.match(/^skills\/(.+)$/)?.[1];
+  const files = skill ? ["catalog.json", "manifest.json", `:(glob)plugins/*/skills/${skill}`] : SOURCES[slug] ?? [`docs/guides/${slug}.md`];
+  const lastmod = lastCommitDate(files);
   return lastmod ? { ...item, lastmod } : item;
 }
 

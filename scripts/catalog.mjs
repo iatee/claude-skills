@@ -8,51 +8,18 @@ import fs from "node:fs";
 import path from "node:path";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
-const read = (p) => fs.readFileSync(path.join(ROOT, p), "utf8");
-const catalog = JSON.parse(read("catalog.json"));
-const manifest = JSON.parse(read("manifest.json"));
-const marketplace = JSON.parse(read(".claude-plugin/marketplace.json"));
+import { loadCatalog } from "./catalog-data.mjs";
 
-const PLUGIN_ORDER = marketplace.plugins.map((p) => p.name);
-const errors = [];
-
-function userOnly(file) {
-  const fm = fs.readFileSync(file, "utf8").match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? "";
-  return /^disable-model-invocation:\s*true\s*$/m.test(fm);
-}
-
-function credit(name) {
-  const vendored = manifest.skills[name];
-  if (!vendored) return "Iatee";
-  const source = manifest.sources[vendored.source];
-  return `[${source.author}](https://github.com/${source.repo})`;
-}
-
-const rows = [];
-for (const plugin of PLUGIN_ORDER) {
-  const dir = path.join(ROOT, "plugins", plugin, "skills");
-  if (!fs.existsSync(dir)) continue;
-  for (const name of fs.readdirSync(dir).sort()) {
-    const entry = catalog.skills[name];
-    if (!entry) {
-      errors.push(`catalog.json has no entry for ${name}`);
-      continue;
-    }
-    const trigger = userOnly(path.join(dir, name, "SKILL.md")) ? `\`/${name}\`` : `Automatic, or \`/${name}\``;
-    rows.push({ name, plugin, ...entry, trigger: entry.trigger ?? trigger, credit: credit(name) });
-  }
-}
-for (const [name, entry] of Object.entries(catalog.referenced)) {
-  rows.push({ name, plugin: name, ...entry });
-}
-rows.sort((a, b) => PLUGIN_ORDER.indexOf(a.plugin) - PLUGIN_ORDER.indexOf(b.plugin));
+const { rows, errors } = loadCatalog(ROOT);
 
 const cell = (s) => s.replace(/\|/g, "\\|");
-const table = [
-  "| Skill | Plugin | What it does | Use it when | How to start it | Credit |",
-  "|---|---|---|---|---|---|",
-  ...rows.map((r) => `| **${r.name}** | \`${r.plugin}\` | ${cell(r.what)} | ${cell(r.when)} | ${r.trigger} | ${r.credit} |`),
-].join("\n");
+// Each skill name links to its own page: absolute in the README, site-relative in the catalog guide.
+const table = (base) =>
+  [
+    "| Skill | Plugin | What it does | Use it when | How to start it | Credit |",
+    "|---|---|---|---|---|---|",
+    ...rows.map((r) => `| [**${r.name}**](${base}/skills/${r.name}/) | \`${r.plugin}\` | ${cell(r.what)} | ${cell(r.when)} | ${r.trigger} | ${r.credit} |`),
+  ].join("\n");
 
 const NOT_INCLUDED = `**Not included, and why**
 
@@ -62,10 +29,13 @@ const NOT_INCLUDED = `**Not included, and why**
 - \`web-design-guidelines\` (Vercel): no license, and \`impeccable\` covers it.
 - \`apple-design-skills\`: \`impeccable\` already ships Apple and Android guideline references.`;
 
-const block = `${table}\n\n${NOT_INCLUDED}`;
+const block = (base) => `${table(base)}\n\n${NOT_INCLUDED}`;
 const outputs = {
   "README.md": (text) =>
-    text.replace(/<!-- catalog:start -->[\s\S]*?<!-- catalog:end -->/, () => `<!-- catalog:start -->\n${block}\n<!-- catalog:end -->`),
+    text.replace(
+      /<!-- catalog:start -->[\s\S]*?<!-- catalog:end -->/,
+      () => `<!-- catalog:start -->\n${block("https://skills.garciabaertsch.com")}\n<!-- catalog:end -->`,
+    ),
   "docs/guides/catalog.md": () =>
     `---
 title: Skill catalog
@@ -78,7 +48,7 @@ tableOfContents: false
 
 ${rows.length} skills and skill packs across ${new Set(rows.map((r) => r.plugin)).size} plugins. **How to start it** shows whether Claude can pick a skill up on its own ("Automatic") or whether you type the command yourself.
 
-${block}
+${block("")}
 `,
 };
 

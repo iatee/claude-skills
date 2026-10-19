@@ -19,4 +19,5 @@ const structuredData = {
 ---
 
 <Default />
-{id !== "404" && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
+{/* Skill pages (src/pages/skills) carry their own SoftwareApplication data. */}
+{id !== "404" && !id.startsWith("skills/") && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
