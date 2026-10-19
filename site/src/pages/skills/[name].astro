@@ -1,0 +1,123 @@
+---
+// One page per skill or skill pack, built from the same data as the catalog table
+// (scripts/catalog-data.mjs), so a search for a skill by name lands on a page about it.
+import path from "node:path";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { Code } from "@astrojs/starlight/components";
+import { loadCatalog } from "../../../../scripts/catalog-data.mjs";
+
+export async function getStaticPaths() {
+  const { rows, marketplace } = loadCatalog(path.resolve(process.cwd(), ".."));
+  return rows.map((row) => ({
+    params: { name: row.name },
+    props: { row, marketplace, siblings: rows.filter((r) => r.plugin === row.plugin && r.name !== row.name) },
+  }));
+}
+
+const { row, marketplace, siblings } = Astro.props;
+const url = new URL(Astro.url.pathname, Astro.site).href;
+// The catalog lines only use `code`, **bold** and [links](url); render just those, escaped.
+const inline = (md: string) =>
+  md
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2">$1</a>');
+
+const title = row.pack ? `${row.name}: skill pack for Claude Code` : `${row.name}: Claude Code skill`;
+// The catalog's two lines make the description: what the skill does and when it helps.
+const description = `${row.what} Use it when: ${row.when.charAt(0).toLowerCase()}${row.when.slice(1)}`;
+const install = [`/plugin marketplace add iatee/claude-skills`, `/plugin install ${row.plugin}@${marketplace}`, `/reload-plugins`].join("\n");
+const everything = [`/plugin marketplace add iatee/claude-skills`, `/plugin install all@${marketplace}`, `/reload-plugins`].join("\n");
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: row.name,
+  description,
+  url,
+  applicationCategory: "DeveloperApplication",
+  operatingSystem: "Claude Code",
+  isAccessibleForFree: true,
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  author: { "@type": /Microsoft|Contributors|\.(com|ai)$/.test(row.author.name) ? "Organization" : "Person", name: row.author.name, url: row.author.url },
+  ...(row.author.license ? { license: row.author.license } : {}),
+  installUrl: "https://github.com/iatee/claude-skills",
+  isPartOf: { "@type": "WebSite", name: "Claude Skills", url: Astro.site?.href },
+};
+
+const headings = [
+  { depth: 2, slug: "what-it-does", text: "What it does" },
+  { depth: 2, slug: "when-to-use-it", text: "When to use it" },
+  { depth: 2, slug: "how-to-start-it", text: "How to start it" },
+  { depth: 2, slug: "install", text: "Install" },
+  { depth: 2, slug: "credit", text: "Credit" },
+  ...(siblings.length ? [{ depth: 2, slug: "related", text: `More in the ${row.plugin} plugin` }] : []),
+];
+---
+
+<StarlightPage
+  frontmatter={{
+    title,
+    description,
+    head: [{ tag: "script", attrs: { type: "application/ld+json" }, content: JSON.stringify(structuredData) }],
+  }}
+  headings={headings}
+>
+  <h2 id="what-it-does">What it does</h2>
+  <p set:html={inline(row.what)} />
+  {
+    row.description && row.description !== row.what && (
+      <p>
+        The description Claude matches your request against: <q set:html={inline(row.description)} />
+      </p>
+    )
+  }
+  {row.pack && <p>This is a pack of {row.skills} skills from another repository. Installing it from this collection pins it to a reviewed version.</p>}
+
+  <h2 id="when-to-use-it">When to use it</h2>
+  <p set:html={inline(row.when)} />
+
+  <h2 id="how-to-start-it">How to start it</h2>
+  <p set:html={inline(row.trigger)} />
+  {
+    row.trigger.startsWith("Automatic") && (
+      <p>Claude loads it by itself when your request matches, so you rarely need the command. The suggester plugin also points it out when it fits.</p>
+    )
+  }
+
+  <h2 id="install">Install</h2>
+  <p>
+    {row.name} is part of the <code>{row.plugin}</code> plugin. Install just that plugin in Claude Code:
+  </p>
+  <Code code={install} lang="text" />
+  <p>Or install the whole collection:</p>
+  <Code code={everything} lang="text" />
+  <p>New to this? <a href="/using-skills/">Using skills</a> explains what a skill is and how installing works.</p>
+
+  <h2 id="credit">Credit</h2>
+  <p>
+    Made by <a href={row.author.url}>{row.author.name}</a>{row.author.license && <>, licensed {row.author.license}</>}. Claude Skills
+    is an unofficial, personal collection, not affiliated with or endorsed by Anthropic.
+  </p>
+
+  {
+    siblings.length > 0 && (
+      <>
+        <h2 id="related">More in the {row.plugin} plugin</h2>
+        <ul>
+          {siblings.map((s) => (
+            <li>
+              <a href={`/skills/${s.name}/`}>{s.name}</a>: <span set:html={inline(s.what)} />
+            </li>
+          ))}
+        </ul>
+      </>
+    )
+  }
+
+  <p><a href="/catalog/">All skills in the catalog</a></p>
+
+</StarlightPage>
