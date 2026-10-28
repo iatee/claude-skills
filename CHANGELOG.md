@@ -6,7 +6,7 @@ Each plugin is versioned on its own. Update a plugin with `/plugin marketplace u
 
 - **security 1.0.0:** new. `vibe-security` by Chris Raroque audits an app for the holes AI assistants leave (exposed keys, open Supabase or Firebase tables, unchecked auth, client-set prices, missing rate limits); `vibesec` by BehiSecc keeps Claude from writing IDOR, XSS, CSRF, SSRF and JWT mistakes in the first place.
 - **all 1.2.0:** now includes `security`. Run `/reload-plugins` after updating.
-- **suggester 1.4.1:** suggests `vibe-security` before you merge or open a pull request.
+- **suggester 1.5.0:** works in Codex too ([setup](https://skills.garciabaertsch.com/codex/#the-skill-suggester-in-codex)). When Claude uses a suggested skill on its own, it now says so in one line, so you can see the suggester at work. Filler words like "something", "too" and "work" no longer count toward a match, which stopped some unrelated suggestions. Also suggests `vibe-security` before you merge or open a pull request.
 - New guide: [Using these skills in Codex](https://skills.garciabaertsch.com/codex/).
 
 ## 2026-10-17

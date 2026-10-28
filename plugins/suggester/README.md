@@ -4,7 +4,7 @@ Claude Code has more skills than anyone remembers. The suggester reads each prom
 
 > 💡 `/planning:grill-me` could help here: it interviews you until the plan has no gaps.
 
-If Claude is allowed to use the skill on its own, it may simply use it. The suggester never starts a skill that you have to run yourself. It stays quiet when nothing fits, mentions each skill at most once per conversation, and works with every skill you have installed, from any plugin or marketplace.
+If Claude is allowed to use the skill on its own, it may simply use it, and says so in one line ("💡 Using `/vibe-security` to check the payment code"). The suggester never starts a skill that you have to run yourself. It stays quiet when nothing fits, mentions each skill at most once per conversation, and works with every skill you have installed, from any plugin or marketplace.
 
 Part of [Claude Skills](https://skills.garciabaertsch.com), an unofficial, personal collection. Not affiliated with or endorsed by Anthropic.
 

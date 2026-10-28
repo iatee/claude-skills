@@ -27,6 +27,10 @@ skill("plugins/dev/skills/handoff", "Write a handoff document so a fresh session
 // A skill synced from claude.ai, which Claude Code lists with a plugin prefix.
 skill("skills/synced/bucket/deep-research", "Research a question in depth across many web sources and write a cited report.");
 skill("skills/brand-check", "Check copy against my brand voice.");
+skill("skills/review-reputation", "Watches what customers say about your work in public and does something about it, too.");
+// Codex reads skills from ~/.agents/skills (HOME is the config folder here).
+skill(".agents/skills/impeccable", "Design, critique and polish frontend interfaces.");
+skill(".agents/skills/code-review", "Review a branch against the spec and coding standards.");
 write(
   "plugins/installed_plugins.json",
   JSON.stringify({ plugins: { "web@m": [{ installPath: path.join(config, "plugins/web") }], "dev@m": [{ installPath: path.join(config, "plugins/dev") }] } }),
@@ -44,13 +48,13 @@ write(
 );
 
 let session = 0;
-const run = (prompt, transcript = "go.jsonl", { sameSession = false } = {}) => {
+const run = (prompt, transcript = "go.jsonl", { sameSession = false, codex = false } = {}) => {
   if (!sameSession) session++;
   const input = JSON.stringify({ prompt, session_id: `test-${session}`, transcript_path: path.join(config, transcript), cwd: config });
-  const out = execFileSync("node", [HOOK], { input, env: { ...process.env, CLAUDE_CONFIG_DIR: config, HOME: config }, encoding: "utf8" });
+  const out = execFileSync("node", codex ? [HOOK, "--codex"] : [HOOK], { input, env: { ...process.env, CLAUDE_CONFIG_DIR: config, HOME: config }, encoding: "utf8" });
   return out ? JSON.parse(out).hookSpecificOutput.additionalContext : "";
 };
-const suggested = (context) => [...context.matchAll(/^- \/(\S+?):? /gm)].map((m) => m[1]);
+const suggested = (context) => [...context.matchAll(/^- [/$](\S+?):? /gm)].map((m) => m[1]);
 
 const cases = {
   "publishing a site suggests the design and SEO checks"() {
@@ -93,6 +97,15 @@ const cases = {
   },
   "unrelated prompts say nothing"() {
     assert.equal(run("what is the capital of peru"), "");
+  },
+  "filler words alone don't make a match"() {
+    assert.equal(run("can we get the sugester to work in codek too? and btw my suggester never suggested something"), "");
+  },
+  "codex suggests only its own skills, as $name"() {
+    const context = run("ok deploy it", "web.jsonl", { codex: true });
+    assert.deepEqual(suggested(context), ["impeccable"]);
+    assert.match(context, /\$<skill>/);
+    assert.deepEqual(suggested(run("looks good, open a pr", "go.jsonl", { codex: true })), ["code-review"]);
   },
 };
 

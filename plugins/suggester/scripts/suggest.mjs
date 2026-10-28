@@ -4,7 +4,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { STATE_DIR, findSkill, loadIndex, score } from "./index.mjs";
+import { CMD, CODEX, STATE_DIR, findSkill, loadIndex, score } from "./index.mjs";
 import { planRun, planStep } from "./plan.mjs";
 
 const THRESHOLD = 7;
@@ -29,7 +29,7 @@ const prompt = (input.prompt ?? "").trim();
 const settings = readJson(settingsFile, {});
 
 // `/suggester on|off` is handled here, so it works instantly and costs nothing.
-const toggle = prompt.match(/^\/(?:suggester:)?suggester\s+(on|off)\b/i);
+const toggle = prompt.match(/^[/$](?:suggester:)?suggester\s+(on|off)\b/i);
 if (toggle) {
   writeJson(settingsFile, { ...settings, enabled: toggle[1].toLowerCase() === "on" });
   process.exit(0);
@@ -50,7 +50,8 @@ let index;
 const skills = () => (index ??= loadIndex(cwd, transcript));
 
 // "Run the plan": Claude runs every step that hasn't run yet, committing after each, without pausing.
-const run = planRun(prompt, transcript, cwd);
+// Plans are read from Claude Code's transcript and run with its Skill tool, so Codex skips them.
+const run = !CODEX && planRun(prompt, transcript, cwd);
 if (run) {
   if (run.total === 0) say("Skill suggester: the user asked to run the plan, but no plan is remembered for this project. Say so in one line.");
   if (run.remaining.length === 0) say("Skill suggester: every step of the remembered plan has already run. Say so in one line.");
@@ -72,7 +73,7 @@ if (run) {
 }
 
 // Running a step of a numbered plan Claude wrote earlier: have Claude name the next step when it's done.
-const step = planStep(prompt, transcript, cwd);
+const step = !CODEX && planStep(prompt, transcript, cwd);
 if (step) {
   const next = step.next
     ? `When this step is done, end your reply with one line: "Next step: \`${step.next.command}\`${step.next.note ? ` (${step.next.note})` : ""}."`
@@ -105,13 +106,13 @@ for (const [key, m] of Object.entries(milestones)) {
   say(
     [
       `Skill suggester: ${m.message}. These installed skills cover it:`,
-      ...picked.map((s) => `- /${s.id}: ${s.description.slice(0, 160)}`),
-      `Before doing what was asked, add one short line to your reply, such as "💡 Before you ${m.before ?? "continue"}: /<skill> for <what>, /<skill> for <what>." Never run them unasked. They are installed: the user starts them by typing the command, and skills only the user can start are hidden from your skill list, so a skill missing from that list is no reason to skip it.`,
+      ...picked.map((s) => `- ${CMD}${s.id}: ${s.description.slice(0, 160)}`),
+      `Before doing what was asked, add one short line to your reply, such as "💡 Before you ${m.before ?? "continue"}: ${CMD}<skill> for <what>, ${CMD}<skill> for <what>." Never run them unasked. They are installed: the user starts them by typing the command, and skills only the user can start are hidden from your skill list, so a skill missing from that list is no reason to skip it.`,
     ].join("\n"),
   );
 }
 
-if (prompt.startsWith("/") || prompt.split(/\s+/).length < 4) process.exit(0);
+if (/^[/$]/.test(prompt) || prompt.split(/\s+/).length < 4) process.exit(0);
 
 const heavy = settings.heavy ?? DEFAULT_HEAVY;
 const isHeavy = (s) => s.userOnly || heavy.some((h) => s.name === h || s.name.startsWith(`${h}-`));
@@ -129,15 +130,15 @@ writeJson(sessionFile, [...shown]);
 
 const lines = candidates.map(({ skill }) => {
   const how = isHeavy(skill) ? "suggest to the user" : "you may use it yourself";
-  return `- /${skill.id} (${how}): ${skill.description.slice(0, 240)}`;
+  return `- ${CMD}${skill.id} (${how}): ${skill.description.slice(0, 240)}`;
 });
 say(
   [
     "Skill suggester: these installed skills might fit this request.",
     ...lines,
     "Only act if one is a clear, strong fit; otherwise ignore this note entirely and do not mention it.",
-    'For "suggest to the user": add one short line to your reply, such as "💡 /<name> could help here: <why>". Never run it unasked.',
-    'For "you may use it yourself": use the skill if it helps, without announcing it.',
+    `For "suggest to the user": add one short line to your reply, such as "💡 ${CMD}<name> could help here: <why>". Never run it unasked.`,
+    `For "you may use it yourself": use the skill if it helps, and say so in one short line, such as "💡 Using ${CMD}<name> for <why>."`,
     "Mention at most one skill.",
   ].join("\n"),
 );

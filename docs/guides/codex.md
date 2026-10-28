@@ -34,12 +34,41 @@ In the [catalog](catalog.md), a command like `/grill-me` becomes `$grill-me` in 
 
 | Skill or plugin | In Codex |
 |---|---|
-| `suggester` | Doesn't work. It runs on Claude Code hooks. Don't install it. |
+| `suggester` | Works, with its own setup: see below. Plans of numbered steps are Claude Code only. |
 | `claude-handoff` | Doesn't work. It launches a new Claude Code session. Use `handoff` instead and paste its summary into a new Codex session. |
 | `implement-spec`, `wayfinder`, `research` | Work, but they were written for Claude's sub-agents and its Skill tool. Codex follows them its own way, so results vary more. |
 | `taste-skill`, `searchfit-seo`, `ponytail` | Not included, because they live in their own repositories. Check each one's README for Codex support. |
 
 Everything else, including both security skills, works the same in both tools.
+
+## The skill suggester in Codex
+
+The suggester runs on hooks, which Codex supports too, but it isn't a skill, so `npx skills` can't install it. Set it up by hand once:
+
+1. Download this collection:
+
+   ```text
+   git clone https://github.com/iatee/claude-skills ~/.codex/claude-skills
+   ```
+
+2. Add the two hooks to `~/.codex/hooks.json` (create the file if it doesn't exist; if it does, add the two entries to its `hooks`):
+
+   ```json
+   {
+     "hooks": {
+       "SessionStart": [
+         { "hooks": [{ "type": "command", "command": "node ~/.codex/claude-skills/plugins/suggester/scripts/session-start.mjs --codex", "timeout": 5 }] }
+       ],
+       "UserPromptSubmit": [
+         { "hooks": [{ "type": "command", "command": "node ~/.codex/claude-skills/plugins/suggester/scripts/suggest.mjs --codex", "timeout": 5 }] }
+       ]
+     }
+   }
+   ```
+
+3. Start Codex, run `/hooks`, and trust both. Codex skips hooks you haven't reviewed.
+
+It then works as it does in Claude Code: when a skill in `~/.agents/skills` fits what you ask, Codex adds a line like "💡 `$grill-me` could help here". To update it, run `git -C ~/.codex/claude-skills pull`, and trust the hooks again in `/hooks` if Codex asks. To turn it off, remove the two entries.
 
 ## Keep them up to date
 

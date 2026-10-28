@@ -7,12 +7,16 @@ import path from "node:path";
 
 export const CONFIG_DIR = process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), ".claude");
 export const STATE_DIR = path.join(CONFIG_DIR, "skill-suggester");
+// Codex runs these hooks with `--codex`: it finds skills in ~/.agents/skills and starts them with `$name`.
+export const CODEX = process.argv.includes("--codex");
+export const CMD = CODEX ? "$" : "/";
 
 const STOPWORDS = new Set(
   ("the and for with that this from into your you are can when what want wants use uses used user users " +
     "skill skills any all its it's not but has have how who why which will would should could also than then " +
     "them they their there here about some more most other only just like such each very does doing done get " +
-    "make made need needs one two out our over own same see via want please let lets i'm i've you're don't").split(" "),
+    "make made need needs one two out our over own same see via want please let lets i'm i've you're don't " +
+    "something anything everything nothing thing things too btw really maybe still never ever now yet way work").split(" "),
 );
 
 const stem = (w) => w.replace(/(ing|ed|es|s)$/, "") || w;
@@ -62,6 +66,8 @@ function pluginRoots(pluginDir, plugin) {
 
 // Each root is a directory of <skill>/SKILL.md folders, or of <command>.md files, with an optional plugin prefix.
 function skillRoots(cwd) {
+  // shortcut: Codex also scans folders between cwd and the repo root; add them if people keep skills there.
+  if (CODEX) return [path.join(os.homedir(), ".agents", "skills"), path.join(cwd, ".agents", "skills"), "/etc/codex/skills"].map((dir) => ({ dir, plugin: null }));
   const roots = [
     { dir: path.join(CONFIG_DIR, "skills"), plugin: null },
     { dir: path.join(cwd, ".claude", "skills"), plugin: null },
@@ -115,6 +121,8 @@ export const findSkill = (skills, name) => skills.find((s) => s.id === name) ?? 
 
 export const loadIndex = (cwd, transcript = "") => {
   const skills = loadSkillFiles(cwd);
+  // Codex has neither Claude Code's built-in skills nor its skill listing.
+  if (CODEX) return skills;
   let fallback = {};
   try {
     fallback = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "..", "builtins.json"), "utf8"));
@@ -152,7 +160,7 @@ export const loadIndex = (cwd, transcript = "") => {
 function loadSkillFiles(cwd) {
   const roots = skillRoots(cwd).filter((r) => fs.existsSync(r.dir));
   const key = roots.map((r) => `${r.dir}:${fs.statSync(r.dir).mtimeMs}`).join("|");
-  const cacheFile = path.join(STATE_DIR, "index.json");
+  const cacheFile = path.join(STATE_DIR, CODEX ? "index-codex.json" : "index.json");
   try {
     const cached = JSON.parse(fs.readFileSync(cacheFile, "utf8"));
     if (cached.key === key) return cached.skills;
