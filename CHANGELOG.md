@@ -4,6 +4,7 @@ Each plugin is versioned on its own. Update a plugin with `/plugin marketplace u
 
 ## 2026-10-28
 
+- **suggester 1.5.1:** milestone phrases accept any article, so "create the pull request" or "push our changes" now bring up the review checks, not only "create a pull request". "Pull request" no longer matches skills about requests, such as `change-request`.
 - **security 1.0.0:** new. `vibe-security` by Chris Raroque audits an app for the holes AI assistants leave (exposed keys, open Supabase or Firebase tables, unchecked auth, client-set prices, missing rate limits); `vibesec` by BehiSecc keeps Claude from writing IDOR, XSS, CSRF, SSRF and JWT mistakes in the first place. Changed from upstream: `vibe-security` also checks for invented and lookalike dependencies and no longer takes over every code review; `vibesec` loads only for code that touches what it covers, not for all web work; outdated PHP and `x-forwarded-for` advice is fixed.
 - **all 1.2.0:** now includes `security`. Run `/reload-plugins` after updating.
 - **suggester 1.5.0:** works in Codex too ([setup](https://skills.garciabaertsch.com/codex/#the-skill-suggester-in-codex)). When Claude uses a suggested skill on its own, it now says so in one line, so you can see the suggester at work. Filler words like "something", "too" and "work" no longer count toward a match, which stopped some unrelated suggestions. Also suggests `vibe-security` before you merge or open a pull request.

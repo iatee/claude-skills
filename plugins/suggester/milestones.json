@@ -27,7 +27,7 @@
   },
   "merge": {
     "when": [
-      "ready to merge", "merge it", "merge this", "open a pr", "create a pr", "open a pull request", "create a pull request", "ready for review",
+      "ready to merge", "merge it", "merge this", "open a pr", "create a pr", "open a pull request", "create a pull request", "ready for review", "push the changes", "push to main",
       "abrir un pr", "abre un pr", "crear un pr", "listo para merge", "haz el merge",
       "pr erstellen", "pr öffnen", "pull request erstellen", "bereit zum mergen",
       "ouvrir une pr", "ouvre une pr", "créer une pr", "prêt à merger",

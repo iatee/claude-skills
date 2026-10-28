@@ -27,6 +27,7 @@ skill("plugins/dev/skills/handoff", "Write a handoff document so a fresh session
 // A skill synced from claude.ai, which Claude Code lists with a plugin prefix.
 skill("skills/synced/bucket/deep-research", "Research a question in depth across many web sources and write a cited report.");
 skill("skills/brand-check", "Check copy against my brand voice.");
+skill("skills/change-request", "Create a change management request with impact analysis and a rollback plan.");
 skill("skills/review-reputation", "Watches what customers say about your work in public and does something about it, too.");
 // Codex reads skills from ~/.agents/skills (HOME is the config folder here).
 skill(".agents/skills/impeccable", "Design, critique and polish frontend interfaces.");
@@ -97,6 +98,12 @@ const cases = {
   },
   "unrelated prompts say nothing"() {
     assert.equal(run("what is the capital of peru"), "");
+  },
+  "milestone phrases accept any article"() {
+    assert.deepEqual(suggested(run("could you create the pull request and push our changes")), ["code-review", "security-review", "simplify"]);
+  },
+  "\"pull request\" doesn't match skills about requests"() {
+    assert.ok(!suggested(run("please create a summary of the pull request changes")).includes("change-request"));
   },
   "filler words alone don't make a match"() {
     assert.equal(run("can we get the sugester to work in codek too? and btw my suggester never suggested something"), "");

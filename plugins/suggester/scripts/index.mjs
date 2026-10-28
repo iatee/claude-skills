@@ -20,8 +20,9 @@ const STOPWORDS = new Set(
 );
 
 const stem = (w) => w.replace(/(ing|ed|es|s)$/, "") || w;
+// "pull request" is one thing: as two words, "request" matched skills like change-request.
 export const tokenize = (text) =>
-  (text.toLowerCase().match(/[a-z0-9]+/g) ?? []).filter((w) => w.length > 2 && !STOPWORDS.has(w)).map(stem);
+  (text.toLowerCase().replace(/pull requests?/g, " ").match(/[a-z0-9]+/g) ?? []).filter((w) => w.length > 2 && !STOPWORDS.has(w)).map(stem);
 
 function readFrontmatter(file) {
   let text;

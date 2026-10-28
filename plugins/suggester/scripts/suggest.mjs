@@ -93,7 +93,13 @@ const milestones = { ...readJson(path.join(import.meta.dirname, "..", "milestone
 for (const [key, m] of Object.entries(milestones)) {
   if (key.startsWith("$") || shown.has(`milestone:${key}`)) continue;
   // Letter-aware boundaries, so phrases like "mise en ligne" or "veröffentlichen" match in any language.
-  const phrases = m.when.map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/'/g, "['’]"));
+  // An English article in a phrase stands for any of them: "create a pr" also matches "create the pr".
+  const phrases = m.when.map((p) =>
+    p
+      .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+      .replace(/'/g, "['’]")
+      .replace(/(?<=^|\s)(?:a|an|the)(?=\s)/g, "(?:a|an|the|my|our|this|that)"),
+  );
   const when = new RegExp(`(?<![\\p{L}\\p{N}])(${phrases.join("|")})(?![\\p{L}\\p{N}])`, "iu");
   const context = m.context && new RegExp(m.context, "i");
   if (!when.test(prompt) || (context && !context.test(prompt) && !context.test(transcript))) continue;
