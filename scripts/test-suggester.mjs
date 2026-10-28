@@ -24,6 +24,10 @@ skill("plugins/web/skills/nested/seo-audit", "Run an SEO audit on a website.", "
 write("plugins/web/commands/write-article.md", "---\ndescription: Write an SEO-optimized blog article with headings, meta description and schema markup.\n---\n");
 skill("plugins/dev/skills/code-review", "Review a branch against the spec and coding standards.");
 skill("plugins/dev/skills/handoff", "Write a handoff document so a fresh session can continue.");
+// "ours" comes from the preferred marketplace; "pack" from another, with a closer wording for newsletters.
+skill("plugins/ours/skills/mail-draft", "Draft a newsletter issue for subscribers.");
+skill("plugins/pack/skills/mailer-pro", "Write a newsletter issue for your subscribers.");
+skill("plugins/pack/skills/podcast-planner", "Plan a podcast episode outline and guest questions.");
 // A skill synced from claude.ai, which Claude Code lists with a plugin prefix.
 skill("skills/synced/bucket/deep-research", "Research a question in depth across many web sources and write a cited report.");
 skill("skills/brand-check", "Check copy against my brand voice.");
@@ -34,7 +38,11 @@ skill(".agents/skills/impeccable", "Design, critique and polish frontend interfa
 skill(".agents/skills/code-review", "Review a branch against the spec and coding standards.");
 write(
   "plugins/installed_plugins.json",
-  JSON.stringify({ plugins: { "web@m": [{ installPath: path.join(config, "plugins/web") }], "dev@m": [{ installPath: path.join(config, "plugins/dev") }] } }),
+  JSON.stringify({ plugins: { "web@m": [{ installPath: path.join(config, "plugins/web") }], "dev@m": [{ installPath: path.join(config, "plugins/dev") }],
+      "ours@iatee-skills": [{ installPath: path.join(config, "plugins/ours") }],
+      "pack@big": [{ installPath: path.join(config, "plugins/pack") }],
+    },
+  }),
 );
 
 const line = (entry) => JSON.stringify(entry);
@@ -104,6 +112,12 @@ const cases = {
   },
   "\"pull request\" doesn't match skills about requests"() {
     assert.ok(!suggested(run("please create a summary of the pull request changes")).includes("change-request"));
+  },
+  "skills from our marketplace win a close match"() {
+    assert.equal(suggested(run("help me write a newsletter issue for my subscribers"))[0], "ours:mail-draft");
+  },
+  "other plugins still come up when only they fit"() {
+    assert.ok(suggested(run("plan a podcast episode outline with guest questions")).includes("pack:podcast-planner"));
   },
   "filler words alone don't make a match"() {
     assert.equal(run("can we get the sugester to work in codek too? and btw my suggester never suggested something"), "");

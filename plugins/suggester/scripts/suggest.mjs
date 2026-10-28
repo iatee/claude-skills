@@ -9,6 +9,7 @@ import { planRun, planStep } from "./plan.mjs";
 
 const THRESHOLD = 7;
 const MAX_CANDIDATES = 3;
+const PREFER_BOOST = 1.5;
 const DEFAULT_HEAVY = ["grill", "wayfinder", "implement", "tdd", "to-tickets", "to-spec", "triage", "improve-codebase-architecture"];
 
 const settingsFile = path.join(STATE_DIR, "settings.json");
@@ -126,7 +127,12 @@ const isHeavy = (s) => s.userOnly || heavy.some((h) => s.name === h || s.name.st
 const triggers = readJson(path.join(import.meta.dirname, "..", "triggers.json"), {});
 for (const [name, words] of Object.entries(settings.triggers ?? {})) triggers[name] = [...(triggers[name] ?? []), ...words];
 
-const candidates = score(prompt, skills(), triggers)
+// Skills from preferred marketplaces and the user's own folders count extra, so big plugin packs don't
+// crowd them out on common words. Others still come up when they clearly fit better.
+const prefer = new Set(settings.prefer ?? ["iatee-skills"]);
+const weight = (s) => (s.marketplace === null || prefer.has(s.marketplace) ? PREFER_BOOST : 1);
+
+const candidates = score(prompt, skills(), triggers, weight)
   .filter((r) => r.score >= THRESHOLD && !shown.has(r.skill.id) && !used(r.skill))
   .slice(0, MAX_CANDIDATES);
 if (candidates.length === 0) process.exit(0);

@@ -56,16 +56,17 @@ const subdirs = (dir) => {
 };
 
 // A plugin's skill and command folders: the defaults plus any extra paths its plugin.json lists.
-function pluginRoots(pluginDir, plugin) {
+function pluginRoots(pluginDir, plugin, marketplace) {
   let manifest = {};
   try {
     manifest = JSON.parse(fs.readFileSync(path.join(pluginDir, ".claude-plugin", "plugin.json"), "utf8"));
   } catch {}
   const dirs = (field) => [...new Set([field, ...[manifest[field] ?? []].flat()].map((p) => path.resolve(pluginDir, p)))];
-  return [...dirs("skills").map((dir) => ({ dir, plugin })), ...dirs("commands").map((dir) => ({ dir, plugin, commands: true }))];
+  return [...dirs("skills").map((dir) => ({ dir, plugin, marketplace })), ...dirs("commands").map((dir) => ({ dir, plugin, marketplace, commands: true }))];
 }
 
 // Each root is a directory of <skill>/SKILL.md folders, or of <command>.md files, with an optional plugin prefix.
+// `marketplace` is null for the user's own skill folders.
 function skillRoots(cwd) {
   // shortcut: Codex also scans folders between cwd and the repo root; add them if people keep skills there.
   if (CODEX) return [path.join(os.homedir(), ".agents", "skills"), path.join(cwd, ".agents", "skills"), "/etc/codex/skills"].map((dir) => ({ dir, plugin: null }));
@@ -85,26 +86,27 @@ function skillRoots(cwd) {
   }
   for (const [id, installs] of Object.entries(installed)) {
     if (enabled[id] === false) continue;
-    const plugin = id.split("@")[0];
-    for (const install of installs) roots.push(...pluginRoots(install.installPath, plugin));
+    const [plugin, marketplace] = id.split("@");
+    for (const install of installs) roots.push(...pluginRoots(install.installPath, plugin, marketplace));
   }
 
   // Skills and plugins synced from a claude.ai account sit one bucket folder deeper.
-  for (const bucket of subdirs(path.join(CONFIG_DIR, "skills", "synced"))) roots.push({ dir: bucket, plugin: null });
+  for (const bucket of subdirs(path.join(CONFIG_DIR, "skills", "synced"))) roots.push({ dir: bucket, plugin: null, marketplace: "claude.ai" });
   for (const bucket of subdirs(path.join(CONFIG_DIR, "plugins", "synced"))) {
     for (const pluginDir of subdirs(bucket)) {
       let plugin = path.basename(pluginDir).replace(/~.*$/, "");
       try {
         plugin = JSON.parse(fs.readFileSync(path.join(pluginDir, ".claude-plugin", "plugin.json"), "utf8")).name || plugin;
       } catch {}
-      roots.push(...pluginRoots(pluginDir, plugin));
+      roots.push(...pluginRoots(pluginDir, plugin, "claude.ai"));
     }
   }
   return roots;
 }
 
-const entry = (id, name, description, userOnly = false) => ({
+const entry = (id, name, description, userOnly = false, marketplace = null) => ({
   id,
+  marketplace,
   name,
   description,
   userOnly,
@@ -153,14 +155,14 @@ export const loadIndex = (cwd, transcript = "") => {
   const have = new Set(fromListing.map((s) => s.id));
   const extra = names
     .filter((n) => !have.has(n) && (described.get(n) ?? fallback[n]))
-    .map((n) => entry(n, n.split(":").pop(), described.get(n) ?? fallback[n]));
+    .map((n) => entry(n, n.split(":").pop(), described.get(n) ?? fallback[n], false, "claude-code"));
   return [...fromListing, ...extra];
 };
 
 // The cache key is every root's mtime, so adding, removing or updating a skill rebuilds the index.
 function loadSkillFiles(cwd) {
   const roots = skillRoots(cwd).filter((r) => fs.existsSync(r.dir));
-  const key = roots.map((r) => `${r.dir}:${fs.statSync(r.dir).mtimeMs}`).join("|");
+  const key = ["v2", ...roots.map((r) => `${r.dir}:${fs.statSync(r.dir).mtimeMs}`)].join("|");
   const cacheFile = path.join(STATE_DIR, CODEX ? "index-codex.json" : "index.json");
   try {
     const cached = JSON.parse(fs.readFileSync(cacheFile, "utf8"));
@@ -169,7 +171,7 @@ function loadSkillFiles(cwd) {
 
   const skills = [];
   const seen = new Set();
-  for (const { dir, plugin, commands } of roots) {
+  for (const { dir, plugin, marketplace = null, commands } of roots) {
     let items = [];
     try {
       items = fs.readdirSync(dir);
@@ -183,7 +185,7 @@ function loadSkillFiles(cwd) {
       const id = plugin ? `${plugin}:${name}` : name;
       if (seen.has(id) || plugin === "suggester") continue;
       seen.add(id);
-      skills.push(entry(id, name, fm.description, fm["disable-model-invocation"] === "true"));
+      skills.push(entry(id, name, fm.description, fm["disable-model-invocation"] === "true", marketplace));
     }
   }
   try {
@@ -195,7 +197,7 @@ function loadSkillFiles(cwd) {
 
 // BM25-style scoring: rare words count more, long descriptions don't win by sheer length,
 // and a match on the skill's name or one of its quoted trigger phrases counts most.
-export function score(prompt, skills, triggers = {}) {
+export function score(prompt, skills, triggers = {}, weight = () => 1) {
   const words = new Set(tokenize(prompt));
   const lower = ` ${prompt.toLowerCase().replace(/[^a-z0-9.'-]+/g, " ")} `;
   const hasPhrase = (p) => lower.includes(` ${p.toLowerCase()} `) || lower.includes(` ${p.toLowerCase()}s `);
@@ -229,7 +231,7 @@ export function score(prompt, skills, triggers = {}) {
         }
       }
       // A match needs more than one stray word: a trigger phrase, or the name plus the description.
-      return { skill: s, score: total, confident: phraseHit || (nameHit && hits >= 2) || hits >= 3 };
+      return { skill: s, score: total * weight(s), confident: phraseHit || (nameHit && hits >= 2) || hits >= 3 };
     })
     .filter((r) => r.confident)
     .sort((a, b) => b.score - a.score)

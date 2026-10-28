@@ -101,6 +101,7 @@ When you run a step of a remembered plan, the hook adds a one-line note telling 
 - `"enabled"`: `true` or `false`, set by `/suggester on` and `/suggester off`.
 - `"heavy"`: skill names that should only ever be suggested, never used by Claude on its own.
 - `"triggers"`: extra words per skill name, for example `{"tdd": ["kata"]}`.
+- `"prefer"`: marketplaces whose skills count extra when matching, so large plugin packs don't crowd them out. Defaults to `["iatee-skills"]`; your own skill folders always count extra. Skills from other marketplaces are still suggested when they clearly fit better. For example, `["iatee-skills", "my-team"]`.
 - `"milestones"`: your own moments, or changes to the built-in ones under the same name. For example, to have your own `brand-check` skill suggested before a newsletter goes out:
 
   ```json
