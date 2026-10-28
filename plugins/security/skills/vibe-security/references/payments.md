@@ -61,3 +61,28 @@ Subscriptions can be cancelled, expire, or change tier at any time. Your databas
 ## Checkout Session Metadata
 
 Validate that checkout session metadata (user ID, plan, etc.) was set **server-side** when creating the session, not passed from the client. If metadata comes from the client, an attacker can claim to be a different user or select a different plan.
+
+## Race Conditions: Spending Twice
+
+Checking a balance and then updating it in two steps lets two parallel requests both pass the check. Attackers send 20 requests at once to redeem a coupon 20 times or spend the same credits twice.
+
+```typescript
+// BAD: read, check, then write
+const user = await db.users.findUnique({ where: { id } });
+if (user.credits < 1) throw new Error('No credits');
+await db.users.update({ where: { id }, data: { credits: user.credits - 1 } });
+
+// GOOD: one atomic, conditional update
+const result = await db.users.updateMany({
+  where: { id, credits: { gte: 1 } },
+  data: { credits: { decrement: 1 } },
+});
+if (result.count === 0) throw new Error('No credits');
+```
+
+For one-time things (coupons, trials, referral bonuses), let the database enforce it with a unique constraint, e.g. on `(user_id, coupon_id)` in a redemptions table.
+
+## Webhook Retries and Other Providers
+
+- Providers deliver the same event more than once. Store each `event.id` and skip ones already handled, or a retried `checkout.session.completed` grants the purchase twice.
+- Every webhook needs its signature verified, not only Stripe's: use the provider's verifier (Svix for Clerk and others, `@octokit/webhooks` for GitHub), on the raw body. Verifiers that check a timestamp also stop old requests from being replayed.

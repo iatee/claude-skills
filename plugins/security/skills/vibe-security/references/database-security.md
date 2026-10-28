@@ -88,6 +88,20 @@ CREATE POLICY "Users upload to own folder"
 ```
 
 
+### Views Bypass RLS
+
+A view runs with the rights of the role that created it (usually `postgres`), not the user querying it, so a view in the `public` schema can return every row of a table that has RLS. AI assistants create views for "user stats" or "public profiles" and expose everything, including joins on `auth.users`.
+
+```sql
+-- BAD: anyone with the anon key can read every row through the view
+CREATE VIEW public.order_summaries AS SELECT * FROM public.orders;
+
+-- GOOD (Postgres 15+): the view applies the caller's RLS policies
+CREATE VIEW public.order_summaries WITH (security_invoker = true) AS SELECT * FROM public.orders;
+```
+
+On older Postgres, keep views out of exposed schemas or `REVOKE SELECT` on them from `anon` and `authenticated`. Never expose a view over `auth.users`.
+
 ## Firebase Security Rules
 
 ### Default Rules Are Dangerous

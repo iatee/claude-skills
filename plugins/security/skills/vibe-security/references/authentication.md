@@ -88,3 +88,20 @@ Use `import 'server-only'` at the top of data access modules to prevent them fro
 - Store tokens in `HttpOnly + Secure + SameSite=Lax` cookies, **not localStorage**.
 - localStorage is accessible to any JavaScript on the page — a single XSS vulnerability exposes all tokens.
 - `HttpOnly` cookies are invisible to JavaScript and sent automatically by the browser.
+
+## Generating and Comparing Secrets
+
+- **Never use `Math.random()`** (or Python's `random`) for tokens, reset links, invite codes, API keys or session IDs. It is predictable. Use `crypto.randomBytes(32).toString('hex')`, `crypto.randomUUID()`, or Python's `secrets.token_urlsafe(32)`.
+- **Compare secrets in constant time.** `===` returns as soon as a character differs, which leaks how much of a guess was right. Use `crypto.timingSafeEqual` (check that both buffers have the same length first, it throws otherwise) or Python's `hmac.compare_digest`.
+
+## Password Reset
+
+- Reset tokens are random (see above), single-use, expire within an hour, and are stored hashed, like passwords.
+- Respond the same way whether or not the email has an account ("If that address has an account, we sent a link"), so the form can't be used to find out who has an account.
+- After a reset, end the user's other sessions.
+
+## OAuth / Social Login
+
+- Send and verify the `state` parameter; without it an attacker can log a victim into the attacker's account. Use PKCE for mobile and single-page apps.
+- Register exact redirect URIs with the provider; no wildcards.
+- Don't link a social login to an existing account by email unless the provider says the email is verified, or anyone who can create a provider account with your user's address can take over theirs.

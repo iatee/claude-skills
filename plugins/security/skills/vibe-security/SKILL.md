@@ -21,15 +21,15 @@ Never trust the client. Every price, user ID, role, subscription status, feature
 
 Examine the codebase systematically. For each step, load the relevant reference file only if the codebase uses that technology or pattern. Skip steps that aren't relevant.
 
-1. **Secrets & Environment Variables** — Scan for hardcoded API keys, tokens, or credentials. Check for secrets exposed via client-side env var prefixes (`NEXT_PUBLIC_`, `VITE_`, `EXPO_PUBLIC_`). Verify `.env` is in `.gitignore`. See `references/secrets-and-env.md`.
+1. **Secrets & Environment Variables** — Scan for hardcoded API keys, tokens, or credentials. Check for secrets exposed via client-side env var prefixes (`NEXT_PUBLIC_`, `VITE_`, `EXPO_PUBLIC_`). Verify `.env` is in `.gitignore`, and that logs and error trackers don't capture secrets or personal data. See `references/secrets-and-env.md`.
 
-2. **Database Access Control** — Check Supabase RLS policies, Firebase Security Rules, or Convex auth guards. This is the #1 source of critical vulnerabilities in vibe-coded apps. See `references/database-security.md`.
+2. **Database Access Control** — Check Supabase RLS policies (and views, which bypass them), Firebase Security Rules, or Convex auth guards. This is the #1 source of critical vulnerabilities in vibe-coded apps. See `references/database-security.md`.
 
-3. **Authentication & Authorization** — Validate JWT handling, middleware auth, Server Action protection, and session management. See `references/authentication.md`.
+3. **Authentication & Authorization** — Validate JWT handling, middleware auth, Server Action protection, session management, password reset and OAuth flows, and how tokens are generated and compared. See `references/authentication.md`.
 
 4. **Rate Limiting & Abuse Prevention** — Ensure auth endpoints, AI calls, and expensive operations have rate limits. Verify rate limit counters can't be tampered with. See `references/rate-limiting.md`.
 
-5. **Payment Security** — Check for client-side price manipulation, webhook signature verification, and subscription status validation. See `references/payments.md`.
+5. **Payment Security** — Check for client-side price manipulation, webhook signature verification and retries, race conditions on credits and coupons, and subscription status validation. See `references/payments.md`.
 
 6. **Mobile Security** — Verify secure token storage, API key protection via backend proxy, and deep link validation. See `references/mobile.md`.
 
@@ -37,7 +37,7 @@ Examine the codebase systematically. For each step, load the relevant reference 
 
 8. **Deployment Configuration** — Verify production settings, security headers, source map exposure, and environment separation. See `references/deployment.md`.
 
-9. **Data Access & Input Validation** — Check for SQL injection, ORM misuse, and missing input validation. See `references/data-access.md`.
+9. **Data Access & Input Validation** — Check for SQL and command injection, ORM misuse, prototype pollution, and missing input validation. See `references/data-access.md`.
 
 10. **Dependencies** — AI assistants suggest packages that don't exist, which attackers then register ("slopsquatting"), or lookalikes of popular ones. Check that each dependency is a real, maintained package with the intended name, that a lockfile is committed, and run the ecosystem's audit (`npm audit`, `pip-audit`, `bundle audit`, `cargo audit`) for known vulnerabilities.
 

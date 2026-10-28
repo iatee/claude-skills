@@ -45,3 +45,11 @@ When auditing, search for:
 - Strings matching common key patterns: `sk_live_`, `sk_test_`, `AKIA`, `ghp_`, `glpat-`, `xoxb-`, `Bearer `
 - `process.env.NEXT_PUBLIC_` or `import.meta.env.VITE_` referencing anything with "secret", "private", "service", or "key" in the name
 - Hardcoded URLs containing credentials (e.g., `postgresql://user:password@host`)
+
+## Logs and Error Trackers
+
+Secrets often leak through logs rather than code:
+
+- Don't log whole request bodies or headers: they carry passwords, `Authorization` headers, cookies and API keys. Log IDs, not user objects.
+- Error trackers (Sentry and similar) capture request data. Keep `sendDefaultPii` off and scrub tokens, passwords and emails in `beforeSend`.
+- Remove `console.log` of users, tokens or API responses from client code: anyone can open the browser console.

