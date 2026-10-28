@@ -103,11 +103,23 @@
     },
     "wizard":                        { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/wizard" },
 
-    "vibe-security": { "plugin": "security", "source": "vibe-security", "path": "vibe-security" },
+    "vibe-security": {
+      "plugin": "security", "source": "vibe-security", "path": "vibe-security",
+      "patches": [
+        { "file": "SKILL.md", "find": "whenever the user asks about security, wants a code review, mentions", "replace": "whenever the user asks about security or a security review, mentions" },
+        { "file": "SKILL.md", "find": "See `references/data-access.md`.\n\nIf doing a partial review", "replace": "See `references/data-access.md`.\n\n10. **Dependencies** — AI assistants suggest packages that don't exist, which attackers then register (\"slopsquatting\"), or lookalikes of popular ones. Check that each dependency is a real, maintained package with the intended name, that a lockfile is committed, and run the ecosystem's audit (`npm audit`, `pip-audit`, `bundle audit`, `cargo audit`) for known vulnerabilities.\n\nIf doing a partial review" },
+        { "file": "references/rate-limiting.md", "find": "  const ip = request.headers.get('x-forwarded-for') ?? '127.0.0.1';", "replace": "  // Clients can send their own x-forwarded-for to dodge the limit. Rely on it only if your host\n  // overwrites it (Vercel does); otherwise use the header your host sets, e.g. cf-connecting-ip on Cloudflare.\n  const ip = request.headers.get('x-forwarded-for') ?? '127.0.0.1';" }
+      ],
+      "changes": "The description no longer claims every code review, which belongs to the code-review skills. Added a tenth audit step for invented and lookalike dependencies. The rate-limiting example warns that `x-forwarded-for` can be spoofed."
+    },
     "vibesec": {
       "plugin": "security", "source": "vibesec", "path": ".", "include": ["SKILL.md"],
-      "patches": [{ "file": "SKILL.md", "find": "name: VibeSec-Skill\n", "replace": "name: vibesec\n" }],
-      "changes": "Renamed from `VibeSec-Skill` to `vibesec`, because a skill's name must match its folder. Content is unchanged."
+      "patches": [
+        { "file": "SKILL.md", "find": "name: VibeSec-Skill\n", "replace": "name: vibesec\n" },
+        { "file": "SKILL.md", "find": "description: This skill helps Claude write secure web applications. Use this when working on any web application or when a user requests a scan or audit to ensure security best practices are followed.\n", "replace": "description: Secure coding rules for web apps, from a bug hunter's view - access control and IDOR, XSS, CSRF, SSRF, open redirects, file uploads, SQL injection, XXE, path traversal, JWT and GraphQL. Use when writing or reviewing web code that handles user input, logins, permissions, user-supplied URLs, file uploads, XML or database queries, or when the user asks for a security scan of a web app.\n" },
+        { "file": "SKILL.md", "find": "libxml_disable_entity_loader(true);\n// Or use XMLReader with proper settings", "replace": "// PHP 8+ (libxml 2.9+) doesn't load external entities by default: never pass LIBXML_NOENT or LIBXML_DTDLOAD.\n// PHP 7 and older: call libxml_disable_entity_loader(true), which is deprecated in PHP 8." }
+      ],
+      "changes": "Renamed from `VibeSec-Skill` to `vibesec`, because a skill's name must match its folder. The description names the topics it covers, so it loads for code that touches them rather than for any web work. The PHP XXE advice is updated for PHP 8, which deprecated `libxml_disable_entity_loader`."
     },
 
     "impeccable": { "plugin": "frontend", "source": "impeccable", "path": ".claude/skills/impeccable" },

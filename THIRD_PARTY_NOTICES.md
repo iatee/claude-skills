@@ -53,6 +53,7 @@ This file is generated from `manifest.json` by `scripts/vendor.mjs`; do not edit
 - **Commit:** [`850938f`](https://github.com/raroque/vibe-security-skill/tree/850938f20f6915e7c3688d85c0a838f7909c87bb)
 - **License:** MIT
 - **Skills:** `vibe-security`
+- **Changes to `vibe-security`:** The description no longer claims every code review, which belongs to the code-review skills. Added a tenth audit step for invented and lookalike dependencies. The rate-limiting example warns that `x-forwarded-for` can be spoofed.
 
 ## BehiSecc
 
@@ -60,4 +61,4 @@ This file is generated from `manifest.json` by `scripts/vendor.mjs`; do not edit
 - **Commit:** [`0590993`](https://github.com/BehiSecc/VibeSec-Skill/tree/0590993b35ad51961f65a4d01cf1196dfead05bb)
 - **License:** Apache-2.0
 - **Skills:** `vibesec`
-- **Changes to `vibesec`:** Renamed from `VibeSec-Skill` to `vibesec`, because a skill's name must match its folder. Content is unchanged.
+- **Changes to `vibesec`:** Renamed from `VibeSec-Skill` to `vibesec`, because a skill's name must match its folder. The description names the topics it covers, so it loads for code that touches them rather than for any web work. The PHP XXE advice is updated for PHP 8, which deprecated `libxml_disable_entity_loader`.
