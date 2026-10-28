@@ -100,6 +100,7 @@ export default defineConfig({
             { label: "Power user", link: "/power-user/" },
             { label: "Customize Claude Code", link: "/customize/" },
             { label: "Your own Claude server", link: "/own-server/" },
+            { label: "Using skills in Codex", link: "/codex/" },
           ],
         },
       ],

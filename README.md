@@ -23,6 +23,7 @@ In Claude Code, run:
 | `planning` | Grilling interviews, specs, tickets, triage, research, prototypes, a seven-persona council |
 | `coding` | Implement, TDD, bug diagnosis, code review, architecture, browser automation (installs `planning` too) |
 | `frontend` | `impeccable` for designing and polishing interfaces, `taste-skill` for art direction, and `searchfit-seo` for SEO and AI-search visibility |
+| `security` | `vibe-security` audits AI-built apps for leaked keys, open databases and missing auth checks; `vibesec` keeps Claude from writing those holes in the first place |
 | `writing` | Writing for people and for agents, teaching, re-pitching |
 | `sessions` | Handoffs to a fresh agent, retrospectives |
 | `suggester` | Suggests the right skill when it clearly fits, so you don't have to remember them all. Needs [Node.js](https://nodejs.org). `/suggester off` mutes it. |
@@ -36,6 +37,7 @@ In Claude Code, run:
 3. **[Power user](docs/guides/power-user.md)**: chaining skills into workflows, choosing between similar skills, and writing your own.
 4. **[Customize Claude Code](docs/guides/customize.md)**: a status bar, mods that change Claude Code itself, and memory between sessions (including claude-mem).
 5. **[Your own Claude server](docs/guides/own-server.md)**: run Claude Code on an always-on machine and drive it from your phone.
+6. **[Using these skills in Codex](docs/guides/codex.md)**: install the collection in OpenAI's Codex, and what only works in Claude Code.
 
 ## Catalog
 
@@ -67,6 +69,8 @@ In Claude Code, run:
 | [**tdd**](https://skills.garciabaertsch.com/skills/tdd/) | `coding` | Test-driven development, one red-green step at a time. | You want a feature or fix built test-first. | Automatic, or `/tdd` | [Matt Pocock](https://github.com/mattpocock/skills) |
 | [**wizard**](https://skills.garciabaertsch.com/skills/wizard/) | `coding` | Writes an interactive script that walks you through steps only a human can do. | A setup needs you to click through dashboards or paste secrets. | Automatic, or `/wizard` | [Matt Pocock](https://github.com/mattpocock/skills) |
 | [**impeccable**](https://skills.garciabaertsch.com/skills/impeccable/) | `frontend` | Designs, critiques and polishes frontend interfaces, with 20+ sub-commands like audit, polish and typeset. | A page or app works but doesn't look or feel right. | Automatic, or `/impeccable` | [Paul Bakaus](https://github.com/pbakaus/impeccable) |
+| [**vibe-security**](https://skills.garciabaertsch.com/skills/vibe-security/) | `security` | Audits an app for the holes AI assistants leave: exposed keys, open Supabase or Firebase tables, unchecked auth, client-set prices, missing rate limits. | You built an app with AI and want to know if someone could break in before you ship it. | Automatic, or `/vibe-security` | [Chris Raroque](https://github.com/raroque/vibe-security-skill) |
+| [**vibesec**](https://skills.garciabaertsch.com/skills/vibesec/) | `security` | Makes Claude write web code the way a bug hunter would want it: no IDOR, XSS, CSRF, SSRF, open redirects or weak JWTs. | You're building any web app and want it secure from the first line, not fixed later. | Automatic, or `/vibesec` | [BehiSecc](https://github.com/BehiSecc/VibeSec-Skill) |
 | [**teach**](https://skills.garciabaertsch.com/skills/teach/) | `writing` | Teaches you a concept step by step, using your own workspace as the example. | You want to understand something, not just have it done. | `/teach` | [Matt Pocock](https://github.com/mattpocock/skills) |
 | [**wait-what**](https://skills.garciabaertsch.com/skills/wait-what/) | `writing` | Makes Claude re-explain its last message in plain, simple English. | Claude's last answer lost you. | `/wait-what` | [Matt Pocock](https://github.com/mattpocock/skills) |
 | [**writing-for-agents**](https://skills.garciabaertsch.com/skills/writing-for-agents/) | `writing` | How to write skills, CLAUDE.md and AGENTS.md files that agents follow well. | You're writing or editing a skill or agent instructions. | Automatic, or `/writing-for-agents` | [Matt Pocock](https://github.com/mattpocock/skills) |

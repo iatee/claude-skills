@@ -2,6 +2,13 @@
 
 Each plugin is versioned on its own. Update a plugin with `/plugin marketplace update iatee-skills`.
 
+## 2026-10-28
+
+- **security 1.0.0:** new. `vibe-security` by Chris Raroque audits an app for the holes AI assistants leave (exposed keys, open Supabase or Firebase tables, unchecked auth, client-set prices, missing rate limits); `vibesec` by BehiSecc keeps Claude from writing IDOR, XSS, CSRF, SSRF and JWT mistakes in the first place.
+- **all 1.2.0:** now includes `security`. Run `/reload-plugins` after updating.
+- **suggester 1.4.1:** suggests `vibe-security` before you merge or open a pull request.
+- New guide: [Using these skills in Codex](https://skills.garciabaertsch.com/codex/).
+
 ## 2026-10-17
 
 - **suggester 1.4.0:** milestones now work in any wording, language or spelling ("wraping up", "I'm heading out"): at session start Claude is told what each moment means and which installed skills fit, about 300 tokens once per session. The phrase lists stay as the guaranteed trigger, now with "wrap it up".

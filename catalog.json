@@ -29,6 +29,9 @@
 
     "impeccable": { "what": "Designs, critiques and polishes frontend interfaces, with 20+ sub-commands like audit, polish and typeset.", "when": "A page or app works but doesn't look or feel right." },
 
+    "vibe-security": { "what": "Audits an app for the holes AI assistants leave: exposed keys, open Supabase or Firebase tables, unchecked auth, client-set prices, missing rate limits.", "when": "You built an app with AI and want to know if someone could break in before you ship it." },
+    "vibesec": { "what": "Makes Claude write web code the way a bug hunter would want it: no IDOR, XSS, CSRF, SSRF, open redirects or weak JWTs.", "when": "You're building any web app and want it secure from the first line, not fixed later." },
+
     "writing-for-agents": { "what": "How to write skills, CLAUDE.md and AGENTS.md files that agents follow well.", "when": "You're writing or editing a skill or agent instructions." },
     "writing-fragments": { "what": "Collects raw thoughts and fragments for a piece of writing, with no structure yet.", "when": "You're at the start of an article and have ideas but no outline." },
     "writing-shape": { "what": "Shapes raw material into an article, paragraph by paragraph.", "when": "You have the material and want it turned into a finished text." },

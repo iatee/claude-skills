@@ -36,6 +36,20 @@
       "author": "Eoghan Henn / rebelytics.com",
       "license": "CC-BY-4.0",
       "licenseFile": "LICENSE.txt"
+    },
+    "vibe-security": {
+      "repo": "raroque/vibe-security-skill",
+      "commit": "850938f20f6915e7c3688d85c0a838f7909c87bb",
+      "author": "Chris Raroque",
+      "license": "MIT",
+      "licenseFile": "LICENSE"
+    },
+    "vibesec": {
+      "repo": "BehiSecc/VibeSec-Skill",
+      "commit": "0590993b35ad51961f65a4d01cf1196dfead05bb",
+      "author": "BehiSecc",
+      "license": "Apache-2.0",
+      "licenseFile": "LICENSE"
     }
   },
   "skills": {
@@ -88,6 +102,13 @@
       "changes": "Added a \"Use when\" sentence to the description, so Claude knows when to reach for it."
     },
     "wizard":                        { "plugin": "coding", "source": "mattpocock", "path": "skills/engineering/wizard" },
+
+    "vibe-security": { "plugin": "security", "source": "vibe-security", "path": "vibe-security" },
+    "vibesec": {
+      "plugin": "security", "source": "vibesec", "path": ".", "include": ["SKILL.md"],
+      "patches": [{ "file": "SKILL.md", "find": "name: VibeSec-Skill\n", "replace": "name: vibesec\n" }],
+      "changes": "Renamed from `VibeSec-Skill` to `vibesec`, because a skill's name must match its folder. Content is unchanged."
+    },
 
     "impeccable": { "plugin": "frontend", "source": "impeccable", "path": ".claude/skills/impeccable" },
 

@@ -35,7 +35,7 @@
     ],
     "message": "the user is about to merge or open a pull request. A review first catches what's easy to miss",
     "before": "merge",
-    "skills": [["coding:code-review", "code-review"], "security-review", "simplify"]
+    "skills": [["coding:code-review", "code-review"], "security-review", ["security:vibe-security", "vibe-security"], "simplify"]
   },
   "end-session": {
     "when": [

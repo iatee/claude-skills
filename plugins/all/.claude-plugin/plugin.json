@@ -1,10 +1,10 @@
 {
   "name": "all",
-  "version": "1.1.1",
-  "description": "Everything recommended in one install: planning, coding, frontend, writing, sessions and the skill suggester. Leaves out the opt-in ponytail and observer.",
+  "version": "1.2.0",
+  "description": "Everything recommended in one install: planning, coding, frontend, security, writing, sessions and the skill suggester. Leaves out the opt-in ponytail and observer.",
   "author": { "name": "Iatee", "url": "https://github.com/iatee" },
   "homepage": "https://skills.garciabaertsch.com",
   "repository": "https://github.com/iatee/claude-skills",
   "license": "MIT",
-  "dependencies": ["planning", "coding", "frontend", "writing", "sessions", "suggester"]
+  "dependencies": ["planning", "coding", "frontend", "security", "writing", "sessions", "suggester"]
 }

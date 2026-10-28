@@ -46,3 +46,18 @@ This file is generated from `manifest.json` by `scripts/vendor.mjs`; do not edit
 - **License:** CC-BY-4.0
 - **Skills:** `task-observer`
 - **Changes to `task-observer`:** Copied a subset of the upstream repository: the two PNG logos and repository housekeeping files were left out. Skill content is unchanged.
+
+## Chris Raroque
+
+- **Upstream:** https://github.com/raroque/vibe-security-skill
+- **Commit:** [`850938f`](https://github.com/raroque/vibe-security-skill/tree/850938f20f6915e7c3688d85c0a838f7909c87bb)
+- **License:** MIT
+- **Skills:** `vibe-security`
+
+## BehiSecc
+
+- **Upstream:** https://github.com/BehiSecc/VibeSec-Skill
+- **Commit:** [`0590993`](https://github.com/BehiSecc/VibeSec-Skill/tree/0590993b35ad51961f65a4d01cf1196dfead05bb)
+- **License:** Apache-2.0
+- **Skills:** `vibesec`
+- **Changes to `vibesec`:** Renamed from `VibeSec-Skill` to `vibesec`, because a skill's name must match its folder. Content is unchanged.

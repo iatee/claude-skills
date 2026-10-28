@@ -41,6 +41,7 @@ That's it. `all` installs every recommended plugin:
 | `planning` | Turning ideas into plans: interviews, specs, tickets, research, a decision council |
 | `coding` | Building and fixing code: test-first development, debugging, code review, browser automation |
 | `frontend` | Making interfaces look good and easy to find: `impeccable`, `taste-skill` and `searchfit-seo` |
+| `security` | Finding and preventing security holes in apps built with AI: leaked keys, open databases, missing login checks |
 | `writing` | Writing for people and for AI agents, and learning new things |
 | `sessions` | Handing work to a fresh session, and looking back on finished work |
 | `suggester` | Tells you when one of your skills fits what you're doing |
@@ -115,3 +116,4 @@ claude plugin marketplace remove iatee-skills
 - **[Skill catalog](catalog.md):** every skill, what it does, and when to use it.
 - **[Power user guide](power-user.md):** chain skills into workflows and write your own.
 - **[Customize Claude Code](customize.md):** a status bar, mods and memory between sessions.
+- **[Using these skills in Codex](codex.md):** the same skills in OpenAI's Codex.
