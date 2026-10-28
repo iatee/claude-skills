@@ -4,6 +4,7 @@ Each plugin is versioned on its own. Update a plugin with `/plugin marketplace u
 
 ## 2026-10-28
 
+- **security 1.1.1:** `vibe-security` no longer starts on a plain "check my code"; it needs a security angle.
 - **security 1.1.0:** `vibe-security` checks eight more things AI-built apps get wrong: Supabase views that bypass row-level security, command injection, prototype pollution, tokens made with `Math.random()` and secrets compared with `===`, password reset and OAuth flows, race conditions that let credits or coupons be used twice, webhook retries and non-Stripe signatures, and secrets in logs and error trackers.
 - **suggester 1.6.0:** prefers skills from this collection and your own skill folders, so big plugin packs no longer crowd them out on common words. Other skills still come up when they clearly fit better. Add marketplaces of your own under `"prefer"` in your settings.
 - **suggester 1.5.1:** milestone phrases accept any article, so "create the pull request" or "push our changes" now bring up the review checks, not only "create a pull request". "Pull request" no longer matches skills about requests, such as `change-request`.
