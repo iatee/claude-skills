@@ -158,6 +158,12 @@ const cases = {
   "skills from our marketplace win a close match"() {
     assert.equal(suggested(run("help me write a newsletter issue for my subscribers"))[0], "ours:mail-draft");
   },
+  "a skill installed twice is suggested once"() {
+    skill("skills/synced/bucket/mail-draft", "Draft a newsletter issue for subscribers.");
+    const names = suggested(run("help me write a newsletter issue for my subscribers")).map((id) => id.split(":").pop());
+    assert.equal(names.filter((n) => n === "mail-draft").length, 1);
+    fs.rmSync(path.join(config, "skills/synced/bucket/mail-draft"), { recursive: true });
+  },
   "other plugins still come up when only they fit"() {
     assert.ok(suggested(run("plan a podcast episode outline with guest questions")).includes("pack:podcast-planner"));
   },

@@ -4,6 +4,7 @@ Each plugin is versioned on its own. Update a plugin with `/plugin marketplace u
 
 ## 2026-10-29
 
+- **suggester 1.9.3:** a skill installed twice (from a plugin and from claude.ai) takes only one of the three suggestion slots, so it no longer crowds out a better fit. Recognizes "submits twice" and "logged out" as bug reports, and "live schalten", "mettre en ligne" and "poner en línea" as launching an app.
 - **suggester 1.9.2:** skips claude.ai plugins you turned off in Claude Code (`claude plugin disable <name>@synced`), so it no longer suggests their skills.
 - **suggester 1.9.1:** `/suggester skills` hands Claude just the names, grouped by plugin, about 2,400 tokens for 400 skills instead of having it read the full list (about 14,000).
 - **suggester 1.9.0:** suggests a security check at more moments, for any app, not only websites: going to production or the app store, making a repository public (keys in old commits become readable too), and switching payments to live mode. A skill named at one moment isn't named again at the next. New `/suggester skills` lists every skill you have installed, grouped by plugin; the list is kept in `~/.claude/skill-suggester/installed-skills.md`, and Claude points you to it once after you install or update the suggester.

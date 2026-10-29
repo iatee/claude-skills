@@ -29,10 +29,10 @@
   "launch-app": {
     "when": [
       "go live", "goes live", "launch the app", "launch it", "ready to launch", "launch day", "ship it", "deploy to production", "push to production", "go to production", "put it in production", "release the app", "publish the app", "submit to the app store", "play store",
-      "poner en producción", "subir a producción", "desplegar en producción", "lanzar la app",
-      "in produktion", "live gehen", "app veröffentlichen",
-      "mettre en production", "lancer l'app", "publier l'app",
-      "colocar em produção", "lançar o app", "publicar o app"
+      "poner en producción", "subir a producción", "desplegar en producción", "poner en línea", "lanzar la app",
+      "in produktion", "live gehen", "live schalten", "online stellen", "app veröffentlichen",
+      "mettre en production", "mettre en ligne", "mise en ligne", "lancer l'app", "publier l'app",
+      "colocar em produção", "colocar no ar", "lançar o app", "publicar o app"
     ],
     "message": "the user is about to put an app in front of real users. A security check first finds exposed keys, open database rules and unchecked payments",
     "before": "launch",

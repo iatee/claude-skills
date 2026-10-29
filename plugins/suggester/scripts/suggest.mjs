@@ -149,8 +149,10 @@ for (const [name, words] of Object.entries(settings.triggers ?? {})) triggers[na
 const prefer = new Set(settings.prefer ?? ["iatee-skills"]);
 const weight = (s) => (s.marketplace === null || prefer.has(s.marketplace) ? PREFER_BOOST : 1);
 
+// The same skill can be installed twice (a plugin and a claude.ai copy): keep the best-scoring one.
+const names = new Set();
 const candidates = score(prompt, skills(), triggers, weight)
-  .filter((r) => r.score >= THRESHOLD && !shown.has(r.skill.id) && !used(r.skill))
+  .filter((r) => r.score >= THRESHOLD && !shown.has(r.skill.id) && !used(r.skill) && !names.has(r.skill.name) && names.add(r.skill.name))
   .slice(0, MAX_CANDIDATES);
 if (candidates.length === 0) process.exit(0);
 
