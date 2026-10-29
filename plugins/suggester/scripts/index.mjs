@@ -16,10 +16,11 @@ const STOPWORDS = new Set(
     "skill skills any all its it's not but has have how who why which will would should could also than then " +
     "them they their there here about some more most other only just like such each very does doing done get " +
     "make made need needs one two out our over own same see via want please let lets i'm i've you're don't " +
-    "something anything everything nothing thing things too btw really maybe still never ever now yet way work").split(" "),
+    "something anything everything nothing thing things too btw really maybe still never ever now yet way work create add").split(" "),
 );
 
-const stem = (w) => w.replace(/(ing|ed|es|s)$/, "") || w;
+// Light stemming, so "translate" meets "translation" and "fails" meets "failing".
+const stem = (w) => (w.length > 4 ? w.replace(/(ions?|ings?|ed|es|ly|e|s)$/, "") : w.replace(/s$/, "")) || w;
 // "pull request" is one thing: as two words, "request" matched skills like change-request.
 export const tokenize = (text) =>
   (text.toLowerCase().replace(/pull requests?/g, " ").match(/[a-z0-9]+/g) ?? []).filter((w) => w.length > 2 && !STOPWORDS.has(w)).map(stem);
@@ -110,7 +111,8 @@ const entry = (id, name, description, userOnly = false, marketplace = null) => (
   name,
   description,
   userOnly,
-  nameTokens: [...new Set(tokenize(id.replace(":", " ")))],
+  // The skill's own name only: a plugin name like "coding" would match "code" for every skill in it.
+  nameTokens: [...new Set(tokenize(name))],
   descTokens: tokenize(description),
   // Quoted trigger phrases, e.g. Use when the user says "debug this". Single quotes are skipped: they are mostly apostrophes.
   phrases: [...description.matchAll(/["“]([^"”]{4,40})["”]/g)].map((m) => m[1].toLowerCase()).filter((p) => tokenize(p).length > 0),
@@ -162,7 +164,7 @@ export const loadIndex = (cwd, transcript = "") => {
 // The cache key is every root's mtime, so adding, removing or updating a skill rebuilds the index.
 function loadSkillFiles(cwd) {
   const roots = skillRoots(cwd).filter((r) => fs.existsSync(r.dir));
-  const key = ["v2", ...roots.map((r) => `${r.dir}:${fs.statSync(r.dir).mtimeMs}`)].join("|");
+  const key = ["v3", ...roots.map((r) => `${r.dir}:${fs.statSync(r.dir).mtimeMs}`)].join("|");
   const cacheFile = path.join(STATE_DIR, CODEX ? "index-codex.json" : "index.json");
   try {
     const cached = JSON.parse(fs.readFileSync(cacheFile, "utf8"));
@@ -200,7 +202,8 @@ function loadSkillFiles(cwd) {
 export function score(prompt, skills, triggers = {}, weight = () => 1) {
   const words = new Set(tokenize(prompt));
   const lower = ` ${prompt.toLowerCase().replace(/[^a-z0-9.'-]+/g, " ")} `;
-  const hasPhrase = (p) => lower.includes(` ${p.toLowerCase()} `) || lower.includes(` ${p.toLowerCase()}s `);
+  // A phrase also matches with a common ending, so the trigger "crash" matches "crashes" and "crashed".
+  const hasPhrase = (p) => ["", "s", "es", "d", "ed", "ing"].some((end) => lower.includes(` ${p.toLowerCase()}${end} `));
   const df = new Map();
   for (const s of skills) for (const t of new Set(s.descTokens)) df.set(t, (df.get(t) ?? 0) + 1);
   const avgLen = skills.reduce((n, s) => n + s.descTokens.length, 0) / Math.max(skills.length, 1);

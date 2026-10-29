@@ -23,6 +23,8 @@ skill("plugins/web/skills/nested/impeccable", "Design, critique and polish front
 skill("plugins/web/skills/nested/seo-audit", "Run an SEO audit on a website.", "web-seo-audit");
 write("plugins/web/commands/write-article.md", "---\ndescription: Write an SEO-optimized blog article with headings, meta description and schema markup.\n---\n");
 skill("plugins/dev/skills/code-review", "Review a branch against the spec and coding standards.");
+skill("plugins/ours/skills/diagnosing-bugs", "Diagnosis loop for hard bugs.");
+write("plugins/ours/skills/grill-me/SKILL.md", "---\nname: grill-me\ndescription: Stop. A relentless interview to sharpen a plan.\ndisable-model-invocation: true\n---\n");
 skill("plugins/dev/skills/handoff", "Write a handoff document so a fresh session can continue.");
 // "ours" comes from the preferred marketplace; "pack" from another, with a closer wording for newsletters.
 skill("plugins/ours/skills/mail-draft", "Draft a newsletter issue for subscribers.");
@@ -106,6 +108,14 @@ const cases = {
     run("/suggester off");
     assert.equal(run("ok deploy it", "web.jsonl"), "");
     run("/suggester on");
+  },
+  "trigger phrases match other word endings"() {
+    assert.ok(suggested(run("the app crashes on startup every time")).includes("ours:diagnosing-bugs"));
+  },
+  "session start lists the skills only the user can start"() {
+    const input = JSON.stringify({ cwd: config });
+    const out = execFileSync("node", [path.join(path.dirname(HOOK), "session-start.mjs")], { input, env: { ...process.env, CLAUDE_CONFIG_DIR: config, HOME: config }, encoding: "utf8" });
+    assert.match(JSON.parse(out).hookSpecificOutput.additionalContext, /^- \/ours:grill-me: Stop\. A relentless interview to sharpen a plan\.$/m);
   },
   "unrelated prompts say nothing"() {
     assert.equal(run("what is the capital of peru"), "");
