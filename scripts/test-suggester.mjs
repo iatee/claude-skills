@@ -139,6 +139,13 @@ const cases = {
     assert.match(fs.readFileSync(file, "utf8"), /^## ours\n\n- `\/ours:diagnosing-bugs`: .*\n- `\/ours:grill-me` \(you start it\): /m);
     assert.match(run("/suggester skills"), /installed-skills\.md/);
   },
+  "claude.ai plugins turned off in Claude Code are skipped"() {
+    skill("plugins/synced/bucket/podcasts/skills/podcast-pro", "Plan a podcast episode outline with guest questions and show notes.");
+    assert.ok(suggested(run("plan a podcast episode outline with guest questions")).includes("podcasts:podcast-pro"));
+    write("settings.json", JSON.stringify({ enabledPlugins: { "podcasts@synced": false } }));
+    assert.ok(!suggested(run("plan a podcast episode outline with guest questions")).includes("podcasts:podcast-pro"));
+    fs.rmSync(path.join(config, "settings.json"));
+  },
   "unrelated prompts say nothing"() {
     assert.equal(run("what is the capital of peru"), "");
   },

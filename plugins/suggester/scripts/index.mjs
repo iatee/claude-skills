@@ -101,6 +101,8 @@ function skillRoots(cwd) {
       try {
         plugin = JSON.parse(fs.readFileSync(path.join(pluginDir, ".claude-plugin", "plugin.json"), "utf8")).name || plugin;
       } catch {}
+      // Turned off in Claude Code with `claude plugin disable <name>@synced`; still on in claude.ai.
+      if (enabled[`${plugin}@synced`] === false) continue;
       roots.push(...pluginRoots(pluginDir, plugin, "claude.ai"));
     }
   }
