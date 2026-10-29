@@ -21,9 +21,9 @@
       "implantar", "colocar no ar", "o site está pronto"
     ],
     "context": "\\.(html|css|scss|astro|jsx|tsx|vue|svelte)\\b",
-    "message": "the user is about to publish a website. Before it goes live, they should check the design language, SEO and accessibility",
+    "message": "the user is about to publish a website. Before it goes live, they should check the design language, security, SEO and accessibility",
     "before": "publish",
-    "skills": ["impeccable", ["searchfit-seo:seo-audit", "seo-audit"], ["searchfit-seo:ai-visibility", "seo-ai-visibility", "ai-visibility"], "accessibility-review"]
+    "skills": ["impeccable", ["security:vibe-security", "vibe-security"], ["searchfit-seo:seo-audit", "seo-audit"], "accessibility-review", ["searchfit-seo:ai-visibility", "seo-ai-visibility", "ai-visibility"]]
   },
   "merge": {
     "when": [

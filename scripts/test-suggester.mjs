@@ -27,6 +27,8 @@ skill("plugins/dev/skills/handoff", "Write a handoff document so a fresh session
 // "ours" comes from the preferred marketplace; "pack" from another, with a closer wording for newsletters.
 skill("plugins/ours/skills/mail-draft", "Draft a newsletter issue for subscribers.");
 skill("plugins/pack/skills/mailer-pro", "Write a newsletter issue for your subscribers.");
+skill("plugins/sec/skills/vibe-security", "Audits apps for security holes AI assistants leave: exposed keys, open database rules, payments.");
+skill("plugins/sec/skills/vibesec", "Secure coding rules for web apps: access control, XSS, CSRF, SSRF, file uploads.");
 skill("plugins/pack/skills/podcast-planner", "Plan a podcast episode outline and guest questions.");
 // A skill synced from claude.ai, which Claude Code lists with a plugin prefix.
 skill("skills/synced/bucket/deep-research", "Research a question in depth across many web sources and write a cited report.");
@@ -41,6 +43,7 @@ write(
   JSON.stringify({ plugins: { "web@m": [{ installPath: path.join(config, "plugins/web") }], "dev@m": [{ installPath: path.join(config, "plugins/dev") }],
       "ours@iatee-skills": [{ installPath: path.join(config, "plugins/ours") }],
       "pack@big": [{ installPath: path.join(config, "plugins/pack") }],
+      "sec@iatee-skills": [{ installPath: path.join(config, "plugins/sec") }],
     },
   }),
 );
@@ -67,7 +70,7 @@ const suggested = (context) => [...context.matchAll(/^- [/$](\S+?):? /gm)].map((
 
 const cases = {
   "publishing a site suggests the design and SEO checks"() {
-    assert.deepEqual(suggested(run("ok deploy it", "web.jsonl")), ["web:impeccable", "web:seo-audit"]);
+    assert.deepEqual(suggested(run("ok deploy it", "web.jsonl")), ["web:impeccable", "sec:vibe-security", "web:seo-audit"]);
   },
   "a milestone is mentioned once per session"() {
     run("ok deploy it", "web.jsonl");
@@ -81,12 +84,12 @@ const cases = {
     assert.match(run("Die Website ist fertig, bitte live schalten", "web.jsonl"), /publish a website/);
   },
   "a skill already used this session is left out"() {
-    assert.deepEqual(suggested(run("ok deploy it", "used.jsonl")), ["web:seo-audit"]);
+    assert.deepEqual(suggested(run("ok deploy it", "used.jsonl")), ["sec:vibe-security", "web:seo-audit"]);
   },
   "built-ins come from builtins.json until Claude Code lists the session's skills"() {
     // Without coding:code-review, a plain "code-review" means the built-in, ahead of another plugin's skill of that name.
-    assert.deepEqual(suggested(run("looks good, open a pr")), ["code-review", "security-review", "simplify"]);
-    assert.deepEqual(suggested(run("looks good, open a pr", "listed.jsonl")), ["dev:code-review", "simplify"]);
+    assert.deepEqual(suggested(run("looks good, open a pr")), ["code-review", "security-review", "sec:vibe-security", "simplify"]);
+    assert.deepEqual(suggested(run("looks good, open a pr", "listed.jsonl")), ["dev:code-review", "sec:vibe-security", "simplify"]);
   },
   "plugin commands in custom folders are suggested"() {
     assert.ok(suggested(run("write an seo optimized blog article with a meta description")).includes("web:write-article"));
@@ -108,7 +111,7 @@ const cases = {
     assert.equal(run("what is the capital of peru"), "");
   },
   "milestone phrases accept any article"() {
-    assert.deepEqual(suggested(run("could you create the pull request and push our changes")), ["code-review", "security-review", "simplify"]);
+    assert.deepEqual(suggested(run("could you create the pull request and push our changes")), ["code-review", "security-review", "sec:vibe-security", "simplify"]);
   },
   "\"pull request\" doesn't match skills about requests"() {
     assert.ok(!suggested(run("please create a summary of the pull request changes")).includes("change-request"));
@@ -118,6 +121,11 @@ const cases = {
   },
   "other plugins still come up when only they fit"() {
     assert.ok(suggested(run("plan a podcast episode outline with guest questions")).includes("pack:podcast-planner"));
+  },
+  "security prompts bring up the security skills"() {
+    assert.ok(suggested(run("is my app safe to launch?")).includes("sec:vibe-security"));
+    assert.ok(suggested(run("add a file upload for profile pictures")).includes("sec:vibesec"));
+    assert.equal(run("the session timer in the game is off by one second"), "");
   },
   "filler words alone don't make a match"() {
     assert.equal(run("can we get the sugester to work in codek too? and btw my suggester never suggested something"), "");

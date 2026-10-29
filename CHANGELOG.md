@@ -4,6 +4,7 @@ Each plugin is versioned on its own. Update a plugin with `/plugin marketplace u
 
 ## 2026-10-29
 
+- **suggester 1.7.0:** brings up the security skills far more often: `vibe-security` when you ask whether something is safe, mention API keys, payments, Supabase rules or going to production, and `vibesec` when you build logins, uploads, admin pages, cron jobs or anything that takes a URL or user content. `vibe-security` is now also suggested before you publish a site.
 - **security 1.2.0:** `vibe-security` checks five more things: XSS through React's escape hatches (`dangerouslySetInnerHTML`, `javascript:` links, user markdown), SSRF in features that fetch a URL the user gives, open redirects after login, CSRF with cookie sessions, and admin, cron and debug routes left open.
 
 ## 2026-10-28

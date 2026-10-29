@@ -46,8 +46,8 @@ The same works for other moments:
 
 | You say | Claude points to |
 |---|---|
-| "deploy", "publish", "go live", "the site is done" (after working on web files) | `impeccable`, an SEO audit, AI-search visibility, an accessibility review |
-| "open a PR", "ready to merge", "push the changes" | a code review, `/security-review`, `/simplify` |
+| "deploy", "publish", "go live", "the site is done" (after working on web files) | `impeccable`, `vibe-security`, an SEO audit, an accessibility review, AI-search visibility |
+| "open a PR", "ready to merge", "push the changes" | a code review, `/security-review`, `vibe-security`, `/simplify` |
 | "cut a release", "publish to npm" | a deploy checklist, a code review, `/security-review`, docs |
 | "done for today", "wrapping up" | `handoff` and `retro` |
 

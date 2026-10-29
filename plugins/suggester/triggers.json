@@ -18,6 +18,8 @@
   "resolving-merge-conflicts": ["merge conflict", "rebase", "conflicts"],
   "setup-pre-commit": ["pre-commit", "husky", "lint-staged"],
   "wizard": ["credentials", "dashboard", "setup steps", "manual steps", "provision"],
+  "vibe-security": ["security", "secure", "insecure", "is it safe", "is this safe", "is my app safe", "safe to launch", "hack", "hacked", "hacker", "attacker", "vulnerable", "vulnerability", "vulnerabilities", "exploit", "pentest", "security audit", "production ready", "ready for production", "go to production", "before production", "before launch", "api key", "openai key", "openai api", "anthropic api", "llm api", "secret key", "service role", "leaked", "exposed", "rls", "row level security", "firebase rules", "security rules", "stripe", "checkout", "payment", "webhook", "credits", "coupon", "rate limit", "rate limiting", "vibe coded", "vibe coding"],
+  "vibesec": ["login", "log in", "sign in", "sign up", "signup", "auth", "authentication", "password", "password reset", "oauth", "jwt", "session token", "session cookie", "permission", "roles", "admin", "admin dashboard", "admin panel", "access control", "file upload", "upload", "user input", "link preview", "url preview", "redirect", "markdown", "user content", "api route", "api endpoint", "endpoint", "cron", "cron job", "delete account", "user account", "graphql", "xml", "sql", "cors", "csrf", "xss", "ssrf", "idor", "injection"],
   "impeccable": ["ui", "ux", "landing page", "website", "design", "layout", "typography", "spacing", "colors", "looks ugly", "polish", "frontend"],
   "writing-for-agents": ["claude.md", "agents.md", "write a skill", "prompt"],
   "writing-fragments": ["article", "blog post", "essay", "draft"],
