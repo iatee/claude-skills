@@ -22,6 +22,7 @@ It stores, only in `~/.claude/skill-suggester/` on your computer:
 
 - `settings.json`: whether suggestions are on, and your own options;
 - `index.json`: a cache of installed skill names and descriptions;
+- `installed-skills.md`: a list of your installed skills with a line on each, rewritten when a session starts;
 - one small file per session listing the skills already suggested;
 - one file per project in `plans/` with that project's latest plan: each step's command, the short description Claude wrote beside it, and which steps have run.
 
