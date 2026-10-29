@@ -47,11 +47,14 @@ The same works for other moments:
 | You say | Claude points to |
 |---|---|
 | "deploy", "publish", "go live", "the site is done" (after working on web files) | `impeccable`, `vibe-security`, an SEO audit, an accessibility review, AI-search visibility |
+| "go to production", "ready to launch", "submit to the app store" (any app) | `vibe-security`, `/security-review`, a deploy checklist |
+| "make the repo public", "open source it" | `vibe-security`, `/security-review`, for keys and secrets in the code and its history |
+| "live mode", "accept payments", "start charging" | `vibe-security`, `/security-review` |
 | "open a PR", "ready to merge", "push the changes" | a code review, `/security-review`, `vibe-security`, `/simplify` |
 | "cut a release", "publish to npm" | a deploy checklist, a code review, `/security-review`, docs |
 | "done for today", "wrapping up" | `handoff` and `retro` |
 
-The phrases work in English, Spanish, German, French and Portuguese ("despliega la web", "live schalten", "mise en ligne", "o site está pronto"). It names only skills you have installed and haven't used in that session, from any plugin, your own skill folders or Claude Code's built-in skills, and says it once per moment per session. The phrases are the guaranteed trigger; at session start Claude is also told what each moment means, so it catches other wordings and typos ("wraping up", "I'm heading out") itself.
+The phrases work in English, Spanish, German, French and Portuguese ("despliega la web", "live schalten", "mise en ligne", "o site está pronto"). It names only skills you have installed and haven't used in that session, from any plugin, your own skill folders or Claude Code's built-in skills, and says it once per moment per session. A skill named at one moment isn't named again at the next. The phrases are the guaranteed trigger; at session start Claude is also told what each moment means, so it catches other wordings and typos ("wraping up", "I'm heading out") itself.
 
 Claude Code's built-in skills (such as `/code-review`, `/security-review`, `/simplify` and `/loop`) have no `SKILL.md` on disk. Claude Code lists every skill a session has in that session's transcript, so the suggester reads the built-ins your version actually has from there. Until that list is written, a few prompts into a session, `builtins.json` stands in: a skill name mapped to a one-line description, which also fills in any description the list lacks. The moments are listed in `milestones.json`; add your own in your settings (below).
 
@@ -68,6 +71,7 @@ Claude Code's built-in skills (such as `/code-review`, `/security-review`, `/sim
 - `/suggester off` turns suggestions off.
 - `/suggester on` turns them back on.
 - `/suggester plan` runs the remembered plan's remaining steps, like saying "run the plan".
+- `/suggester skills` shows every skill you have installed, grouped by plugin. The full list, with a line on each, is kept in `~/.claude/skill-suggester/installed-skills.md` and rewritten at the start of every session. The first session after you install or update the suggester, Claude points you to it once.
 
 ## Requirements
 
@@ -90,7 +94,7 @@ The plugin has two hooks, both shell scripts in `scripts/`:
 - `milestones.json` in this plugin, moments like publishing a site and the skills to suggest then;
 - `builtins.json` in this plugin, a fallback list of Claude Code's built-in skills, which have no `SKILL.md`.
 
-They write only inside `~/.claude/skill-suggester/` (or `$CLAUDE_CONFIG_DIR/skill-suggester/`): `settings.json` for your on/off setting and options, `index.json` as a cache of skill descriptions, one small file per session listing the skills already suggested (deleted after 30 days), and one file per project in `plans/` holding that project's latest plan and which of its steps have run (named by a hash of the project folder's path).
+They write only inside `~/.claude/skill-suggester/` (or `$CLAUDE_CONFIG_DIR/skill-suggester/`): `settings.json` for your on/off setting and options, `index.json` as a cache of skill descriptions, `installed-skills.md` listing your installed skills, one small file per session listing the skills already suggested (deleted after 30 days), and one file per project in `plans/` holding that project's latest plan and which of its steps have run (named by a hash of the project folder's path).
 
 When you run a step of a remembered plan, the hook adds a one-line note telling Claude which step comes next. When you ask to run the plan, it adds the remaining steps and asks Claude to run them in order, committing after each. When a skill fits, it adds a short note to Claude's context naming up to three candidate skills, with their descriptions. Skills that only you can start are marked "suggest to the user"; other skills are ones Claude may use on its own if it helps.
 
@@ -115,7 +119,7 @@ When you run a step of a remembered plan, the hook adds a one-line note telling 
   }
   ```
 
-  `when` is a list of phrases in any language, `skills` a list of skill names or `plugin:skill` ids (a nested list means "the first of these that's installed"), and an optional `context` is a regex the session must match, such as `"\\.tsx\\b"`.
+  `when` is a list of phrases in any language, an optional `covers` lists other moments this one stands in for (they stay quiet once it's been raised), `skills` a list of skill names or `plugin:skill` ids (a nested list means "the first of these that's installed"), and an optional `context` is a regex the session must match, such as `"\\.tsx\\b"`.
 
 ## Privacy
 

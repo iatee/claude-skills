@@ -7,6 +7,8 @@ import path from "node:path";
 
 export const CONFIG_DIR = process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), ".claude");
 export const STATE_DIR = path.join(CONFIG_DIR, "skill-suggester");
+// Every installed skill, grouped by plugin, rewritten at each session start. `/suggester skills` shows it.
+export const SKILLS_FILE = path.join(STATE_DIR, "installed-skills.md");
 // Codex runs these hooks with `--codex`: it finds skills in ~/.agents/skills and starts them with `$name`.
 export const CODEX = process.argv.includes("--codex");
 export const CMD = CODEX ? "$" : "/";

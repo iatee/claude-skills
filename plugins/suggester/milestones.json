@@ -1,5 +1,5 @@
 {
-  "$comment": "Moments worth a checklist, checked in this order. When a prompt contains one of the `when` phrases (any language, any case) and the session matches `context` (an optional regex over the transcript and prompt), Claude suggests up to four of the listed skills that are installed and not yet used, once per session. Each skill is a plugin:skill id or a plain name, or a list of alternatives where the first installed one wins. Claude Code's built-in skills are listed in builtins.json. Add your own moments in ~/.claude/skill-suggester/settings.json under \"milestones\".",
+  "$comment": "Moments worth a checklist, checked in this order. When a prompt contains one of the `when` phrases (any language, any case) and the session matches `context` (an optional regex over the transcript and prompt), Claude suggests up to four of the listed skills that are installed and not yet used, once per session. Each skill is a plugin:skill id or a plain name, or a list of alternatives where the first installed one wins. Claude Code's built-in skills are listed in builtins.json. A moment's optional `covers` lists moments it stands in for, which then stay quiet. Add your own moments in ~/.claude/skill-suggester/settings.json under \"milestones\".",
   "release": {
     "when": [
       "cut a release", "make a release", "new release", "tag a version", "tag a release", "release it", "publish to npm", "publish the package",
@@ -23,7 +23,38 @@
     "context": "\\.(html|css|scss|astro|jsx|tsx|vue|svelte)\\b",
     "message": "the user is about to publish a website. Before it goes live, they should check the design language, security, SEO and accessibility",
     "before": "publish",
-    "skills": ["impeccable", ["security:vibe-security", "vibe-security"], ["searchfit-seo:seo-audit", "seo-audit"], "accessibility-review", ["searchfit-seo:ai-visibility", "seo-ai-visibility", "ai-visibility"]]
+    "skills": ["impeccable", ["security:vibe-security", "vibe-security"], ["searchfit-seo:seo-audit", "seo-audit"], "accessibility-review", ["searchfit-seo:ai-visibility", "seo-ai-visibility", "ai-visibility"]],
+    "covers": ["launch-app"]
+  },
+  "launch-app": {
+    "when": [
+      "go live", "goes live", "launch the app", "launch it", "ready to launch", "launch day", "ship it", "deploy to production", "push to production", "go to production", "put it in production", "release the app", "publish the app", "submit to the app store", "play store",
+      "poner en producción", "subir a producción", "desplegar en producción", "lanzar la app",
+      "in produktion", "live gehen", "app veröffentlichen",
+      "mettre en production", "lancer l'app", "publier l'app",
+      "colocar em produção", "lançar o app", "publicar o app"
+    ],
+    "message": "the user is about to put an app in front of real users. A security check first finds exposed keys, open database rules and unchecked payments",
+    "before": "launch",
+    "skills": [["security:vibe-security", "vibe-security"], "security-review", "deploy-checklist"]
+  },
+  "go-public": {
+    "when": [
+      "make the repo public", "make the repository public", "open source it", "open-source it", "open source this", "publish the repo", "publish it on github",
+      "hacer público el repo", "repo público", "repo öffentlich", "öffentlich machen", "rendre le repo public", "tornar o repo público", "repositório público"
+    ],
+    "message": "the user is about to make code public. Everything committed, old commits included, becomes readable: check for keys and secrets first",
+    "before": "publish",
+    "skills": [["security:vibe-security", "vibe-security"], "security-review"]
+  },
+  "payments-live": {
+    "when": [
+      "live mode", "live keys", "go live with stripe", "start charging", "accept payments", "take payments", "turn on payments", "real payments",
+      "cobrar de verdad", "pagos reales", "echte zahlungen", "zahlungen aktivieren", "paiements réels", "activer les paiements", "pagamentos reais", "ativar pagamentos"
+    ],
+    "message": "the user is about to take real payments. Prices set in the browser, unverified webhooks and reusable coupons cost real money",
+    "before": "go live",
+    "skills": [["security:vibe-security", "vibe-security"], "security-review"]
   },
   "merge": {
     "when": [

@@ -117,6 +117,28 @@ const cases = {
     const out = execFileSync("node", [path.join(path.dirname(HOOK), "session-start.mjs")], { input, env: { ...process.env, CLAUDE_CONFIG_DIR: config, HOME: config }, encoding: "utf8" });
     assert.match(JSON.parse(out).hookSpecificOutput.additionalContext, /^- \/ours:grill-me: Stop\. A relentless interview to sharpen a plan\.$/m);
   },
+  "launching any app suggests the security check"() {
+    assert.deepEqual(suggested(run("looks good, let's go to production")), ["sec:vibe-security", "security-review"]);
+    assert.deepEqual(suggested(run("ok, make the repo public")), ["sec:vibe-security", "security-review"]);
+    assert.deepEqual(suggested(run("switch stripe to live mode")), ["sec:vibe-security", "security-review"]);
+  },
+  "a moment covers its overlaps and skills aren't named twice"() {
+    assert.match(run("ok deploy it", "web.jsonl"), /publish a website/);
+    assert.equal(run("great, now go live", "web.jsonl", { sameSession: true }), "");
+    assert.deepEqual(suggested(run("make the repo public", "web.jsonl", { sameSession: true })), ["security-review"]);
+  },
+  "installed skills are listed, with a notice after an install or update"() {
+    const start = () => {
+      const out = execFileSync("node", [path.join(path.dirname(HOOK), "session-start.mjs")], { input: JSON.stringify({ cwd: config }), env: { ...process.env, CLAUDE_CONFIG_DIR: config, HOME: config }, encoding: "utf8" });
+      return JSON.parse(out).hookSpecificOutput.additionalContext;
+    };
+    const file = path.join(config, "skill-suggester", "installed-skills.md");
+    fs.rmSync(file, { force: true });
+    assert.match(start(), /installed skills are listed in/);
+    assert.doesNotMatch(start(), /installed skills are listed in/);
+    assert.match(fs.readFileSync(file, "utf8"), /^## ours\n\n- `\/ours:diagnosing-bugs`: .*\n- `\/ours:grill-me` \(you start it\): /m);
+    assert.match(run("/suggester skills"), /installed-skills\.md/);
+  },
   "unrelated prompts say nothing"() {
     assert.equal(run("what is the capital of peru"), "");
   },

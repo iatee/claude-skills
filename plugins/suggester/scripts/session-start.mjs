@@ -4,7 +4,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { CMD, STATE_DIR, findSkill, loadIndex } from "./index.mjs";
+import { CMD, SKILLS_FILE, STATE_DIR, findSkill, loadIndex } from "./index.mjs";
 
 const readJson = (file, fallback) => {
   try {
@@ -47,9 +47,42 @@ const userOnly = skills
   .filter((s) => !seen.has(s.name) && seen.add(s.name))
   .slice(0, 25)
   .map((s) => `- ${CMD}${s.id}: ${summary(s.description)}`);
-if (lines.length === 0 && userOnly.length === 0) process.exit(0);
+// The list of installed skills, kept current for the user. Its first line records the suggester version that
+// wrote it, so the first session after an install or update can point the user to it once.
+const version = readJson(path.join(import.meta.dirname, "..", ".claude-plugin", "plugin.json"), {}).version ?? "";
+let previous = "";
+try {
+  previous = fs.readFileSync(SKILLS_FILE, "utf8").split("\n")[0];
+} catch {}
+// This collection and the user's own skills first, Claude Code's built-ins last, the rest alphabetically.
+const rank = (s) => (s.marketplace === "claude-code" ? 2 : preferred(s) ? 0 : 1);
+const groups = new Map();
+for (const s of [...skills].sort((a, b) => rank(a) - rank(b) || a.id.localeCompare(b.id))) {
+  const label = { "claude-code": "Built into Claude Code", "claude.ai": "From claude.ai" }[s.marketplace] ?? "Your own skills";
+  const group = s.id.includes(":") ? s.id.split(":")[0] : label;
+  if (!groups.has(group)) groups.set(group, []);
+  groups.get(group).push(`- \`${CMD}${s.id}\`${s.userOnly ? " (you start it)" : ""}: ${summary(s.description)}`);
+}
+const header = `<!-- suggester ${version} -->`;
+fs.mkdirSync(STATE_DIR, { recursive: true });
+fs.writeFileSync(
+  SKILLS_FILE,
+  [
+    header,
+    "# Your installed skills",
+    "",
+    `${skills.length} skills, updated ${new Date().toISOString().slice(0, 10)}. Type a command to start one. Claude also uses the others on its own when they fit; the ones marked "you start it" only run when you type them.`,
+    ...[...groups].flatMap(([group, entries]) => ["", `## ${group}`, "", ...entries]),
+    "",
+  ].join("\n"),
+);
 
 const context = [];
+if (previous !== header) {
+  context.push(
+    `Skill suggester ${version} was just installed or updated. At the end of your first reply, add one line: "💡 Your ${skills.length} installed skills are listed in ${SKILLS_FILE}; ${CMD}suggester skills shows them."`,
+  );
+}
 if (lines.length) {
   context.push(
     `Skill suggester: when a user message signals one of these moments, in any wording, language or spelling, add one short line before doing what was asked, such as "💡 Before you go: ${CMD}<skill> for <what>." Name only skills not yet used this session. Once per moment per session, and not if a Skill suggester note already raised it. Never run them unasked. They are installed: the user starts them by typing the command, and skills only the user can start are hidden from your skill list, so a skill missing from that list is no reason to skip it.`,
@@ -63,4 +96,5 @@ if (userOnly.length) {
   );
 }
 
+if (context.length === 0) process.exit(0);
 process.stdout.write(JSON.stringify({ hookSpecificOutput: { hookEventName: "SessionStart", additionalContext: context.join("\n") } }));

@@ -4,7 +4,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { CMD, CODEX, STATE_DIR, findSkill, loadIndex, score } from "./index.mjs";
+import { CMD, CODEX, SKILLS_FILE, STATE_DIR, findSkill, loadIndex, score } from "./index.mjs";
 import { planRun, planStep } from "./plan.mjs";
 
 const THRESHOLD = 7;
@@ -46,6 +46,13 @@ const say = (context) => {
   process.stdout.write(JSON.stringify({ hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: context } }));
   process.exit(0);
 };
+if (/^[/$](?:suggester:)?suggester\s+(?:skills|list)\b/i.test(prompt)) {
+  say(
+    fs.existsSync(SKILLS_FILE)
+      ? `Skill suggester: the user wants to see their installed skills. They are listed, grouped by plugin, in ${SKILLS_FILE}. Read it and show each plugin with its skills' commands on one line, marking the ones the user starts themselves. Then say the file has a one-line description of each.`
+      : "Skill suggester: the list of installed skills is written when a session starts. Say so in one line and suggest starting a new session.",
+  );
+}
 const cwd = input.cwd ?? process.cwd();
 let index;
 const skills = () => (index ??= loadIndex(cwd, transcript));
@@ -106,9 +113,11 @@ for (const [key, m] of Object.entries(milestones)) {
   if (!when.test(prompt) || (context && !context.test(prompt) && !context.test(transcript))) continue;
   // An entry is an id, a plain name, or a list of alternatives where the first installed one wins.
   const pick = (entry) => [entry].flat().map((name) => findSkill(skills(), name)).find(Boolean);
-  const picked = [...new Set(m.skills.map(pick))].filter((s) => s && !used(s)).slice(0, 4);
+  // Skills an earlier moment already named stay out, so a later moment adds only what's new.
+  const picked = [...new Set(m.skills.map(pick))].filter((s) => s && !used(s) && !shown.has(s.id)).slice(0, 4);
   if (picked.length === 0) continue;
-  shown.add(`milestone:${key}`);
+  for (const k of [key, ...(m.covers ?? [])]) shown.add(`milestone:${k}`);
+  for (const s of picked) shown.add(s.id);
   writeJson(sessionFile, [...shown]);
   say(
     [
