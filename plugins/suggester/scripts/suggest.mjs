@@ -46,11 +46,19 @@ const say = (context) => {
   process.stdout.write(JSON.stringify({ hookSpecificOutput: { hookEventName: "UserPromptSubmit", additionalContext: context } }));
   process.exit(0);
 };
+// Names only, grouped by plugin: reading the whole file (a line per skill) would cost Claude ~10x the tokens.
 if (/^[/$](?:suggester:)?suggester\s+(?:skills|list)\b/i.test(prompt)) {
+  const groups = new Map();
+  for (const s of loadIndex(input.cwd ?? process.cwd(), transcript)) {
+    const [group, name] = s.id.includes(":") ? s.id.split(":") : ["(no plugin)", s.id];
+    groups.set(group, [...(groups.get(group) ?? []), `${name}${s.userOnly ? "*" : ""}`]);
+  }
+  const lines = [...groups].sort(([a], [b]) => a.localeCompare(b)).map(([group, names]) => `- ${group}: ${names.sort().join(", ")}`);
   say(
-    fs.existsSync(SKILLS_FILE)
-      ? `Skill suggester: the user wants to see their installed skills. They are listed, grouped by plugin, in ${SKILLS_FILE}. Read it and show each plugin with its skills' commands on one line, marking the ones the user starts themselves. Then say the file has a one-line description of each.`
-      : "Skill suggester: the list of installed skills is written when a session starts. Say so in one line and suggest starting a new session.",
+    [
+      `Skill suggester: the user wants to see their installed skills. Show this list as it is, one line per plugin; * marks skills only the user can start, and a skill is started as ${CMD}plugin:name. Then say that ${SKILLS_FILE} has a one-line description of each. Don't read that file unless the user asks about a particular skill.`,
+      ...lines,
+    ].join("\n"),
   );
 }
 const cwd = input.cwd ?? process.cwd();
