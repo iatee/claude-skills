@@ -2,6 +2,10 @@
 
 Each plugin is versioned on its own. Update a plugin with `/plugin marketplace update iatee-skills`.
 
+## 2026-10-29
+
+- **security 1.2.0:** `vibe-security` checks five more things: XSS through React's escape hatches (`dangerouslySetInnerHTML`, `javascript:` links, user markdown), SSRF in features that fetch a URL the user gives, open redirects after login, CSRF with cookie sessions, and admin, cron and debug routes left open.
+
 ## 2026-10-28
 
 - **security 1.1.1:** `vibe-security` no longer starts on a plain "check my code"; it needs a security angle.

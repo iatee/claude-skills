@@ -99,3 +99,33 @@ Deep-merging untrusted JSON into an object lets an attacker send `{"__proto__": 
 - Don't deep-merge request bodies into config, defaults or user objects. Validate with a schema first (Zod's `z.object` drops unknown keys by default).
 - Reject the keys `__proto__`, `constructor` and `prototype` in any code that copies user-supplied keys.
 - Use `Map` or `Object.create(null)` for lookups keyed by user input.
+
+## Cross-Site Scripting (XSS)
+
+React escapes text by default, so XSS in React apps comes through the escape hatches:
+
+- `dangerouslySetInnerHTML` with anything a user wrote: sanitize it with DOMPurify first, or don't render it as HTML. The same goes for `innerHTML`, Vue's `v-html` and Svelte's `{@html}`.
+- Links from user input: `<a href={profile.website}>` runs `javascript:` URLs when clicked. Allow only `http:` and `https:`:
+
+```typescript
+const safeUrl = (url: string) => {
+  try {
+    return ['http:', 'https:'].includes(new URL(url).protocol) ? url : undefined;
+  } catch {
+    return undefined;
+  }
+};
+```
+
+- Markdown from users: keep raw HTML off. react-markdown does by default; don't add `rehype-raw` without `rehype-sanitize`. HTML from `marked` or similar needs DOMPurify.
+- Data written into a `<script>` tag (`JSON.stringify` of server data): escape `<` as `\u003c`, or a `</script>` in user data ends the tag.
+- A Content-Security-Policy (see `deployment.md`) limits the damage when one slips through.
+
+## Server-Side Request Forgery (SSRF)
+
+Any feature where the server fetches a URL the user supplies (link previews, "import from URL", user-configured webhooks, image proxies, AI tools that browse) can be pointed at addresses only the server can reach: `http://169.254.169.254/` hands out cloud credentials, `localhost` runs admin panels, and internal databases sit on private addresses.
+
+- Allow only `https:` (and `http:` if you must). If you can list the hosts you need, allow only those.
+- Otherwise resolve the hostname and reject private, loopback, link-local and metadata addresses: `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `127.0.0.0/8`, `169.254.0.0/16`, `0.0.0.0`, `::1`, `fc00::/7`, `fe80::/10`, and IPv4 written as IPv6 (`::ffff:127.0.0.1`). Check the address you actually connect to, in an HTTP agent or proxy, or DNS can return a different one after your check.
+- Don't follow redirects blindly: a public URL can redirect to an internal one. Use `fetch(url, { redirect: 'manual' })` and check each hop.
+- Set a timeout and a size limit, and don't show the raw response or error to the user.

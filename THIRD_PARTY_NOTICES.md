@@ -53,7 +53,7 @@ This file is generated from `manifest.json` by `scripts/vendor.mjs`; do not edit
 - **Commit:** [`850938f`](https://github.com/raroque/vibe-security-skill/tree/850938f20f6915e7c3688d85c0a838f7909c87bb)
 - **License:** MIT
 - **Skills:** `vibe-security`
-- **Changes to `vibe-security`:** The description no longer claims every code review, which belongs to the code-review skills. Added a tenth audit step for invented and lookalike dependencies. The rate-limiting example warns that `x-forwarded-for` can be spoofed. Added checks for Supabase views that bypass RLS, command injection, prototype pollution, `Math.random()` tokens and non-constant-time comparisons, password reset and OAuth flows, race conditions on credits and coupons, webhook retries and non-Stripe signatures, and secrets in logs.
+- **Changes to `vibe-security`:** The description no longer claims every code review, which belongs to the code-review skills. Added a tenth audit step for invented and lookalike dependencies. The rate-limiting example warns that `x-forwarded-for` can be spoofed. Added checks for Supabase views that bypass RLS, command injection, prototype pollution, `Math.random()` tokens and non-constant-time comparisons, password reset and OAuth flows, race conditions on credits and coupons, webhook retries and non-Stripe signatures, secrets in logs, XSS through React's escape hatches, SSRF, open redirects, CSRF, and unprotected admin and cron routes.
 
 ## BehiSecc
 

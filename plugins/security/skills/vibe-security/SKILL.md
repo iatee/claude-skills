@@ -25,7 +25,7 @@ Examine the codebase systematically. For each step, load the relevant reference 
 
 2. **Database Access Control** — Check Supabase RLS policies (and views, which bypass them), Firebase Security Rules, or Convex auth guards. This is the #1 source of critical vulnerabilities in vibe-coded apps. See `references/database-security.md`.
 
-3. **Authentication & Authorization** — Validate JWT handling, middleware auth, Server Action protection, session management, password reset and OAuth flows, and how tokens are generated and compared. See `references/authentication.md`.
+3. **Authentication & Authorization** — Validate JWT handling, middleware auth, Server Action protection, session management, password reset and OAuth flows, post-login redirects, CSRF, admin and cron routes, and how tokens are generated and compared. See `references/authentication.md`.
 
 4. **Rate Limiting & Abuse Prevention** — Ensure auth endpoints, AI calls, and expensive operations have rate limits. Verify rate limit counters can't be tampered with. See `references/rate-limiting.md`.
 
@@ -37,7 +37,7 @@ Examine the codebase systematically. For each step, load the relevant reference 
 
 8. **Deployment Configuration** — Verify production settings, security headers, source map exposure, and environment separation. See `references/deployment.md`.
 
-9. **Data Access & Input Validation** — Check for SQL and command injection, ORM misuse, prototype pollution, and missing input validation. See `references/data-access.md`.
+9. **Data Access & Input Validation** — Check for SQL and command injection, XSS, SSRF, ORM misuse, prototype pollution, and missing input validation. See `references/data-access.md`.
 
 10. **Dependencies** — AI assistants suggest packages that don't exist, which attackers then register ("slopsquatting"), or lookalikes of popular ones. Check that each dependency is a real, maintained package with the intended name, that a lockfile is committed, and run the ecosystem's audit (`npm audit`, `pip-audit`, `bundle audit`, `cargo audit`) for known vulnerabilities.
 
@@ -115,10 +115,10 @@ These rules also apply proactively. Before writing code that touches auth, payme
 
 - `references/secrets-and-env.md` — API keys, tokens, environment variable configuration, and `.gitignore` rules.
 - `references/database-security.md` — Supabase RLS, Firebase Security Rules, and Convex auth patterns.
-- `references/authentication.md` — JWT verification, middleware, Server Actions, and session management.
+- `references/authentication.md` — JWT verification, middleware, Server Actions, session management, admin and cron routes, password reset, OAuth, open redirects and CSRF.
 - `references/rate-limiting.md` — Rate limiting strategies and abuse prevention.
 - `references/payments.md` — Stripe security, webhook verification, and price validation.
 - `references/mobile.md` — React Native and Expo security: secure storage, API proxy, deep links.
 - `references/ai-integration.md` — LLM API key protection, usage caps, prompt injection, and output sanitization.
 - `references/deployment.md` — Production configuration, security headers, and environment separation.
-- `references/data-access.md` — SQL injection prevention, ORM safety, and input validation.
+- `references/data-access.md` — SQL and command injection, ORM safety, input validation, prototype pollution, XSS and SSRF.

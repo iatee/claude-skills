@@ -1,6 +1,6 @@
 {
   "name": "security",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Find and prevent the security holes AI-written apps tend to have: leaked keys, open databases, missing auth checks, client-side prices. Skills by Chris Raroque and BehiSecc.",
   "author": { "name": "Iatee", "url": "https://github.com/iatee" },
   "homepage": "https://skills.garciabaertsch.com",
