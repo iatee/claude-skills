@@ -12,7 +12,7 @@
   "implement": ["implement", "build this", "build the feature"],
   "tdd": ["test-first", "tests first", "red green", "unit test", "write tests", "test suite", "test coverage", "tests for"],
   "diagnosing-bugs": ["bug", "flaky", "intermittent", "crash", "error", "broken", "regression", "slow", "doesn't work", "not working", "fail", "stopped working", "no longer works", "doesn't work anymore", "exception", "stack trace", "figure out why", "randomly", "every few runs", "freezes", "hangs", "don't load", "doesn't load", "won't load", "not loading", "stopped loading", "500 error", "throws", "crashes when", "breaks when", "fails when", "only on safari", "works in chrome", "does nothing", "nothing happens", "memory leak", "keeps growing", "out of memory", "dies", "wrong result", "weird behavior", "stuck", "infinite loop", "timeout", "times out", "twice", "double submit", "fires twice", "runs twice", "logged out"],
-  "code-review": ["review", "pull request", "before merging", "check my changes"],
+  "code-review": ["review", "pull request", "before merging", "check my changes", "code clean", "codebase clean", "code base clean", "clean code", "code quality", "check the code", "check my code", "look over the code", "look over my code", "code smell", "is the code good"],
   "improve-codebase-architecture": ["architecture", "refactor", "messy codebase", "spaghetti", "tech debt", "restructure", "is a mess", "messy", "technical debt", "reorganize the code", "clean up the codebase"],
   "codebase-design": ["module", "interface", "seam", "deep module"],
   "resolving-merge-conflicts": ["merge conflict", "rebase", "conflicts"],

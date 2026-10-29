@@ -22,7 +22,8 @@ const STOPWORDS = new Set(
 );
 
 // Light stemming, so "translate" meets "translation" and "fails" meets "failing".
-const stem = (w) => (w.length > 4 ? w.replace(/(ions?|ings?|ed|es|ly|e|s)$/, "") : w.replace(/s$/, "")) || w;
+// Four-letter words lose only a final e or s, so "page" and "pages" both become "pag".
+const stem = (w) => (w.length > 4 ? w.replace(/(ions?|ings?|ed|es|ly|e|s)$/, "") : w.replace(/[es]$/, "")) || w;
 // "pull request" is one thing: as two words, "request" matched skills like change-request.
 export const tokenize = (text) =>
   (text.toLowerCase().replace(/pull requests?/g, " ").match(/[a-z0-9]+/g) ?? []).filter((w) => w.length > 2 && !STOPWORDS.has(w)).map(stem);
@@ -168,7 +169,7 @@ export const loadIndex = (cwd, transcript = "") => {
 // The cache key is every root's mtime, so adding, removing or updating a skill rebuilds the index.
 function loadSkillFiles(cwd) {
   const roots = skillRoots(cwd).filter((r) => fs.existsSync(r.dir));
-  const key = ["v3", ...roots.map((r) => `${r.dir}:${fs.statSync(r.dir).mtimeMs}`)].join("|");
+  const key = ["v4", ...roots.map((r) => `${r.dir}:${fs.statSync(r.dir).mtimeMs}`)].join("|");
   const cacheFile = path.join(STATE_DIR, CODEX ? "index-codex.json" : "index.json");
   try {
     const cached = JSON.parse(fs.readFileSync(cacheFile, "utf8"));
@@ -221,10 +222,14 @@ export function score(prompt, skills, triggers = {}, weight = () => 1) {
       let hits = 0;
       let nameHit = false;
       let phraseHit = false;
+      // A name hit counts in full for a distinctive word ("grill") or when the prompt names the whole skill.
+      // A common one ("code" in image-to-code, "build" in build-agent) counts like a description word.
+      const wholeName = s.nameTokens.every((t) => words.has(t));
       for (const w of words) {
         if (s.nameTokens.includes(w)) {
-          total += 3 * idf(w);
-          nameHit = true;
+          const strong = wholeName || idf(w) >= 3;
+          total += (strong ? 3 : 1) * idf(w);
+          nameHit ||= strong;
         }
         if (desc.has(w)) {
           total += idf(w) / norm;

@@ -164,6 +164,12 @@ const cases = {
     assert.equal(names.filter((n) => n === "mail-draft").length, 1);
     fs.rmSync(path.join(config, "skills/synced/bucket/mail-draft"), { recursive: true });
   },
+  "a common word in a skill's name isn't enough"() {
+    skill("plugins/pack/skills/image-to-code", "Turn an image of a design into code for your repo.");
+    assert.ok(!suggested(run("how many lines of code are in this repo")).includes("pack:image-to-code"));
+    assert.ok(suggested(run("is the code base clean?")).includes("dev:code-review"));
+    fs.rmSync(path.join(config, "plugins/pack/skills/image-to-code"), { recursive: true });
+  },
   "other plugins still come up when only they fit"() {
     assert.ok(suggested(run("plan a podcast episode outline with guest questions")).includes("pack:podcast-planner"));
   },
