@@ -11,7 +11,7 @@ You need Claude Code first. New to it? Read [Start here](docs/guides/start-here.
 In Claude Code, run:
 
 ```
-/plugin marketplace add iatee/claude-skills
+/plugin marketplace add https://github.com/iatee/claude-skills.git
 /plugin install all@iatee-skills
 /reload-plugins
 ```

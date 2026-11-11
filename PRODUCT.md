@@ -23,7 +23,7 @@ A curated, public collection of Claude Code skills at skills.garciabaertsch.com,
 
 ## Operating Context
 
-- Installed inside Claude Code with `/plugin marketplace add iatee/claude-skills`, `/plugin install all@iatee-skills`, `/reload-plugins`.
+- Installed inside Claude Code with `/plugin marketplace add https://github.com/iatee/claude-skills.git`, `/plugin install all@iatee-skills`, `/reload-plugins`.
 - Distributed as a plugin marketplace (`iatee-skills`) with themed plugins: planning, coding, frontend, security, writing, sessions, suggester, plus opt-in ponytail and observer, and `all`.
 - Guides live in `docs/guides/*.md`, render on GitHub and on the site (Astro + Starlight in `site/`). The catalog is generated from `catalog.json`.
 

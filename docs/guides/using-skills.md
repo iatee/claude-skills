@@ -23,7 +23,7 @@ Skills are shared in **plugins**: bundles of skills (and sometimes other add-ons
 Inside Claude Code, run these three commands, one at a time:
 
 ```text
-/plugin marketplace add iatee/claude-skills
+/plugin marketplace add https://github.com/iatee/claude-skills.git
 ```
 
 ```text
