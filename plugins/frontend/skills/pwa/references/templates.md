@@ -64,7 +64,7 @@ export default defineConfig({
 });
 ```
 
-Update prompt (React example; the plugin has the same hook for Vue, Svelte and Solid under `virtual:pwa-register/*`):
+Update prompt (React example; the plugin has the same hook for Vue, Svelte and Solid under `virtual:pwa-register/*`). In TypeScript, add a `src/pwa-env.d.ts` with `/// <reference types="vite-plugin-pwa/react" />` (or `/client` for the plain `registerSW`), or the build fails with "Cannot find module 'virtual:pwa-register/react'".
 
 ```tsx
 import { useRegisterSW } from 'virtual:pwa-register/react';
@@ -111,6 +111,8 @@ For offline, follow the current `@serwist/next` setup guide and apply the cachin
 
 ```js
 const VERSION = 'v1'; // change on every deploy that changes SHELL
+// Offline, only these pages open; others show offline.html. List the pages people need offline,
+// but never a page the server fills with user data.
 const SHELL = ['/', '/offline.html', '/styles.css', '/app.js', '/icons/icon-192.png'];
 
 self.addEventListener('install', (event) => {

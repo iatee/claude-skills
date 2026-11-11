@@ -4,6 +4,7 @@ Each plugin is versioned on its own. Update a plugin with `/plugin marketplace u
 
 ## 2026-11-11
 
+- **frontend 1.3.1:** `pwa` fixes from a test on a real Vite + React app and a plain HTML site: TypeScript projects get the type line the update prompt needs to build, the icon generator command includes its preset and the file names it writes, and the caching rules say that server-rendered pages with user data stay uncached and which pages a hand-written service worker keeps for offline.
 - **frontend 1.3.0:** new `pwa` skill (our own): turns a web app into an installable, offline-ready Progressive Web App. It picks the tool your framework already supports (vite-plugin-pwa, Serwist, SvelteKit's service worker), sets up the manifest and icons, and caches the app shell but never personal data. It also gives a reload prompt so no one gets stuck on an old version, an install button plus the "Add to Home Screen" hint iPhones need, and a checklist to confirm it works. Run `/reload-plugins` after updating.
 - **suggester 1.11.0:** suggests `pwa` when you want an app on the home screen, offline support, a service worker, web push, or when users keep seeing an old version.
 - Install instructions now add the marketplace by its HTTPS address, so installing works on machines that never connected to GitHub over SSH.

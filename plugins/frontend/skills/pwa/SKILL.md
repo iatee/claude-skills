@@ -35,14 +35,15 @@ Required for installing: `name`, `short_name`, `start_url`, `display: "standalon
 - Add a separate 512×512 icon with `"purpose": "maskable"`, with the logo inside the middle 80%. Don't mark one icon `"any maskable"`: Android crops it and other platforms show the padding.
 - Add `screenshots` (one `"form_factor": "wide"`, one narrow) for the richer install dialog on Android and desktop Chrome.
 - In `<head>`: `<link rel="manifest">`, `<meta name="theme-color">`, and `<link rel="apple-touch-icon" href="/apple-touch-icon.png">` at 180×180 with no transparency. iOS ignores manifest icons for the home screen.
-- If the user has only one logo, generate the sizes with whatever image tool the project already has, or `npx @vite-pwa/assets-generator` with a pinned version. Don't add a dependency for it.
+- If the user has only one logo, generate the sizes with whatever image tool the project already has, or `npx @vite-pwa/assets-generator@<version> --preset minimal-2023 public/logo.svg` (look up the current version). It writes `pwa-192x192.png`, `pwa-512x512.png`, `maskable-icon-512x512.png` and `apple-touch-icon-180x180.png` next to the logo: point the manifest and `<head>` at those names. Don't add a dependency for it.
 
 ## 4. Service worker: what to cache
 
 | Request | Strategy |
 |---|---|
 | Built JS, CSS and fonts with hashes in their names | Precache at install |
-| Page navigations (HTML) | Network first, falling back to the cache, then to `/offline.html` |
+| Page navigations (HTML) | Network first, falling back to the cached page, then to `/offline.html`. Single-page apps fall back to the cached `index.html`. |
+| Server-rendered pages that show user data | Network only, like the API |
 | Images, avatars | Stale-while-revalidate, with a size or entry limit |
 | API responses with user data, anything behind login | **Never cache.** Network only. |
 | Non-GET requests | Never cache |
