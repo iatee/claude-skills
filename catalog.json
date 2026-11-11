@@ -28,7 +28,7 @@
     "wizard": { "what": "Writes an interactive script that walks you through steps only a human can do.", "when": "A setup needs you to click through dashboards or paste secrets." },
 
     "impeccable": { "what": "Designs, critiques and polishes frontend interfaces, with 20+ sub-commands like audit, polish and typeset.", "when": "A page or app works but doesn't look or feel right." },
-    "pwa": { "what": "Makes a web app installable, offline-ready and safe to update: manifest, icons, service worker, install button and iOS hint.", "when": "You want people to add your web app to their home screen or use it offline." },
+    "pwa": { "what": "Makes a web app installable, offline-ready and safe to update, with an iPhone-app look: manifest, icons, splash screens, service worker, install button.", "when": "You want people to add your web app to their home screen or use it offline." },
 
     "vibe-security": { "what": "Audits an app for the holes AI assistants leave: exposed keys, open Supabase or Firebase tables, unchecked auth, client-set prices, missing rate limits.", "when": "You built an app with AI and want to know if someone could break in before you ship it." },
     "vibesec": { "what": "Makes Claude write web code the way a bug hunter would want it: no IDOR, XSS, CSRF, SSRF, open redirects or weak JWTs.", "when": "You're building any web app and want it secure from the first line, not fixed later." },

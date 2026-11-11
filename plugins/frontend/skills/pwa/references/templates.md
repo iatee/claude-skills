@@ -52,6 +52,7 @@ export default defineConfig({
       workbox: {
         // Covers public/ too, so don't also list files in includeAssets: they'd be precached twice.
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
+        globIgnores: ['**/apple-splash-*'], // iOS fetches splash screens itself when the app is added; no need to download them for everyone
         navigateFallback: '/index.html', // single-page apps; multi-page sites use an offline page instead
         navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [
@@ -197,6 +198,64 @@ try { hintShown = !!localStorage.getItem('ios-hint-shown'); } catch {}
 if (iosSafari && !installed && !hintShown) {
   showHint('Tap Share, then "Add to Home Screen".');
   try { localStorage.setItem('ios-hint-shown', '1'); } catch {}
+}
+```
+
+## iPhone look
+
+`<head>`:
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Example" />
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+<!-- one per size from the generator, hrefs matched to the files it wrote -->
+<link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/apple-splash-portrait-1179x2556.png" />
+```
+
+Splash screens (`pwa-assets.config.mjs`, run with `npx pwa-assets-generator`; device names are listed in `AllAppleDeviceNames`):
+
+```js
+import { combinePresetAndAppleSplashScreens, defineConfig, minimal2023Preset } from '@vite-pwa/assets-generator/config';
+
+export default defineConfig({
+  headLinkOptions: { preset: '2023' },
+  preset: combinePresetAndAppleSplashScreens(
+    minimal2023Preset,
+    { padding: 0.3, resizeOptions: { background: '#ffffff' } },
+    ['iPhone 15 Pro', 'iPhone 15 Pro Max', 'iPhone 13', 'iPhone SE 4"'],
+  ),
+  images: ['public/logo.svg'],
+});
+```
+
+CSS:
+
+```css
+:root {
+  color-scheme: light dark;
+  font-family: -apple-system, system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+html, body { overscroll-behavior: none; }
+.app { min-height: 100dvh; }
+
+/* Keep content clear of the notch, Dynamic Island and home indicator. */
+.app-header { padding-top: max(12px, env(safe-area-inset-top)); }
+.app-tabbar { padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+.app { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+
+/* Smaller than 16px makes Safari zoom in when the field gets focus. */
+input, select, textarea { font-size: max(16px, 1rem); }
+
+button, .app-tabbar { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+
+/* Only when opened from the home screen: no browser back button there. */
+@media (display-mode: standalone) {
+  .back-button { display: inline-flex; }
 }
 ```
 

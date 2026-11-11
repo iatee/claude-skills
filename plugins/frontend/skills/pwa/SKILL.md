@@ -1,6 +1,6 @@
 ---
 name: pwa
-description: Turn a web app into a Progressive Web App that installs on phones and desktops, opens full screen, works offline and updates cleanly. Use when the user wants an installable app, "add to home screen", an app icon, offline support, a web app manifest, a service worker, an install button, or web push notifications, or when an existing PWA shows stale versions, won't install or breaks offline.
+description: Turn a web app into a Progressive Web App that installs on phones and desktops, opens full screen with an iPhone-app look, works offline and updates cleanly. Use when the user wants an installable app, "add to home screen", an app icon, offline support, a web app manifest, a service worker, an install button, a splash screen, an app that looks native on iPhone (status bar, notch, safe areas), or web push notifications, or when an existing PWA shows stale versions, won't install or breaks offline.
 ---
 
 # PWA
@@ -64,11 +64,23 @@ Clear old caches in the `activate` event and name caches with a version.
 - Safari on iPhone and iPad has no install event. Show a one-time hint ("Tap Share, then Add to Home Screen") only in Safari on iOS and only when the app isn't already installed (`navigator.standalone` or `matchMedia('(display-mode: standalone)')`).
 - Hide every install UI when already running installed.
 
-## 7. Optional: push notifications
+## 7. The iPhone look
+
+Opened from the home screen, the app has no Safari bar, no back button and no browser chrome around it. Make it look and behave like an iPhone app (templates in references/templates.md under "iPhone look"):
+
+- **Status bar:** `<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">` with `viewport-fit=cover` lets the app draw under the status bar like a native app. Then pad the edges with `env(safe-area-inset-top|right|bottom|left)`, or the notch, Dynamic Island and home indicator cover the header, tab bar and buttons. Use `default` instead if the app has no colored header.
+- **Name under the icon:** `<meta name="apple-mobile-web-app-title">` with a name of 12 characters or fewer, or iOS cuts it off.
+- **Splash screen:** iOS ignores the manifest for the launch screen and shows white until the app loads. Add `apple-touch-startup-image` links for the current iPhone sizes. `@vite-pwa/assets-generator` makes them with a config file (`combinePresetAndAppleSplashScreens`). Its printed `<link>` tags name the files `apple-splash-portrait-light-…` while it writes `apple-splash-portrait-…`: match the hrefs to the files it actually wrote, or every splash is a 404.
+- **Dark mode:** two `theme-color` metas with `media="(prefers-color-scheme: light|dark)"`, and `color-scheme: light dark` in CSS, so the status bar and form controls follow the system.
+- **Feel:** system font (`-apple-system, system-ui`); `-webkit-tap-highlight-color: transparent`; `overscroll-behavior: none` on the page so it doesn't rubber-band; `100dvh`, not `100vh`, for full-height layouts; inputs at `font-size: 16px` or more, or Safari zooms in on focus; `-webkit-user-select: none` and `-webkit-touch-callout: none` on buttons and tab bars only, never on text people may copy.
+- **Navigation:** standalone has no back button or swipe-from-edge in every case, so any screen deeper than the first needs a visible back control. Style these only under `@media (display-mode: standalone)` if the browser version should keep its normal look.
+- **Don't** imitate iOS pixel for pixel (fake status bars, copied SF Symbols, iOS-only colors on Android). Follow the system's spacing and behavior, keep the app's own brand.
+
+## 8. Optional: push notifications
 
 Only if asked. Web push needs a server, VAPID keys (the private key stays on the server, never in the client bundle) and a permission request triggered by a user's click, never on page load. On iPhone it works only after the app is added to the home screen (iOS 16.4+).
 
-## 8. Check it works
+## 9. Check it works
 
 Lighthouse no longer has a PWA section, so check by hand in Chrome DevTools > Application. Scripted checks with Playwright work too: call `context.setOffline(true)` and remove any `page.route` stubs first (`unrouteAll()`), because a stub keeps answering offline and makes it look as if the API was cached.
 
@@ -78,6 +90,6 @@ Lighthouse no longer has a PWA section, so check by hand in Chrome DevTools > Ap
 4. Install it from the address bar and open it: it opens in its own window at `start_url`.
 5. Change something, deploy or rebuild, and reload: the update prompt appears (or the new version loads), and old caches are gone under **Cache storage**.
 6. Log in, log out, go offline: no private data is shown from the cache.
-7. On a real iPhone: Add to Home Screen shows the right icon and name, and the app opens without Safari's bar.
+7. On a real iPhone: Add to Home Screen shows the right icon and name, the splash screen shows instead of white, the app opens without Safari's bar, and nothing sits under the notch or the home indicator. Without an iPhone, the Simulator in Xcode does all of this; a desktop browser can't show standalone mode.
 
 Report what the app can now do offline, what it can't, and anything only a real device could confirm.

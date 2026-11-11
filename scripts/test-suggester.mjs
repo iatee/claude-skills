@@ -180,7 +180,7 @@ const cases = {
   },
   "app-like requests bring up pwa"() {
     skill("plugins/ours/skills/pwa", "Turn a web app into a Progressive Web App that installs on phones and desktops, opens full screen, works offline and updates cleanly.");
-    for (const prompt of ["can people add my app to their home screen?", "make the site work offline", "users keep seeing an old version after I deploy"]) {
+    for (const prompt of ["can people add my app to their home screen?", "make it look native on iphone with a splash screen", "make the site work offline", "users keep seeing an old version after I deploy"]) {
       assert.ok(suggested(run(prompt)).includes("ours:pwa"), prompt);
     }
     assert.ok(!suggested(run("push the commit")).includes("ours:pwa"));
