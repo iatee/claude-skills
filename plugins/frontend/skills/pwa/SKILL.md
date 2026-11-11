@@ -35,7 +35,7 @@ Required for installing: `name`, `short_name`, `start_url`, `display: "standalon
 - Add a separate 512×512 icon with `"purpose": "maskable"`, with the logo inside the middle 80%. Don't mark one icon `"any maskable"`: Android crops it and other platforms show the padding.
 - Add `screenshots` (one `"form_factor": "wide"`, one narrow) for the richer install dialog on Android and desktop Chrome.
 - In `<head>`: `<link rel="manifest">`, `<meta name="theme-color">`, and `<link rel="apple-touch-icon" href="/apple-touch-icon.png">` at 180×180 with no transparency. iOS ignores manifest icons for the home screen.
-- If the user has only one logo, generate the sizes with whatever image tool the project already has, or `npx @vite-pwa/assets-generator@<version> --preset minimal-2023 public/logo.svg` (look up the current version). It writes `pwa-192x192.png`, `pwa-512x512.png`, `maskable-icon-512x512.png` and `apple-touch-icon-180x180.png` next to the logo: point the manifest and `<head>` at those names. Don't add a dependency for it.
+- If the user has only one logo, generate the sizes with whatever image tool the project already has, or `npx @vite-pwa/assets-generator@<version> --preset minimal-2023 public/logo.svg` (look up the current version). It writes `pwa-192x192.png`, `pwa-512x512.png`, `maskable-icon-512x512.png` and `apple-touch-icon-180x180.png` next to the logo (point the manifest and `<head>` at those names), plus `pwa-64x64.png` and `favicon.ico`: delete whichever the app doesn't use, or they get precached for nothing. Don't add a dependency for it.
 
 ## 4. Service worker: what to cache
 
@@ -70,7 +70,7 @@ Only if asked. Web push needs a server, VAPID keys (the private key stays on the
 
 ## 8. Check it works
 
-Lighthouse no longer has a PWA section, so check by hand in Chrome DevTools > Application:
+Lighthouse no longer has a PWA section, so check by hand in Chrome DevTools > Application. Scripted checks with Playwright work too: call `context.setOffline(true)` and remove any `page.route` stubs first (`unrouteAll()`), because a stub keeps answering offline and makes it look as if the API was cached.
 
 1. **Manifest**: no errors or warnings, icons load, the maskable preview looks right.
 2. **Service workers**: registered and activated; the scope is `/` unless the app lives in a subfolder.

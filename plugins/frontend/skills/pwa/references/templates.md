@@ -46,9 +46,12 @@ export default defineConfig({
   plugins: [
     VitePWA({
       registerType: 'prompt', // 'autoUpdate' for content sites without forms
-      manifest: false, // keep using public/manifest.webmanifest; or move its fields here
+      // The manifest fields from the template above; the plugin writes the file and adds the <link>.
+      // Or `manifest: false` to keep an existing public/manifest.webmanifest.
+      manifest: { name: 'Example App', short_name: 'Example' /* ...the rest */ },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        // Covers public/ too, so don't also list files in includeAssets: they'd be precached twice.
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
         navigateFallback: '/index.html', // single-page apps; multi-page sites use an offline page instead
         navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [
@@ -168,6 +171,8 @@ if ('serviceWorker' in navigator) {
 
 ## Install button and iOS hint
 
+In TypeScript, type the event (`interface BeforeInstallPromptEvent extends Event { prompt(): Promise<void> }`) and read `(navigator as { standalone?: boolean }).standalone`.
+
 ```js
 const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 let deferred;
@@ -186,9 +191,12 @@ installButton.addEventListener('click', async () => {
 
 // iPhone and iPad Safari have no install event; Chrome and Firefox on iOS say "CriOS"/"FxiOS".
 const iosSafari = /iPhone|iPad|iPod/.test(navigator.userAgent) && !/CriOS|FxiOS|EdgiOS/.test(navigator.userAgent);
-if (iosSafari && !installed && !localStorage.getItem('ios-hint-shown')) {
+// localStorage throws in some private modes; then just show the hint.
+let hintShown = false;
+try { hintShown = !!localStorage.getItem('ios-hint-shown'); } catch {}
+if (iosSafari && !installed && !hintShown) {
   showHint('Tap Share, then "Add to Home Screen".');
-  localStorage.setItem('ios-hint-shown', '1');
+  try { localStorage.setItem('ios-hint-shown', '1'); } catch {}
 }
 ```
 
