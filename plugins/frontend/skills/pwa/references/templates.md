@@ -1,0 +1,202 @@
+# PWA templates
+
+Adapt names, colors and paths to the project. Check each package's current version and options in its docs before installing it.
+
+## Manifest (`public/manifest.webmanifest`)
+
+```json
+{
+  "id": "/",
+  "name": "Example App",
+  "short_name": "Example",
+  "description": "One sentence on what the app does.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#0f172a",
+  "background_color": "#ffffff",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "screenshots": [
+    { "src": "/screenshots/wide.png", "sizes": "1280x720", "type": "image/png", "form_factor": "wide" },
+    { "src": "/screenshots/narrow.png", "sizes": "720x1280", "type": "image/png", "form_factor": "narrow" }
+  ]
+}
+```
+
+## `<head>`
+
+```html
+<link rel="manifest" href="/manifest.webmanifest" />
+<meta name="theme-color" content="#0f172a" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+```
+
+## Vite: `vite-plugin-pwa`
+
+```ts
+// vite.config.ts
+import { VitePWA } from 'vite-plugin-pwa';
+
+export default defineConfig({
+  plugins: [
+    VitePWA({
+      registerType: 'prompt', // 'autoUpdate' for content sites without forms
+      manifest: false, // keep using public/manifest.webmanifest; or move its fields here
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        navigateFallback: '/index.html', // single-page apps; multi-page sites use an offline page instead
+        navigateFallbackDenylist: [/^\/api\//],
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.destination === 'image',
+            handler: 'StaleWhileRevalidate',
+            options: { cacheName: 'images', expiration: { maxEntries: 100 } },
+          },
+        ],
+      },
+    }),
+  ],
+});
+```
+
+Update prompt (React example; the plugin has the same hook for Vue, Svelte and Solid under `virtual:pwa-register/*`):
+
+```tsx
+import { useRegisterSW } from 'virtual:pwa-register/react';
+
+export function UpdatePrompt() {
+  const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW();
+  if (!needRefresh) return null;
+  return (
+    <div role="status">
+      A new version is available.
+      <button onClick={() => updateServiceWorker(true)}>Reload</button>
+    </div>
+  );
+}
+```
+
+## Next.js app router: manifest
+
+```ts
+// app/manifest.ts
+import type { MetadataRoute } from 'next';
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    id: '/',
+    name: 'Example App',
+    short_name: 'Example',
+    start_url: '/',
+    display: 'standalone',
+    theme_color: '#0f172a',
+    background_color: '#ffffff',
+    icons: [
+      { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+      { src: '/icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+    ],
+  };
+}
+```
+
+For offline, follow the current `@serwist/next` setup guide and apply the caching table from SKILL.md.
+
+## No build step: `sw.js`
+
+```js
+const VERSION = 'v1'; // change on every deploy that changes SHELL
+const SHELL = ['/', '/offline.html', '/styles.css', '/app.js', '/icons/icon-192.png'];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(caches.open(`shell-${VERSION}`).then((cache) => cache.addAll(SHELL)));
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((key) => !key.endsWith(VERSION)).map((key) => caches.delete(key))),
+    ),
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  const url = new URL(request.url);
+  // Only same-origin GETs; never API calls or anything with user data.
+  if (request.method !== 'GET' || url.origin !== location.origin || url.pathname.startsWith('/api/')) return;
+
+  if (request.mode === 'navigate') {
+    event.respondWith(fetch(request).catch(async () => (await caches.match(request)) ?? caches.match('/offline.html')));
+    return;
+  }
+  event.respondWith(caches.match(request).then((cached) => cached ?? fetch(request)));
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data === 'SKIP_WAITING') self.skipWaiting();
+});
+```
+
+Register it and offer the update:
+
+```js
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').then((reg) => {
+    reg.addEventListener('updatefound', () => {
+      const worker = reg.installing;
+      worker?.addEventListener('statechange', () => {
+        if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+          showUpdateBanner(() => worker.postMessage('SKIP_WAITING'));
+        }
+      });
+    });
+  });
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!reloaded) { reloaded = true; location.reload(); }
+  });
+}
+```
+
+## Install button and iOS hint
+
+```js
+const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+let deferred;
+
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+  deferred = event;
+  if (!installed) installButton.hidden = false;
+});
+
+installButton.addEventListener('click', async () => {
+  installButton.hidden = true;
+  await deferred?.prompt();
+  deferred = null;
+});
+
+// iPhone and iPad Safari have no install event; Chrome and Firefox on iOS say "CriOS"/"FxiOS".
+const iosSafari = /iPhone|iPad|iPod/.test(navigator.userAgent) && !/CriOS|FxiOS|EdgiOS/.test(navigator.userAgent);
+if (iosSafari && !installed && !localStorage.getItem('ios-hint-shown')) {
+  showHint('Tap Share, then "Add to Home Screen".');
+  localStorage.setItem('ios-hint-shown', '1');
+}
+```
+
+## Host headers for `sw.js`
+
+```
+# Netlify (_headers)
+/sw.js
+  Cache-Control: no-cache
+
+# nginx
+location = /sw.js { add_header Cache-Control "no-cache"; }
+```

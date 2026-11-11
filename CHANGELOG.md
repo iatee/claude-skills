@@ -2,6 +2,12 @@
 
 Each plugin is versioned on its own. Update a plugin with `/plugin marketplace update iatee-skills`.
 
+## 2026-11-11
+
+- **frontend 1.3.0:** new `pwa` skill (our own): turns a web app into an installable, offline-ready Progressive Web App. It picks the tool your framework already supports (vite-plugin-pwa, Serwist, SvelteKit's service worker), sets up the manifest and icons, and caches the app shell but never personal data. It also gives a reload prompt so no one gets stuck on an old version, an install button plus the "Add to Home Screen" hint iPhones need, and a checklist to confirm it works. Run `/reload-plugins` after updating.
+- **suggester 1.11.0:** suggests `pwa` when you want an app on the home screen, offline support, a service worker, web push, or when users keep seeing an old version.
+- Install instructions now add the marketplace by its HTTPS address, so installing works on machines that never connected to GitHub over SSH.
+
 ## 2026-10-29
 
 - **suggester 1.10.0:** a common word in a skill's name ("code", "build", "review") no longer brings that skill up on its own, so "is the codebase clean?" stops suggesting `image-to-code` and "run the build" stops suggesting `build-agent`. Questions about code quality ("is the code clean", "check my code", "code quality") now point to `code-review`. Four-letter words match their plurals ("page" and "pages").

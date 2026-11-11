@@ -178,6 +178,14 @@ const cases = {
     assert.ok(suggested(run("add a file upload for profile pictures")).includes("sec:vibesec"));
     assert.equal(run("the session timer in the game is off by one second"), "");
   },
+  "app-like requests bring up pwa"() {
+    skill("plugins/ours/skills/pwa", "Turn a web app into a Progressive Web App that installs on phones and desktops, opens full screen, works offline and updates cleanly.");
+    for (const prompt of ["can people add my app to their home screen?", "make the site work offline", "users keep seeing an old version after I deploy"]) {
+      assert.ok(suggested(run(prompt)).includes("ours:pwa"), prompt);
+    }
+    assert.ok(!suggested(run("push the commit")).includes("ours:pwa"));
+    fs.rmSync(path.join(config, "plugins/ours/skills/pwa"), { recursive: true });
+  },
   "filler words alone don't make a match"() {
     assert.equal(run("can we get the sugester to work in codek too? and btw my suggester never suggested something"), "");
   },
