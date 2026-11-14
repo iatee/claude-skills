@@ -2,6 +2,10 @@
 
 Each plugin is versioned on its own. Update a plugin with `/plugin marketplace update iatee-skills`.
 
+## 2026-11-15
+
+- **frontend 1.5.0:** `impeccable` updated from 4.6.0 to 4.9.1 (Paul Bakaus). New `/impeccable foundations` walks through the basics a product needs (secrets, 404 page, icons, CI and more). The new-work playbook is split into parts for a new visual world and for building from an approved comp, critique has its own scoring rubric, and the live browser mode and launcher scripts are reworked. Its description is shorter, so it costs fewer tokens per session.
+
 ## 2026-11-11
 
 - **frontend 1.4.0:** `pwa` gives apps the iPhone look when opened from the home screen: content under the status bar with safe-area padding around the notch and home indicator, splash screens instead of a white launch, light and dark status bars, no zoom on input focus or rubber-band scrolling, and a back button where standalone has none. It warns that the splash-screen generator prints links to files it doesn't write.

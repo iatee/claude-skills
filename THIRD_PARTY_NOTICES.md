@@ -18,7 +18,7 @@ This file is generated from `manifest.json` by `scripts/vendor.mjs`; do not edit
 ## Paul Bakaus
 
 - **Upstream:** https://github.com/pbakaus/impeccable
-- **Commit:** [`6af45ac`](https://github.com/pbakaus/impeccable/tree/6af45ac9a5eb8792f033d3242f52e99812fd91fa)
+- **Commit:** [`f215d22`](https://github.com/pbakaus/impeccable/tree/f215d221d8ab7830df34ece2915f3ddbd7d07f55)
 - **License:** Apache-2.0
 - **Skills:** `impeccable`
 - Includes upstream `NOTICE.md`, which credits further authors.
