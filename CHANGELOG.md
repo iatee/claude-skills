@@ -2,6 +2,10 @@
 
 Each plugin is versioned on its own. Update a plugin with `/plugin marketplace update iatee-skills`.
 
+## 2026-11-17
+
+- Directory editions: Markdown-only copies of `planning`, `coding`, `security`, `sessions`, `writing` and the `pwa` skill, named `iatee-*`, for Anthropic's plugin directory. The marketplace still installs the full plugins with their code. In `iatee-coding`, the `wizard` and `diagnosing-bugs` shell templates are code blocks Claude writes out, and `playwright-cli` asks before running commands.
+
 ## 2026-11-15
 
 - **frontend 1.5.0:** `impeccable` updated from 4.6.0 to 4.9.1 (Paul Bakaus). New `/impeccable foundations` walks through the basics a product needs (secrets, 404 page, icons, CI and more). The new-work playbook is split into parts for a new visual world and for building from an approved comp, critique has its own scoring rubric, and the live browser mode and launcher scripts are reworked. Its description is shorter, so it costs fewer tokens per session.

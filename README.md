@@ -115,3 +115,4 @@ See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for exact versions and chan
 - `node scripts/catalog.mjs` regenerates the catalog from `catalog.json`.
 - `node scripts/check.mjs` validates every skill and plugin, and `node scripts/test-suggester.mjs` tests the suggester against fake plugins. CI runs both, plus the catalog check, on every push.
 - After changing a plugin, bump its `version` and add a line to [CHANGELOG.md](CHANGELOG.md).
+- `directory/` holds Markdown-only copies of the plugins without hooks or scripts, for Anthropic's plugin directory, which accepts code only from Verified organizations. Submit each `directory/iatee-*` folder on its own. `node scripts/directory.mjs` rebuilds them from `plugins/` after any change; CI fails while they're out of date.

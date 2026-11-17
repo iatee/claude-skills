@@ -1,0 +1,12 @@
+{
+  "name": "iatee-pwa",
+  "version": "1.5.0",
+  "description": "Turn a web app into a Progressive Web App: installable on phones and desktops, an iPhone-app look, offline support and clean updates.",
+  "author": {
+    "name": "Iatee",
+    "url": "https://github.com/iatee"
+  },
+  "homepage": "https://skills.garciabaertsch.com",
+  "repository": "https://github.com/iatee/claude-skills",
+  "license": "MIT"
+}
